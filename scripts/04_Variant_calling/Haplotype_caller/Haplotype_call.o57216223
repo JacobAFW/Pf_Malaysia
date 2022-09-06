@@ -1,0 +1,176 @@
+---------------------------------------
+PBS: Job identifier is 57216223.gadi-pbs
+PBS: Job name is Haplotype_call
+---------------------------------------
+Define paths and load modules
+---------------------------------------
+---------------------------------------
+Change to working directory and set env variables
+---------------------------------------------------------------------------------------------------------------------
+GATK
+---------------------------------------------------------------------------------------------------------------------
+INFO  10:10:29,686 HelpFormatter - -------------------------------------------------------------------------------------------- 
+INFO  10:10:29,690 HelpFormatter - The Genome Analysis Toolkit (GATK) v3.8-1-0-gf15c1c3ef, Compiled 2018/02/19 05:43:50 
+INFO  10:10:29,690 HelpFormatter - Copyright (c) 2010-2016 The Broad Institute 
+INFO  10:10:29,690 HelpFormatter - For support and documentation go to https://software.broadinstitute.org/gatk 
+INFO  10:10:29,690 HelpFormatter - [Tue Sep 06 10:10:29 GMT+10:00 2022] Executing on Linux 4.18.0-372.13.1.el8.nci.x86_64 amd64 
+INFO  10:10:29,691 HelpFormatter - OpenJDK 64-Bit Server VM 1.8.0_40-b25 
+INFO  10:10:29,696 HelpFormatter - Program Args: -T HaplotypeCaller -ERC GVCF --minPruning 3 --maxNumHaplotypesInPopulation 200 --max_alternate_alleles 3 --variant_index_type LINEAR --variant_index_parameter 128000 -contamination 0.0 -G Standard -R /g/data/pq84/malaria/Pf_Malaysia/data/ref_genomes/PlasmoDB-59_Pfalciparum3D7_Genome.fasta -I /g/data/pq84/malaria/Pf_Malaysia/outputs/03_Bam-pre/final_bam/ERR9937143.dupmarked.realigned.recal.bam -o /g/data/pq84/malaria/Pf_Malaysia/outputs/04_Variant_calling/haplotype_call/ERR9937143.dupmarked.realigned.recal.g.vcf.gz 
+INFO  10:10:29,704 HelpFormatter - Executing as jw1542@gadi-cpu-clx-1492.gadi.nci.org.au on Linux 4.18.0-372.13.1.el8.nci.x86_64 amd64; OpenJDK 64-Bit Server VM 1.8.0_40-b25. 
+INFO  10:10:29,704 HelpFormatter - Date/Time: 2022/09/06 10:10:29 
+INFO  10:10:29,704 HelpFormatter - -------------------------------------------------------------------------------------------- 
+INFO  10:10:29,705 HelpFormatter - -------------------------------------------------------------------------------------------- 
+WARN  10:10:29,708 GATKVCFUtils - Naming your output file using the .g.vcf extension will automatically set the appropriate values  for --variant_index_type and --variant_index_parameter 
+WARN  10:10:29,709 GATKVCFUtils - Creating Tabix index for /g/data/pq84/malaria/Pf_Malaysia/outputs/04_Variant_calling/haplotype_call/ERR9937143.dupmarked.realigned.recal.g.vcf.gz, ignoring user-specified index type and parameter 
+INFO  10:10:29,726 NativeLibraryLoader - Loading libgkl_compression.so from jar:file:/g/data/pq84/bin/GenomeAnalysisTK-3.8-1-0/GenomeAnalysisTK.jar!/com/intel/gkl/native/libgkl_compression.so 
+INFO  10:10:29,747 GenomeAnalysisEngine - Deflater: IntelDeflater 
+INFO  10:10:29,747 GenomeAnalysisEngine - Inflater: IntelInflater 
+INFO  10:10:29,748 GenomeAnalysisEngine - Strictness is SILENT 
+INFO  10:10:29,866 GenomeAnalysisEngine - Downsampling Settings: Method: BY_SAMPLE, Target Coverage: 500 
+INFO  10:10:29,871 SAMDataSource$SAMReaders - Initializing SAMRecords in serial 
+INFO  10:10:30,052 SAMDataSource$SAMReaders - Done initializing BAM readers: total time 0.18 
+INFO  10:10:30,095 HCMappingQualityFilter - Filtering out reads with MAPQ < 20 
+INFO  10:10:30,162 GenomeAnalysisEngine - Preparing for traversal over 1 BAM files 
+INFO  10:10:30,180 GenomeAnalysisEngine - Done preparing for traversal 
+INFO  10:10:30,181 ProgressMeter - [INITIALIZATION COMPLETE; STARTING PROCESSING] 
+INFO  10:10:30,181 ProgressMeter -                 |      processed |    time |         per 1M |           |   total | remaining 
+INFO  10:10:30,181 ProgressMeter -        Location | active regions | elapsed | active regions | completed | runtime |   runtime 
+INFO  10:10:30,182 HaplotypeCaller - Standard Emitting and Calling confidence set to 0.0 for reference-model confidence output 
+INFO  10:10:30,182 HaplotypeCaller - All sites annotated with PLs forced to true for reference-model confidence output 
+WARN  10:10:30,208 InbreedingCoeff - Annotation will not be calculated. InbreedingCoeff requires at least 10 unrelated samples. 
+INFO  10:10:30,259 HaplotypeCaller - Using global mismapping rate of 45 => -4.5 in log10 likelihood units 
+INFO  10:10:30,788 NativeLibraryLoader - Loading libgkl_utils.so from jar:file:/g/data/pq84/bin/GenomeAnalysisTK-3.8-1-0/GenomeAnalysisTK.jar!/com/intel/gkl/native/libgkl_utils.so 
+INFO  10:10:30,791 NativeLibraryLoader - Loading libgkl_pairhmm_omp.so from jar:file:/g/data/pq84/bin/GenomeAnalysisTK-3.8-1-0/GenomeAnalysisTK.jar!/com/intel/gkl/native/libgkl_pairhmm_omp.so 
+INFO  10:10:30,824 VectorLoglessPairHMM - Using OpenMP multi-threaded AVX-accelerated native PairHMM implementation 
+INFO  10:10:30,824 IntelPairHmm - Using CPU-supported AVX-512 instructions 
+WARN  10:10:30,824 IntelPairHmm - Flush-to-zero (FTZ) is enabled when running PairHMM 
+INFO  10:10:30,825 IntelPairHmm - Available threads: 1 
+INFO  10:10:30,825 IntelPairHmm - Requested threads: 1 
+WARN  10:10:30,872 HaplotypeScore - Annotation will not be calculated, must be called from UnifiedGenotyper, not HaplotypeCaller 
+WARN  10:10:31,594 AnnotationUtils - Annotation will not be calculated, genotype is not called 
+INFO  10:11:00,184 ProgressMeter - Pf3D7_03_v3:100982        1587953.0    30.0 s           18.0 s        7.2%     6.9 m       6.4 m 
+WARN  10:11:28,182 HaplotypeCallerGenotypingEngine - location Pf3D7_04_v3:363756: too many alternative alleles found (4) larger than the maximum requested with -maxAltAlleles (3), the following will be dropped: AATATATAT. 
+INFO  10:11:30,186 ProgressMeter - Pf3D7_04_v3:390400        2655924.0    60.0 s           22.0 s       13.1%     7.7 m       6.7 m 
+WARN  10:11:31,088 HaplotypeCallerGenotypingEngine - location Pf3D7_04_v3:401288: too many alternative alleles found (4) larger than the maximum requested with -maxAltAlleles (3), the following will be dropped: TTATATATATATA. 
+WARN  10:11:31,617 HaplotypeCallerGenotypingEngine - location Pf3D7_04_v3:403411: too many alternative alleles found (4) larger than the maximum requested with -maxAltAlleles (3), the following will be dropped: AATATATATATATATATATAT. 
+INFO  10:12:00,187 ProgressMeter - Pf3D7_05_v3:603895        3856414.0    90.0 s           23.0 s       19.1%     7.8 m       6.3 m 
+WARN  10:12:04,379 HaplotypeCallerGenotypingEngine - location Pf3D7_05_v3:797617: too many alternative alleles found (4) larger than the maximum requested with -maxAltAlleles (3), the following will be dropped: ATTTTTT. 
+WARN  10:12:10,598 HaplotypeCallerGenotypingEngine - location Pf3D7_05_v3:1034069: too many alternative alleles found (4) larger than the maximum requested with -maxAltAlleles (3), the following will be dropped: TTTTTTTTTTTTTTTTTTTTTTTTTTTA. 
+WARN  10:12:10,599 HaplotypeCallerGenotypingEngine - location Pf3D7_05_v3:1034070: too many alternative alleles found (4) larger than the maximum requested with -maxAltAlleles (3), the following will be dropped: TTTTTTTTATTTA. 
+WARN  10:12:10,744 HaplotypeCallerGenotypingEngine - location Pf3D7_05_v3:1034956: too many alternative alleles found (4) larger than the maximum requested with -maxAltAlleles (3), the following will be dropped: GTATATATATATA. 
+INFO  10:12:30,188 ProgressMeter - Pf3D7_06_v3:610676        5199971.0   120.0 s           23.0 s       24.9%     8.0 m       6.0 m 
+INFO  10:13:00,189 ProgressMeter - Pf3D7_07_v3:498617        6618213.0     2.5 m           22.0 s       30.5%     8.2 m       5.7 m 
+WARN  10:13:14,673 HaplotypeCallerGenotypingEngine - location Pf3D7_07_v3:995353-995413: too many alternative alleles found (4) larger than the maximum requested with -maxAltAlleles (3), the following will be dropped: G. 
+WARN  10:13:15,540 HaplotypeCallerGenotypingEngine - location Pf3D7_07_v3:1026247: too many alternative alleles found (4) larger than the maximum requested with -maxAltAlleles (3), the following will be dropped: AATATATAT. 
+WARN  10:13:23,115 HaplotypeCallerGenotypingEngine - location Pf3D7_07_v3:1126974: too many alternative alleles found (4) larger than the maximum requested with -maxAltAlleles (3), the following will be dropped: ATAT. 
+INFO  10:13:30,190 ProgressMeter - Pf3D7_08_v3:138668        8063420.0     3.0 m           22.0 s       35.2%     8.5 m       5.5 m 
+WARN  10:13:37,011 HaplotypeCallerGenotypingEngine - location Pf3D7_08_v3:515363: too many alternative alleles found (4) larger than the maximum requested with -maxAltAlleles (3), the following will be dropped: TTATATATATATA. 
+WARN  10:13:38,677 HaplotypeCallerGenotypingEngine - location Pf3D7_08_v3:534884: too many alternative alleles found (4) larger than the maximum requested with -maxAltAlleles (3), the following will be dropped: ATTTTTTTTTTTTTT. 
+WARN  10:13:39,613 HaplotypeCallerGenotypingEngine - location Pf3D7_08_v3:541380: too many alternative alleles found (4) larger than the maximum requested with -maxAltAlleles (3), the following will be dropped: AAT. 
+WARN  10:13:39,614 HaplotypeCallerGenotypingEngine - location Pf3D7_08_v3:541381-541385: too many alternative alleles found (4) larger than the maximum requested with -maxAltAlleles (3), the following will be dropped: A. 
+WARN  10:13:52,551 HaplotypeCallerGenotypingEngine - location Pf3D7_08_v3:1024531-1024539: too many alternative alleles found (4) larger than the maximum requested with -maxAltAlleles (3), the following will be dropped: TTATATA. 
+INFO  10:14:00,191 ProgressMeter - Pf3D7_08_v3:1025247        8063420.0     3.5 m           26.0 s       39.0%     9.0 m       5.5 m 
+INFO  10:14:30,193 ProgressMeter - Pf3D7_08_v3:1025660        8063420.0     4.0 m           29.0 s       39.0%    10.3 m       6.3 m 
+WARN  10:14:33,339 HaplotypeCallerGenotypingEngine - location Pf3D7_08_v3:1025302: too many alternative alleles found (5) larger than the maximum requested with -maxAltAlleles (3), the following will be dropped: ATAT, AT. 
+WARN  10:14:33,350 HaplotypeCallerGenotypingEngine - location Pf3D7_08_v3:1025361: too many alternative alleles found (9) larger than the maximum requested with -maxAltAlleles (3), the following will be dropped: TTATATATATA, TATATA, TATATATATA, TATATATA, TA, TATA. 
+WARN  10:14:38,171 HaplotypeCallerGenotypingEngine - location Pf3D7_08_v3:1025734: too many alternative alleles found (5) larger than the maximum requested with -maxAltAlleles (3), the following will be dropped: TAA, TA. 
+WARN  10:14:38,176 HaplotypeCallerGenotypingEngine - location Pf3D7_08_v3:1025736: too many alternative alleles found (10) larger than the maximum requested with -maxAltAlleles (3), the following will be dropped: TAAAAAA, TAAAAAAAAAAA, TAAAAAAAAAA, TA, TAAAAAAA, TAAAAA, TAA. 
+WARN  10:14:38,182 HaplotypeCallerGenotypingEngine - location Pf3D7_08_v3:1025740-1025741: too many alternative alleles found (15) larger than the maximum requested with -maxAltAlleles (3), the following will be dropped: TAAAAAA, TAAAAAAAA, TAAAAAAAAAAA, AA, T, TAAAAAAAAAA, TAAAAAAA, TAAAAA, TAAAAAAAAA, TAAAAAAAAAAAAAAA, TAAAAAAAAAAAAAAAA, TAAAAAAAAAAAA. 
+INFO  10:15:00,194 ProgressMeter - Pf3D7_09_v3:446312        9536225.0     4.5 m           28.0 s       42.8%    10.5 m       6.0 m 
+WARN  10:15:00,210 HaplotypeCallerGenotypingEngine - location Pf3D7_09_v3:445954: too many alternative alleles found (4) larger than the maximum requested with -maxAltAlleles (3), the following will be dropped: ATTTTTTT. 
+WARN  10:15:12,962 HaplotypeCallerGenotypingEngine - location Pf3D7_09_v3:956356: too many alternative alleles found (5) larger than the maximum requested with -maxAltAlleles (3), the following will be dropped: GATATATATAT, GAT. 
+WARN  10:15:14,490 HaplotypeCallerGenotypingEngine - location Pf3D7_09_v3:957415-957418: too many alternative alleles found (4) larger than the maximum requested with -maxAltAlleles (3), the following will be dropped: AAAA. 
+WARN  10:15:14,491 HaplotypeCallerGenotypingEngine - location Pf3D7_09_v3:957423-957427: too many alternative alleles found (4) larger than the maximum requested with -maxAltAlleles (3), the following will be dropped: ATAAAT. 
+WARN  10:15:14,494 HaplotypeCallerGenotypingEngine - location Pf3D7_09_v3:957425: too many alternative alleles found (9) larger than the maximum requested with -maxAltAlleles (3), the following will be dropped: AATAT, AAT, ATATATAT, AATATAT, AT, AATATATAT. 
+WARN  10:15:17,529 HaplotypeCallerGenotypingEngine - location Pf3D7_09_v3:1060113: too many alternative alleles found (5) larger than the maximum requested with -maxAltAlleles (3), the following will be dropped: GTTTTT, T. 
+INFO  10:15:30,195 ProgressMeter - Pf3D7_10_v3:270263       1.107796E7     5.0 m           27.0 s       48.6%    10.3 m       5.3 m 
+WARN  10:15:32,092 HaplotypeCallerGenotypingEngine - location Pf3D7_10_v3:412899: too many alternative alleles found (4) larger than the maximum requested with -maxAltAlleles (3), the following will be dropped: AATATATATAT. 
+WARN  10:15:38,943 HaplotypeCallerGenotypingEngine - location Pf3D7_10_v3:783066: too many alternative alleles found (4) larger than the maximum requested with -maxAltAlleles (3), the following will be dropped: ATTT. 
+INFO  10:16:00,196 ProgressMeter - Pf3D7_10_v3:1216807       1.107796E7     5.5 m           29.0 s       52.7%    10.4 m       4.9 m 
+WARN  10:16:19,056 HaplotypeCallerGenotypingEngine - location Pf3D7_11_v3:982385: too many alternative alleles found (4) larger than the maximum requested with -maxAltAlleles (3), the following will be dropped: TTATATATATATA. 
+WARN  10:16:19,491 HaplotypeCallerGenotypingEngine - location Pf3D7_11_v3:989970: too many alternative alleles found (4) larger than the maximum requested with -maxAltAlleles (3), the following will be dropped: AATATATATATATAT. 
+WARN  10:16:22,275 HaplotypeCallerGenotypingEngine - location Pf3D7_11_v3:1129913: too many alternative alleles found (4) larger than the maximum requested with -maxAltAlleles (3), the following will be dropped: TTATG. 
+INFO  10:16:30,197 ProgressMeter - Pf3D7_11_v3:1418648      1.2765616E7     6.0 m           28.0 s       60.8%     9.9 m       3.9 m 
+WARN  10:16:33,568 HaplotypeCallerGenotypingEngine - location Pf3D7_11_v3:1418340: too many alternative alleles found (10) larger than the maximum requested with -maxAltAlleles (3), the following will be dropped: TAAAAAAAA, A, TAAAA, TA, TAA, TAAAAAAAAA, TAAA. 
+WARN  10:16:45,682 HaplotypeCallerGenotypingEngine - location Pf3D7_11_v3:1547730-1547739: too many alternative alleles found (4) larger than the maximum requested with -maxAltAlleles (3), the following will be dropped: TTATATA. 
+INFO  10:17:00,198 ProgressMeter - Pf3D7_12_v3:185424      1.4803956E7     6.5 m           26.0 s       64.2%    10.1 m       3.6 m 
+WARN  10:17:18,740 HaplotypeCallerGenotypingEngine - location Pf3D7_12_v3:904127: too many alternative alleles found (5) larger than the maximum requested with -maxAltAlleles (3), the following will be dropped: AATAT, AAT. 
+WARN  10:17:23,771 HaplotypeCallerGenotypingEngine - location Pf3D7_12_v3:1039330: too many alternative alleles found (4) larger than the maximum requested with -maxAltAlleles (3), the following will be dropped: ATT. 
+INFO  10:17:30,199 ProgressMeter - Pf3D7_12_v3:1361218      1.4803956E7     7.0 m           28.0 s       69.3%    10.1 m       3.1 m 
+WARN  10:17:32,386 HaplotypeCallerGenotypingEngine - location Pf3D7_12_v3:1504226: too many alternative alleles found (4) larger than the maximum requested with -maxAltAlleles (3), the following will be dropped: T. 
+WARN  10:17:32,733 HaplotypeCallerGenotypingEngine - location Pf3D7_12_v3:1506307: too many alternative alleles found (4) larger than the maximum requested with -maxAltAlleles (3), the following will be dropped: AATATATATATAT. 
+INFO  10:18:00,200 ProgressMeter - Pf3D7_13_v3:717893       1.707545E7     7.5 m           26.0 s       76.3%     9.8 m       2.3 m 
+WARN  10:18:11,378 HaplotypeCallerGenotypingEngine - location Pf3D7_13_v3:999497-999498: too many alternative alleles found (4) larger than the maximum requested with -maxAltAlleles (3), the following will be dropped: A. 
+WARN  10:18:25,901 HaplotypeCallerGenotypingEngine - location Pf3D7_13_v3:1807848: too many alternative alleles found (4) larger than the maximum requested with -maxAltAlleles (3), the following will be dropped: CATATAT. 
+INFO  10:18:30,201 ProgressMeter - Pf3D7_13_v3:1960726       1.707545E7     8.0 m           28.0 s       81.6%     9.8 m     108.0 s 
+WARN  10:18:47,315 HaplotypeCallerGenotypingEngine - location Pf3D7_14_v3:99363: too many alternative alleles found (4) larger than the maximum requested with -maxAltAlleles (3), the following will be dropped: ATTTTTTT. 
+WARN  10:18:57,305 HaplotypeCallerGenotypingEngine - location Pf3D7_14_v3:323687: too many alternative alleles found (4) larger than the maximum requested with -maxAltAlleles (3), the following will be dropped: TATATATATATATATATATATATATATATATATAA. 
+WARN  10:18:57,307 HaplotypeCallerGenotypingEngine - location Pf3D7_14_v3:323703: too many alternative alleles found (4) larger than the maximum requested with -maxAltAlleles (3), the following will be dropped: AATATATATATATAAAT. 
+INFO  10:19:00,202 ProgressMeter - Pf3D7_14_v3:324588      2.0000686E7     8.5 m           25.0 s       87.1%     9.8 m      75.0 s 
+WARN  10:19:02,233 HaplotypeCallerGenotypingEngine - location Pf3D7_14_v3:324314: too many alternative alleles found (6) larger than the maximum requested with -maxAltAlleles (3), the following will be dropped: ATTT, ATT, ATTTT. 
+WARN  10:19:06,487 HaplotypeCallerGenotypingEngine - location Pf3D7_14_v3:325047: too many alternative alleles found (9) larger than the maximum requested with -maxAltAlleles (3), the following will be dropped: ATTTTTTTATTTTTTTTTTTTTTTTTATTTT, ATTTTTTTATTTTTTTTTTTTTTTTTTTTTT, ATTTTTTTATTTTTTTTTT, ATTTTTTTATTTTTTTTTTTTTTTTTATTTTTTTTTTTATTTTTTTTTTTTTTTTTT, ATTTTTTTATTTTTTTTTTTTTTTTTATTTTTTTTTTTATTTTTTTTTTTTTTTTTTTTTT, ATTTTTTTATTTTTTTTTTTTTTTTTATTTTTTTTTTTATTTTTTTTTTTATTTTTTTTTTTTTTTTTTTTTT. 
+WARN  10:19:06,489 HaplotypeCallerGenotypingEngine - location Pf3D7_14_v3:325055: too many alternative alleles found (9) larger than the maximum requested with -maxAltAlleles (3), the following will be dropped: ATTTTTTTTTTTTTTTTTTTTTTTTTTTTTATTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT, ATTTTTTTTTTTTTTTTTATTTTTTTTTTTATTTTTTTTTTTATTTTTTTTTTTTTTTTTTTTTTTTTATTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT, ATTTTTTTTTTTTTTTTTATTTTTTTTTTTATTTTTTTTTTTATTTTTTTTTTTTTTTTTATTTTTTTTTTTTTTTTTTTTTTTATTTTTTTTTTTTTTTT, ATTTTTTTTTTTTTTTTTATTTTTTTTTTTTTTTTTTTTTTTATTTTTTTTTTTTTTTT, ATTTTTTTTTTTTTTTTTATTTTTTTTTTTATTTTTTTTTTTTTTTTTTTTTTTTTATTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT, ATTTTTTTTTTTTTTTTTATTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT.... 
+WARN  10:19:06,492 HaplotypeCallerGenotypingEngine - location Pf3D7_14_v3:325060: too many alternative alleles found (7) larger than the maximum requested with -maxAltAlleles (3), the following will be dropped: TTTTTTTTTTTTTA, TTTTTTTTTTTTTATTTTTTTTTTTATTTTTTTTTTTTTTTTTTTTTTTTTA, TTTTTTTTTTTTTATTTTTTTTTTTA, TTTTTTTTTTTTTTTTTTTTTTTTTA. 
+WARN  10:19:06,493 HaplotypeCallerGenotypingEngine - location Pf3D7_14_v3:325064: too many alternative alleles found (7) larger than the maximum requested with -maxAltAlleles (3), the following will be dropped: TTTTTTTTTATTTTTTTTTTTATTTTTTTTTTTTTTTTTTTTTTTTTA, TTTTTTTTTTTTTTTTTTTTTA, TTTTTTTTTATTTTTTTTTTTA, TTTTTTTTTA. 
+WARN  10:19:06,498 HaplotypeCallerGenotypingEngine - location Pf3D7_14_v3:325080: too many alternative alleles found (4) larger than the maximum requested with -maxAltAlleles (3), the following will be dropped: TTTTTATTTTTTTA. 
+WARN  10:19:06,500 HaplotypeCallerGenotypingEngine - location Pf3D7_14_v3:325081: too many alternative alleles found (4) larger than the maximum requested with -maxAltAlleles (3), the following will be dropped: TTTTATTTTTTTA. 
+WARN  10:19:06,504 HaplotypeCallerGenotypingEngine - location Pf3D7_14_v3:325102: too many alternative alleles found (10) larger than the maximum requested with -maxAltAlleles (3), the following will be dropped: ATTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTATTT, ATTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTATTTTTTTTTTTTTT, ATTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT, ATTTTTTTATTTTTTTTTTTTTTTTTTTTAT, ATTTTTTTTTTTTTTTTTATTT, AT, ATTTTTTTTTTTTTATTTTTTTTTTTTTT. 
+WARN  10:19:11,109 HaplotypeCallerGenotypingEngine - location Pf3D7_14_v3:352251: too many alternative alleles found (5) larger than the maximum requested with -maxAltAlleles (3), the following will be dropped: AAT, T. 
+WARN  10:19:15,855 HaplotypeCallerGenotypingEngine - location Pf3D7_14_v3:523208: too many alternative alleles found (4) larger than the maximum requested with -maxAltAlleles (3), the following will be dropped: AATAT. 
+WARN  10:19:23,570 HaplotypeCallerGenotypingEngine - location Pf3D7_14_v3:823828: too many alternative alleles found (4) larger than the maximum requested with -maxAltAlleles (3), the following will be dropped: CATATAT. 
+INFO  10:19:30,203 ProgressMeter - Pf3D7_14_v3:951383      2.0000686E7     9.0 m           27.0 s       89.8%    10.0 m      61.0 s 
+WARN  10:19:43,286 HaplotypeCallerGenotypingEngine - location Pf3D7_14_v3:1467135-1467137: too many alternative alleles found (4) larger than the maximum requested with -maxAltAlleles (3), the following will be dropped: A. 
+WARN  10:19:46,775 HaplotypeCallerGenotypingEngine - location Pf3D7_14_v3:1607334: too many alternative alleles found (4) larger than the maximum requested with -maxAltAlleles (3), the following will be dropped: AATATAT. 
+WARN  10:19:52,478 HaplotypeCallerGenotypingEngine - location Pf3D7_14_v3:1612346: too many alternative alleles found (4) larger than the maximum requested with -maxAltAlleles (3), the following will be dropped: CATATATATATATATATATATATATATAT. 
+WARN  10:19:54,069 HaplotypeCallerGenotypingEngine - location Pf3D7_14_v3:1613097: too many alternative alleles found (4) larger than the maximum requested with -maxAltAlleles (3), the following will be dropped: TTA. 
+WARN  10:19:56,195 HaplotypeCallerGenotypingEngine - location Pf3D7_14_v3:1614204-1614205: too many alternative alleles found (4) larger than the maximum requested with -maxAltAlleles (3), the following will be dropped: AA. 
+WARN  10:19:57,137 HaplotypeCallerGenotypingEngine - location Pf3D7_14_v3:1614776: too many alternative alleles found (9) larger than the maximum requested with -maxAltAlleles (3), the following will be dropped: AAT, AT, ATATAT, AAATATAT, ATAT, AAAT. 
+WARN  10:19:57,587 HaplotypeCallerGenotypingEngine - location Pf3D7_14_v3:1615119-1615120: too many alternative alleles found (4) larger than the maximum requested with -maxAltAlleles (3), the following will be dropped: TA. 
+INFO  10:20:00,204 ProgressMeter - Pf3D7_14_v3:1619821      2.0000686E7     9.5 m           28.0 s       92.7%    10.3 m      45.0 s 
+WARN  10:20:01,360 HaplotypeCallerGenotypingEngine - location Pf3D7_14_v3:1619539-1619540: too many alternative alleles found (8) larger than the maximum requested with -maxAltAlleles (3), the following will be dropped: A, TT, ATTT, ATATATTT, ATT. 
+WARN  10:20:05,013 HaplotypeCallerGenotypingEngine - location Pf3D7_14_v3:1623948-1623949: too many alternative alleles found (7) larger than the maximum requested with -maxAltAlleles (3), the following will be dropped: TAA, TAAAA, AA, T. 
+WARN  10:20:10,421 HaplotypeCallerGenotypingEngine - location Pf3D7_14_v3:1643050: too many alternative alleles found (6) larger than the maximum requested with -maxAltAlleles (3), the following will be dropped: CATATATATATATAT, CATATATATATATATAT, CACATATATATATATATAT. 
+INFO  10:20:30,294 ProgressMeter - Pf3D7_14_v3:2907686      2.0000686E7    10.0 m           30.0 s       98.2%    10.2 m      11.0 s 
+INFO  10:20:36,366 VectorLoglessPairHMM - Time spent in setup for JNI call : 0.330593429 
+INFO  10:20:36,366 PairHMM - Total compute time in PairHMM computeLikelihoods() : 162.11309475000002 
+INFO  10:20:36,367 HaplotypeCaller - Ran local assembly on 117876 active regions 
+INFO  10:20:36,458 ProgressMeter -            done      2.3332839E7    10.1 m           25.0 s      100.0%    10.1 m       0.0 s 
+INFO  10:20:36,459 ProgressMeter - Total runtime 606.28 secs, 10.10 min, 0.17 hours 
+INFO  10:20:36,460 MicroScheduler - 3234842 reads were filtered out during the traversal out of approximately 5472567 total reads (59.11%) 
+INFO  10:20:36,462 MicroScheduler -   -> 0 reads (0.00% of total) failing BadCigarFilter 
+INFO  10:20:36,463 MicroScheduler -   -> 1486589 reads (27.16% of total) failing DuplicateReadFilter 
+INFO  10:20:36,464 MicroScheduler -   -> 0 reads (0.00% of total) failing FailsVendorQualityCheckFilter 
+INFO  10:20:36,465 MicroScheduler -   -> 1695015 reads (30.97% of total) failing HCMappingQualityFilter 
+INFO  10:20:36,466 MicroScheduler -   -> 0 reads (0.00% of total) failing MalformedReadFilter 
+INFO  10:20:36,468 MicroScheduler -   -> 0 reads (0.00% of total) failing MappingQualityUnavailableFilter 
+INFO  10:20:36,468 MicroScheduler -   -> 53238 reads (0.97% of total) failing NotPrimaryAlignmentFilter 
+INFO  10:20:36,469 MicroScheduler -   -> 0 reads (0.00% of total) failing UnmappedReadFilter 
+------------------------------------------------------------------------------------------
+Done. There were 68 WARN messages, the first 10 are repeated below.
+WARN  10:10:29,708 GATKVCFUtils - Naming your output file using the .g.vcf extension will automatically set the appropriate values  for --variant_index_type and --variant_index_parameter 
+WARN  10:10:29,709 GATKVCFUtils - Creating Tabix index for /g/data/pq84/malaria/Pf_Malaysia/outputs/04_Variant_calling/haplotype_call/ERR9937143.dupmarked.realigned.recal.g.vcf.gz, ignoring user-specified index type and parameter 
+WARN  10:10:30,208 InbreedingCoeff - Annotation will not be calculated. InbreedingCoeff requires at least 10 unrelated samples. 
+WARN  10:10:30,872 HaplotypeScore - Annotation will not be calculated, must be called from UnifiedGenotyper, not HaplotypeCaller 
+WARN  10:10:31,594 AnnotationUtils - Annotation will not be calculated, genotype is not called 
+WARN  10:11:28,182 HaplotypeCallerGenotypingEngine - location Pf3D7_04_v3:363756: too many alternative alleles found (4) larger than the maximum requested with -maxAltAlleles (3), the following will be dropped: AATATATAT. 
+WARN  10:11:31,088 HaplotypeCallerGenotypingEngine - location Pf3D7_04_v3:401288: too many alternative alleles found (4) larger than the maximum requested with -maxAltAlleles (3), the following will be dropped: TTATATATATATA. 
+WARN  10:11:31,617 HaplotypeCallerGenotypingEngine - location Pf3D7_04_v3:403411: too many alternative alleles found (4) larger than the maximum requested with -maxAltAlleles (3), the following will be dropped: AATATATATATATATATATAT. 
+WARN  10:12:04,379 HaplotypeCallerGenotypingEngine - location Pf3D7_05_v3:797617: too many alternative alleles found (4) larger than the maximum requested with -maxAltAlleles (3), the following will be dropped: ATTTTTT. 
+WARN  10:12:10,598 HaplotypeCallerGenotypingEngine - location Pf3D7_05_v3:1034069: too many alternative alleles found (4) larger than the maximum requested with -maxAltAlleles (3), the following will be dropped: TTTTTTTTTTTTTTTTTTTTTTTTTTTA. 
+------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------
+FINISHED
+---------------------------------------------------------------------------------------------------------------------
+
+======================================================================================
+                  Resource Usage on 2022-09-06 10:20:39:
+   Job Id:             57216223.gadi-pbs
+   Project:            pq84
+   Exit Status:        0
+   Service Units:      3.38
+   NCPUs Requested:    10                     NCPUs Used: 10              
+                                           CPU Time Used: 00:14:12                                   
+   Memory Requested:   20.0GB                Memory Used: 3.02GB          
+   Walltime requested: 12:00:00            Walltime Used: 00:10:09        
+   JobFS requested:    100.0MB                JobFS used: 0B              
+======================================================================================

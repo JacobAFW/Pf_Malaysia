@@ -1,0 +1,89 @@
+---------------------------------------
+PBS: Job identifier is 57216192.gadi-pbs
+PBS: Job name is Haplotype_call
+---------------------------------------
+Define paths and load modules
+---------------------------------------
+---------------------------------------
+Change to working directory and set env variables
+---------------------------------------------------------------------------------------------------------------------
+GATK
+---------------------------------------------------------------------------------------------------------------------
+INFO  10:10:30,154 HelpFormatter - -------------------------------------------------------------------------------------------- 
+INFO  10:10:30,155 HelpFormatter - The Genome Analysis Toolkit (GATK) v3.8-1-0-gf15c1c3ef, Compiled 2018/02/19 05:43:50 
+INFO  10:10:30,155 HelpFormatter - Copyright (c) 2010-2016 The Broad Institute 
+INFO  10:10:30,155 HelpFormatter - For support and documentation go to https://software.broadinstitute.org/gatk 
+INFO  10:10:30,155 HelpFormatter - [Tue Sep 06 10:10:30 GMT+10:00 2022] Executing on Linux 4.18.0-372.13.1.el8.nci.x86_64 amd64 
+INFO  10:10:30,155 HelpFormatter - OpenJDK 64-Bit Server VM 1.8.0_40-b25 
+INFO  10:10:30,158 HelpFormatter - Program Args: -T HaplotypeCaller -ERC GVCF --minPruning 3 --maxNumHaplotypesInPopulation 200 --max_alternate_alleles 3 --variant_index_type LINEAR --variant_index_parameter 128000 -contamination 0.0 -G Standard -R /g/data/pq84/malaria/Pf_Malaysia/data/ref_genomes/PlasmoDB-59_Pfalciparum3D7_Genome.fasta -I /g/data/pq84/malaria/Pf_Malaysia/outputs/03_Bam-pre/final_bam/ERR9907913.dupmarked.realigned.recal.bam -o /g/data/pq84/malaria/Pf_Malaysia/outputs/04_Variant_calling/haplotype_call/ERR9907913.dupmarked.realigned.recal.g.vcf.gz 
+INFO  10:10:30,167 HelpFormatter - Executing as jw1542@gadi-cpu-clx-1548.gadi.nci.org.au on Linux 4.18.0-372.13.1.el8.nci.x86_64 amd64; OpenJDK 64-Bit Server VM 1.8.0_40-b25. 
+INFO  10:10:30,167 HelpFormatter - Date/Time: 2022/09/06 10:10:30 
+INFO  10:10:30,167 HelpFormatter - -------------------------------------------------------------------------------------------- 
+INFO  10:10:30,167 HelpFormatter - -------------------------------------------------------------------------------------------- 
+WARN  10:10:30,170 GATKVCFUtils - Naming your output file using the .g.vcf extension will automatically set the appropriate values  for --variant_index_type and --variant_index_parameter 
+WARN  10:10:30,171 GATKVCFUtils - Creating Tabix index for /g/data/pq84/malaria/Pf_Malaysia/outputs/04_Variant_calling/haplotype_call/ERR9907913.dupmarked.realigned.recal.g.vcf.gz, ignoring user-specified index type and parameter 
+INFO  10:10:30,188 NativeLibraryLoader - Loading libgkl_compression.so from jar:file:/g/data/pq84/bin/GenomeAnalysisTK-3.8-1-0/GenomeAnalysisTK.jar!/com/intel/gkl/native/libgkl_compression.so 
+INFO  10:10:30,209 GenomeAnalysisEngine - Deflater: IntelDeflater 
+INFO  10:10:30,209 GenomeAnalysisEngine - Inflater: IntelInflater 
+INFO  10:10:30,210 GenomeAnalysisEngine - Strictness is SILENT 
+INFO  10:10:30,312 GenomeAnalysisEngine - Downsampling Settings: Method: BY_SAMPLE, Target Coverage: 500 
+INFO  10:10:30,316 SAMDataSource$SAMReaders - Initializing SAMRecords in serial 
+INFO  10:10:30,435 SAMDataSource$SAMReaders - Done initializing BAM readers: total time 0.12 
+INFO  10:10:30,481 HCMappingQualityFilter - Filtering out reads with MAPQ < 20 
+INFO  10:10:30,559 GenomeAnalysisEngine - Preparing for traversal over 1 BAM files 
+INFO  10:10:30,570 GenomeAnalysisEngine - Done preparing for traversal 
+INFO  10:10:30,570 ProgressMeter - [INITIALIZATION COMPLETE; STARTING PROCESSING] 
+INFO  10:10:30,570 ProgressMeter -                 |      processed |    time |         per 1M |           |   total | remaining 
+INFO  10:10:30,570 ProgressMeter -        Location | active regions | elapsed | active regions | completed | runtime |   runtime 
+INFO  10:10:30,571 HaplotypeCaller - Standard Emitting and Calling confidence set to 0.0 for reference-model confidence output 
+INFO  10:10:30,571 HaplotypeCaller - All sites annotated with PLs forced to true for reference-model confidence output 
+WARN  10:10:30,597 InbreedingCoeff - Annotation will not be calculated. InbreedingCoeff requires at least 10 unrelated samples. 
+INFO  10:10:34,365 HaplotypeCaller - Using global mismapping rate of 45 => -4.5 in log10 likelihood units 
+INFO  10:10:36,735 NativeLibraryLoader - Loading libgkl_utils.so from jar:file:/g/data/pq84/bin/GenomeAnalysisTK-3.8-1-0/GenomeAnalysisTK.jar!/com/intel/gkl/native/libgkl_utils.so 
+INFO  10:10:36,736 NativeLibraryLoader - Loading libgkl_pairhmm_omp.so from jar:file:/g/data/pq84/bin/GenomeAnalysisTK-3.8-1-0/GenomeAnalysisTK.jar!/com/intel/gkl/native/libgkl_pairhmm_omp.so 
+INFO  10:10:36,762 VectorLoglessPairHMM - Using OpenMP multi-threaded AVX-accelerated native PairHMM implementation 
+INFO  10:10:36,763 IntelPairHmm - Using CPU-supported AVX-512 instructions 
+WARN  10:10:36,763 IntelPairHmm - Flush-to-zero (FTZ) is enabled when running PairHMM 
+INFO  10:10:36,763 IntelPairHmm - Available threads: 1 
+INFO  10:10:36,763 IntelPairHmm - Requested threads: 1 
+WARN  10:10:36,788 AnnotationUtils - Annotation will not be calculated, genotype is not called 
+WARN  10:10:36,789 HaplotypeScore - Annotation will not be calculated, must be called from UnifiedGenotyper, not HaplotypeCaller 
+INFO  10:11:00,596 ProgressMeter - Pf3D7_10_v3:1260697       1.107796E7    30.0 s            2.0 s       52.9%    56.0 s      26.0 s 
+INFO  10:11:16,954 VectorLoglessPairHMM - Time spent in setup for JNI call : 0.001045196 
+INFO  10:11:16,955 PairHMM - Total compute time in PairHMM computeLikelihoods() : 0.028088373000000003 
+INFO  10:11:16,955 HaplotypeCaller - Ran local assembly on 80062 active regions 
+INFO  10:11:16,983 ProgressMeter -            done      2.3332839E7    46.0 s            1.0 s      100.0%    46.0 s       0.0 s 
+INFO  10:11:16,984 ProgressMeter - Total runtime 46.41 secs, 0.77 min, 0.01 hours 
+INFO  10:11:16,984 MicroScheduler - 2663917 reads were filtered out during the traversal out of approximately 3022068 total reads (88.15%) 
+INFO  10:11:16,985 MicroScheduler -   -> 0 reads (0.00% of total) failing BadCigarFilter 
+INFO  10:11:16,985 MicroScheduler -   -> 682324 reads (22.58% of total) failing DuplicateReadFilter 
+INFO  10:11:16,985 MicroScheduler -   -> 0 reads (0.00% of total) failing FailsVendorQualityCheckFilter 
+INFO  10:11:16,986 MicroScheduler -   -> 1971750 reads (65.25% of total) failing HCMappingQualityFilter 
+INFO  10:11:16,986 MicroScheduler -   -> 0 reads (0.00% of total) failing MalformedReadFilter 
+INFO  10:11:16,986 MicroScheduler -   -> 0 reads (0.00% of total) failing MappingQualityUnavailableFilter 
+INFO  10:11:16,987 MicroScheduler -   -> 9843 reads (0.33% of total) failing NotPrimaryAlignmentFilter 
+INFO  10:11:16,987 MicroScheduler -   -> 0 reads (0.00% of total) failing UnmappedReadFilter 
+------------------------------------------------------------------------------------------
+Done. There were 5 WARN messages, the first 5 are repeated below.
+WARN  10:10:30,170 GATKVCFUtils - Naming your output file using the .g.vcf extension will automatically set the appropriate values  for --variant_index_type and --variant_index_parameter 
+WARN  10:10:30,171 GATKVCFUtils - Creating Tabix index for /g/data/pq84/malaria/Pf_Malaysia/outputs/04_Variant_calling/haplotype_call/ERR9907913.dupmarked.realigned.recal.g.vcf.gz, ignoring user-specified index type and parameter 
+WARN  10:10:30,597 InbreedingCoeff - Annotation will not be calculated. InbreedingCoeff requires at least 10 unrelated samples. 
+WARN  10:10:36,788 AnnotationUtils - Annotation will not be calculated, genotype is not called 
+WARN  10:10:36,789 HaplotypeScore - Annotation will not be calculated, must be called from UnifiedGenotyper, not HaplotypeCaller 
+------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------
+FINISHED
+---------------------------------------------------------------------------------------------------------------------
+
+======================================================================================
+                  Resource Usage on 2022-09-06 10:11:23:
+   Job Id:             57216192.gadi-pbs
+   Project:            pq84
+   Exit Status:        0
+   Service Units:      0.27
+   NCPUs Requested:    10                     NCPUs Used: 10              
+                                           CPU Time Used: 00:01:48                                   
+   Memory Requested:   20.0GB                Memory Used: 2.15GB          
+   Walltime requested: 12:00:00            Walltime Used: 00:00:49        
+   JobFS requested:    100.0MB                JobFS used: 0B              
+======================================================================================

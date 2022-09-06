@@ -1,0 +1,526 @@
+---------------------------------------
+PBS: Job identifier is 57131881.gadi-pbs
+PBS: Job name is Bam_pre-pro
+---------------------------------------
+Define paths and load modules
+---------------------------------------
+---------------------------------------
+Change to working directory and set env variables
+---------------------------------------
+Sort and Index bam files
+mkdir: cannot create directory 'sorted': File exists
+[bam_sort_core] merging from 10 files and 10 in-memory blocks...
+---------------------------------------
+MarkDuplicates
+INFO	2022-09-05 11:36:11	MarkDuplicates	
+
+********** NOTE: Picard's command line syntax is changing.
+**********
+********** For more information, please see:
+********** https://github.com/broadinstitute/picard/wiki/Command-Line-Syntax-Transition-For-Users-(Pre-Transition)
+**********
+********** The command line looks like this in the new syntax:
+**********
+**********    MarkDuplicates -AS TRUE -VALIDATION_STRINGENCY LENIENT -I /g/data/pq84/malaria/Pf_Malaysia/outputs/02_Mapping/sorted/ERR9907922.sorted.bam -O /g/data/pq84/malaria/Pf_Malaysia/outputs/03_Bam-pre/ERR9907922.dupmarked.bam -M /g/data/pq84/malaria/Pf_Malaysia/outputs/03_Bam-pre/ERR9907922_picard_metrics_file.txt
+**********
+
+
+11:36:11.552 INFO  NativeLibraryLoader - Loading libgkl_compression.so from jar:file:/g/data/pq84/bin/picard/build/libs/picard.jar!/com/intel/gkl/native/libgkl_compression.so
+[Mon Sep 05 11:36:11 GMT+10:00 2022] MarkDuplicates INPUT=[/g/data/pq84/malaria/Pf_Malaysia/outputs/02_Mapping/sorted/ERR9907922.sorted.bam] OUTPUT=/g/data/pq84/malaria/Pf_Malaysia/outputs/03_Bam-pre/ERR9907922.dupmarked.bam METRICS_FILE=/g/data/pq84/malaria/Pf_Malaysia/outputs/03_Bam-pre/ERR9907922_picard_metrics_file.txt ASSUME_SORTED=true VALIDATION_STRINGENCY=LENIENT    MAX_SEQUENCES_FOR_DISK_READ_ENDS_MAP=50000 MAX_FILE_HANDLES_FOR_READ_ENDS_MAP=8000 SORTING_COLLECTION_SIZE_RATIO=0.25 TAG_DUPLICATE_SET_MEMBERS=false REMOVE_SEQUENCING_DUPLICATES=false TAGGING_POLICY=DontTag CLEAR_DT=true DUPLEX_UMI=false ADD_PG_TAG_TO_READS=true REMOVE_DUPLICATES=false DUPLICATE_SCORING_STRATEGY=SUM_OF_BASE_QUALITIES PROGRAM_RECORD_ID=MarkDuplicates PROGRAM_GROUP_NAME=MarkDuplicates READ_NAME_REGEX=<optimized capture of last three ':' separated fields as numeric values> OPTICAL_DUPLICATE_PIXEL_DISTANCE=100 MAX_OPTICAL_DUPLICATE_SET_SIZE=300000 VERBOSITY=INFO QUIET=false COMPRESSION_LEVEL=5 MAX_RECORDS_IN_RAM=500000 CREATE_INDEX=false CREATE_MD5_FILE=false GA4GH_CLIENT_SECRETS=client_secrets.json USE_JDK_DEFLATER=false USE_JDK_INFLATER=false
+[Mon Sep 05 11:36:11 GMT+10:00 2022] Executing as jw1542@gadi-cpu-clx-0612.gadi.nci.org.au on Linux 4.18.0-372.13.1.el8.nci.x86_64 amd64; OpenJDK 64-Bit Server VM 1.8.0_40-b25; Deflater: Intel; Inflater: Intel; Provider GCS is not available; Picard version: 2.26.10-2-g4979a69-SNAPSHOT
+INFO	2022-09-05 11:36:11	MarkDuplicates	Start of doWork freeMemory: 2036048072; totalMemory: 2058354688; maxMemory: 28631367680
+INFO	2022-09-05 11:36:11	MarkDuplicates	Reading input file and constructing read end information.
+INFO	2022-09-05 11:36:11	MarkDuplicates	Will retain up to 103736839 data points before spilling to disk.
+Ignoring SAM validation error: ERROR::HEADER_RECORD_MISSING_REQUIRED_TAG:File /g/data/pq84/malaria/Pf_Malaysia/outputs/02_Mapping/sorted/ERR9907922.sorted.bam, Error parsing SAM header. @RG line missing SM tag. Line:
+@RG	ID:ERR9907922	PL:ILLUMINA
+WARNING	2022-09-05 11:36:12	AbstractOpticalDuplicateFinderCommandLineProgram	A field field parsed out of a read name was expected to contain an integer and did not. Read name: ERR9907922.455140. Cause: String 'ERR9907922.455140' did not start with a parsable number.
+INFO	2022-09-05 11:36:22	MarkDuplicates	Read     1,000,000 records.  Elapsed time: 00:00:09s.  Time for last 1,000,000:    9s.  Last read position: Pf3D7_03_v3:96,294
+INFO	2022-09-05 11:36:22	MarkDuplicates	Tracking 22936 as yet unmatched pairs. 1952 records in RAM.
+INFO	2022-09-05 11:36:29	MarkDuplicates	Read     2,000,000 records.  Elapsed time: 00:00:17s.  Time for last 1,000,000:    7s.  Last read position: Pf3D7_04_v3:333,070
+INFO	2022-09-05 11:36:29	MarkDuplicates	Tracking 33055 as yet unmatched pairs. 1723 records in RAM.
+INFO	2022-09-05 11:36:35	MarkDuplicates	Read     3,000,000 records.  Elapsed time: 00:00:23s.  Time for last 1,000,000:    5s.  Last read position: Pf3D7_05_v3:101,919
+INFO	2022-09-05 11:36:35	MarkDuplicates	Tracking 247156 as yet unmatched pairs. 202294 records in RAM.
+INFO	2022-09-05 11:36:46	MarkDuplicates	Read     4,000,000 records.  Elapsed time: 00:00:34s.  Time for last 1,000,000:   11s.  Last read position: Pf3D7_05_v3:695,781
+INFO	2022-09-05 11:36:46	MarkDuplicates	Tracking 59705 as yet unmatched pairs. 1254 records in RAM.
+INFO	2022-09-05 11:36:55	MarkDuplicates	Read     5,000,000 records.  Elapsed time: 00:00:43s.  Time for last 1,000,000:    8s.  Last read position: Pf3D7_06_v3:788,176
+INFO	2022-09-05 11:36:55	MarkDuplicates	Tracking 66261 as yet unmatched pairs. 3570 records in RAM.
+INFO	2022-09-05 11:36:59	MarkDuplicates	Read     6,000,000 records.  Elapsed time: 00:00:47s.  Time for last 1,000,000:    3s.  Last read position: Pf3D7_07_v3:492,773
+INFO	2022-09-05 11:36:59	MarkDuplicates	Tracking 70774 as yet unmatched pairs. 6088 records in RAM.
+INFO	2022-09-05 11:37:27	MarkDuplicates	Read     7,000,000 records.  Elapsed time: 00:01:15s.  Time for last 1,000,000:   28s.  Last read position: Pf3D7_08_v3:204,967
+INFO	2022-09-05 11:37:27	MarkDuplicates	Tracking 72628 as yet unmatched pairs. 8501 records in RAM.
+INFO	2022-09-05 11:37:31	MarkDuplicates	Read     8,000,000 records.  Elapsed time: 00:01:19s.  Time for last 1,000,000:    4s.  Last read position: Pf3D7_08_v3:1,221,608
+INFO	2022-09-05 11:37:31	MarkDuplicates	Tracking 77730 as yet unmatched pairs. 1689 records in RAM.
+INFO	2022-09-05 11:37:35	MarkDuplicates	Read     9,000,000 records.  Elapsed time: 00:01:23s.  Time for last 1,000,000:    4s.  Last read position: Pf3D7_09_v3:1,013,657
+INFO	2022-09-05 11:37:35	MarkDuplicates	Tracking 78608 as yet unmatched pairs. 7873 records in RAM.
+INFO	2022-09-05 11:37:44	MarkDuplicates	Read    10,000,000 records.  Elapsed time: 00:01:31s.  Time for last 1,000,000:    8s.  Last read position: Pf3D7_10_v3:510,120
+INFO	2022-09-05 11:37:44	MarkDuplicates	Tracking 74508 as yet unmatched pairs. 11170 records in RAM.
+INFO	2022-09-05 11:37:47	MarkDuplicates	Read    11,000,000 records.  Elapsed time: 00:01:35s.  Time for last 1,000,000:    3s.  Last read position: Pf3D7_10_v3:1,310,005
+INFO	2022-09-05 11:37:47	MarkDuplicates	Tracking 69749 as yet unmatched pairs. 2251 records in RAM.
+INFO	2022-09-05 11:37:51	MarkDuplicates	Read    12,000,000 records.  Elapsed time: 00:01:39s.  Time for last 1,000,000:    3s.  Last read position: Pf3D7_11_v3:1,367,077
+INFO	2022-09-05 11:37:51	MarkDuplicates	Tracking 64483 as yet unmatched pairs. 4794 records in RAM.
+INFO	2022-09-05 11:38:12	MarkDuplicates	Read    13,000,000 records.  Elapsed time: 00:02:00s.  Time for last 1,000,000:   21s.  Last read position: Pf3D7_12_v3:414,334
+INFO	2022-09-05 11:38:12	MarkDuplicates	Tracking 60428 as yet unmatched pairs. 18320 records in RAM.
+INFO	2022-09-05 11:38:15	MarkDuplicates	Read    14,000,000 records.  Elapsed time: 00:02:03s.  Time for last 1,000,000:    3s.  Last read position: Pf3D7_12_v3:1,418,747
+INFO	2022-09-05 11:38:15	MarkDuplicates	Tracking 54406 as yet unmatched pairs. 9802 records in RAM.
+INFO	2022-09-05 11:38:19	MarkDuplicates	Read    15,000,000 records.  Elapsed time: 00:02:07s.  Time for last 1,000,000:    3s.  Last read position: Pf3D7_13_v3:730,360
+INFO	2022-09-05 11:38:19	MarkDuplicates	Tracking 42865 as yet unmatched pairs. 15568 records in RAM.
+INFO	2022-09-05 11:38:43	MarkDuplicates	Read    16,000,000 records.  Elapsed time: 00:02:31s.  Time for last 1,000,000:   23s.  Last read position: Pf3D7_13_v3:1,842,231
+INFO	2022-09-05 11:38:43	MarkDuplicates	Tracking 38022 as yet unmatched pairs. 9328 records in RAM.
+INFO	2022-09-05 11:38:47	MarkDuplicates	Read    17,000,000 records.  Elapsed time: 00:02:35s.  Time for last 1,000,000:    3s.  Last read position: Pf3D7_13_v3:2,677,341
+INFO	2022-09-05 11:38:47	MarkDuplicates	Tracking 33072 as yet unmatched pairs. 3151 records in RAM.
+INFO	2022-09-05 11:38:56	MarkDuplicates	Read    18,000,000 records.  Elapsed time: 00:02:44s.  Time for last 1,000,000:    9s.  Last read position: Pf3D7_14_v3:817,653
+INFO	2022-09-05 11:38:56	MarkDuplicates	Tracking 37604 as yet unmatched pairs. 37574 records in RAM.
+INFO	2022-09-05 11:38:59	MarkDuplicates	Read    19,000,000 records.  Elapsed time: 00:02:47s.  Time for last 1,000,000:    3s.  Last read position: Pf3D7_14_v3:1,870,673
+INFO	2022-09-05 11:38:59	MarkDuplicates	Tracking 14548 as yet unmatched pairs. 14518 records in RAM.
+INFO	2022-09-05 11:39:03	MarkDuplicates	Read    20,000,000 records.  Elapsed time: 00:02:50s.  Time for last 1,000,000:    3s.  Last read position: Pf3D7_14_v3:3,053,604
+INFO	2022-09-05 11:39:03	MarkDuplicates	Tracking 18851 as yet unmatched pairs. 18820 records in RAM.
+INFO	2022-09-05 11:39:03	MarkDuplicates	Read 20126109 records. 0 pairs never matched.
+INFO	2022-09-05 11:39:19	MarkDuplicates	After buildSortedReadEndLists freeMemory: 10694891976; totalMemory: 13777240064; maxMemory: 28631367680
+INFO	2022-09-05 11:39:19	MarkDuplicates	Will retain up to 894730240 duplicate indices before spilling to disk.
+INFO	2022-09-05 11:39:20	MarkDuplicates	Traversing read pair information and detecting duplicates.
+INFO	2022-09-05 11:40:52	MarkDuplicates	Traversing fragment information and detecting duplicates.
+INFO	2022-09-05 11:40:53	MarkDuplicates	Sorting list of duplicate records.
+INFO	2022-09-05 11:40:56	MarkDuplicates	After generateDuplicateIndexes freeMemory: 16954652176; totalMemory: 24239931392; maxMemory: 28631367680
+INFO	2022-09-05 11:40:56	MarkDuplicates	Marking 4620898 records as duplicates.
+INFO	2022-09-05 11:40:56	MarkDuplicates	Found 0 optical duplicate clusters.
+Ignoring SAM validation error: ERROR::HEADER_RECORD_MISSING_REQUIRED_TAG:File /g/data/pq84/malaria/Pf_Malaysia/outputs/02_Mapping/sorted/ERR9907922.sorted.bam, Error parsing SAM header. @RG line missing SM tag. Line:
+@RG	ID:ERR9907922	PL:ILLUMINA
+INFO	2022-09-05 11:40:56	MarkDuplicates	Reads are assumed to be ordered by: coordinate
+INFO	2022-09-05 11:42:53	MarkDuplicates	Written    10,000,000 records.  Elapsed time: 00:01:56s.  Time for last 10,000,000:  116s.  Last read position: Pf3D7_10_v3:510,120
+INFO	2022-09-05 11:44:37	MarkDuplicates	Written    20,000,000 records.  Elapsed time: 00:03:40s.  Time for last 10,000,000:  104s.  Last read position: Pf3D7_14_v3:3,053,604
+INFO	2022-09-05 11:46:07	MarkDuplicates	Written    30,000,000 records.  Elapsed time: 00:05:11s.  Time for last 10,000,000:   90s.  Last read position: */*
+INFO	2022-09-05 11:46:42	MarkDuplicates	Writing complete. Closing input iterator.
+INFO	2022-09-05 11:46:42	MarkDuplicates	Duplicate Index cleanup.
+INFO	2022-09-05 11:46:42	MarkDuplicates	Getting Memory Stats.
+INFO	2022-09-05 11:46:42	MarkDuplicates	Before output close freeMemory: 24037677976; totalMemory: 24236785664; maxMemory: 28631367680
+INFO	2022-09-05 11:46:42	MarkDuplicates	Closed outputs. Getting more Memory Stats.
+INFO	2022-09-05 11:46:42	MarkDuplicates	After output close freeMemory: 23630830488; totalMemory: 23829938176; maxMemory: 28631367680
+[Mon Sep 05 11:46:42 GMT+10:00 2022] picard.sam.markduplicates.MarkDuplicates done. Elapsed time: 10.52 minutes.
+Runtime.totalMemory()=23829938176
+---------------------------------------
+Change header @RG and index
+---------------------------------------
+RealignerTargetCreator
+INFO  11:47:22,102 HelpFormatter - -------------------------------------------------------------------------------------------- 
+INFO  11:47:22,104 HelpFormatter - The Genome Analysis Toolkit (GATK) v3.8-1-0-gf15c1c3ef, Compiled 2018/02/19 05:43:50 
+INFO  11:47:22,104 HelpFormatter - Copyright (c) 2010-2016 The Broad Institute 
+INFO  11:47:22,104 HelpFormatter - For support and documentation go to https://software.broadinstitute.org/gatk 
+INFO  11:47:22,104 HelpFormatter - [Mon Sep 05 11:47:22 GMT+10:00 2022] Executing on Linux 4.18.0-372.13.1.el8.nci.x86_64 amd64 
+INFO  11:47:22,104 HelpFormatter - OpenJDK 64-Bit Server VM 1.8.0_40-b25 
+INFO  11:47:22,106 HelpFormatter - Program Args: -T RealignerTargetCreator -nt 10 -R /g/data/pq84/malaria/Pf_Malaysia/data/ref_genomes/PlasmoDB-59_Pfalciparum3D7_Genome.fasta -I /g/data/pq84/malaria/Pf_Malaysia/outputs/03_Bam-pre/ERR9907922.dupmarked.reheader.bam --intervals /g/data/pq84/malaria/Pf_Malaysia/data/ref_genomes/PlasmoDB-59_Pfalciparum3D7_Genome.fasta.bed -known /g/data/pq84/malaria/Pf_Malaysia/data/ref_genomes//1202-PF-MY-ANSTEY_genotyped_INDELs.vcf.gz -o /g/data/pq84/malaria/Pf_Malaysia/outputs/03_Bam-pre/ERR9907922.dupmarked.realigner.intervals 
+INFO  11:47:22,110 HelpFormatter - Executing as jw1542@gadi-cpu-clx-0612.gadi.nci.org.au on Linux 4.18.0-372.13.1.el8.nci.x86_64 amd64; OpenJDK 64-Bit Server VM 1.8.0_40-b25. 
+INFO  11:47:22,110 HelpFormatter - Date/Time: 2022/09/05 11:47:22 
+INFO  11:47:22,110 HelpFormatter - -------------------------------------------------------------------------------------------- 
+INFO  11:47:22,111 HelpFormatter - -------------------------------------------------------------------------------------------- 
+INFO  11:47:22,122 NativeLibraryLoader - Loading libgkl_compression.so from jar:file:/g/data/pq84/bin/GenomeAnalysisTK-3.8-1-0/GenomeAnalysisTK.jar!/com/intel/gkl/native/libgkl_compression.so 
+INFO  11:47:22,135 GenomeAnalysisEngine - Deflater: IntelDeflater 
+INFO  11:47:22,135 GenomeAnalysisEngine - Inflater: IntelInflater 
+INFO  11:47:22,136 GenomeAnalysisEngine - Strictness is SILENT 
+INFO  11:47:22,277 GenomeAnalysisEngine - Downsampling Settings: Method: BY_SAMPLE, Target Coverage: 1000 
+INFO  11:47:22,281 SAMDataSource$SAMReaders - Initializing SAMRecords in serial 
+INFO  11:47:22,295 SAMDataSource$SAMReaders - Done initializing BAM readers: total time 0.01 
+INFO  11:47:22,334 IntervalUtils - Processing 23332839 bp from intervals 
+WARN  11:47:22,337 IndexDictionaryUtils - Track known doesn't have a sequence dictionary built in, skipping dictionary validation 
+INFO  11:47:22,344 MicroScheduler - Running the GATK in parallel mode with 10 total threads, 1 CPU thread(s) for each of 10 data thread(s), of 96 processors available on this machine 
+INFO  11:47:22,384 GenomeAnalysisEngine - Preparing for traversal over 1 BAM files 
+INFO  11:47:22,403 GenomeAnalysisEngine - Done preparing for traversal 
+INFO  11:47:22,404 ProgressMeter - [INITIALIZATION COMPLETE; STARTING PROCESSING] 
+INFO  11:47:22,404 ProgressMeter -                 | processed |    time |    per 1M |           |   total | remaining 
+INFO  11:47:22,405 ProgressMeter -        Location |     sites | elapsed |     sites | completed | runtime |   runtime 
+INFO  11:47:22,412 SAMDataSource$SAMReaders - Initializing SAMRecords in serial 
+INFO  11:47:22,419 SAMDataSource$SAMReaders - Done initializing BAM readers: total time 0.01 
+INFO  11:47:22,420 SAMDataSource$SAMReaders - Initializing SAMRecords in serial 
+INFO  11:47:22,427 SAMDataSource$SAMReaders - Done initializing BAM readers: total time 0.01 
+INFO  11:47:22,428 SAMDataSource$SAMReaders - Initializing SAMRecords in serial 
+INFO  11:47:22,435 SAMDataSource$SAMReaders - Done initializing BAM readers: total time 0.01 
+INFO  11:47:22,436 SAMDataSource$SAMReaders - Initializing SAMRecords in serial 
+INFO  11:47:22,441 SAMDataSource$SAMReaders - Done initializing BAM readers: total time 0.00 
+INFO  11:47:22,442 SAMDataSource$SAMReaders - Initializing SAMRecords in serial 
+INFO  11:47:22,450 SAMDataSource$SAMReaders - Done initializing BAM readers: total time 0.01 
+INFO  11:47:22,451 SAMDataSource$SAMReaders - Initializing SAMRecords in serial 
+INFO  11:47:22,454 SAMDataSource$SAMReaders - Done initializing BAM readers: total time 0.00 
+INFO  11:47:22,459 SAMDataSource$SAMReaders - Initializing SAMRecords in serial 
+INFO  11:47:22,472 SAMDataSource$SAMReaders - Done initializing BAM readers: total time 0.01 
+INFO  11:47:22,473 SAMDataSource$SAMReaders - Initializing SAMRecords in serial 
+INFO  11:47:22,475 SAMDataSource$SAMReaders - Done initializing BAM readers: total time 0.00 
+INFO  11:47:22,476 SAMDataSource$SAMReaders - Initializing SAMRecords in serial 
+INFO  11:47:22,480 SAMDataSource$SAMReaders - Done initializing BAM readers: total time 0.00 
+INFO  11:47:52,407 ProgressMeter - Pf3D7_07_v3:1245585   7715941.0    30.0 s       3.0 s       33.7%    89.0 s      59.0 s 
+INFO  11:48:22,553 ProgressMeter - Pf3D7_12_v3:362949   1.5016948E7    60.0 s       4.0 s       65.0%    92.0 s      32.0 s 
+INFO  11:48:52,588 ProgressMeter - Pf3D7_14_v3:2016333   2.1868462E7    90.0 s       4.0 s       94.4%    95.0 s       5.0 s 
+INFO  11:48:58,481 ProgressMeter -            done   2.3332839E7    96.0 s       4.0 s      100.0%    96.0 s       0.0 s 
+INFO  11:48:58,481 ProgressMeter - Total runtime 96.08 secs, 1.60 min, 0.03 hours 
+INFO  11:48:58,481 MicroScheduler - 6416481 reads were filtered out during the traversal out of approximately 20263564 total reads (31.67%) 
+INFO  11:48:58,482 MicroScheduler -   -> 0 reads (0.00% of total) failing BadCigarFilter 
+INFO  11:48:58,482 MicroScheduler -   -> 299332 reads (1.48% of total) failing BadMateFilter 
+INFO  11:48:58,482 MicroScheduler -   -> 3935405 reads (19.42% of total) failing DuplicateReadFilter 
+INFO  11:48:58,482 MicroScheduler -   -> 0 reads (0.00% of total) failing FailsVendorQualityCheckFilter 
+INFO  11:48:58,482 MicroScheduler -   -> 0 reads (0.00% of total) failing MalformedReadFilter 
+INFO  11:48:58,482 MicroScheduler -   -> 0 reads (0.00% of total) failing MappingQualityUnavailableFilter 
+INFO  11:48:58,482 MicroScheduler -   -> 1612565 reads (7.96% of total) failing MappingQualityZeroFilter 
+INFO  11:48:58,482 MicroScheduler -   -> 569179 reads (2.81% of total) failing NotPrimaryAlignmentFilter 
+INFO  11:48:58,482 MicroScheduler -   -> 0 reads (0.00% of total) failing Platform454Filter 
+INFO  11:48:58,482 MicroScheduler -   -> 0 reads (0.00% of total) failing UnmappedReadFilter 
+------------------------------------------------------------------------------------------
+Done. There were 1 WARN messages, the first 1 are repeated below.
+WARN  11:47:22,337 IndexDictionaryUtils - Track known doesn't have a sequence dictionary built in, skipping dictionary validation 
+------------------------------------------------------------------------------------------
+---------------------------------------
+IndelRealigner
+INFO  11:48:59,811 HelpFormatter - -------------------------------------------------------------------------------------------- 
+INFO  11:48:59,812 HelpFormatter - The Genome Analysis Toolkit (GATK) v3.8-1-0-gf15c1c3ef, Compiled 2018/02/19 05:43:50 
+INFO  11:48:59,812 HelpFormatter - Copyright (c) 2010-2016 The Broad Institute 
+INFO  11:48:59,812 HelpFormatter - For support and documentation go to https://software.broadinstitute.org/gatk 
+INFO  11:48:59,813 HelpFormatter - [Mon Sep 05 11:48:59 GMT+10:00 2022] Executing on Linux 4.18.0-372.13.1.el8.nci.x86_64 amd64 
+INFO  11:48:59,813 HelpFormatter - OpenJDK 64-Bit Server VM 1.8.0_40-b25 
+INFO  11:48:59,815 HelpFormatter - Program Args: -T IndelRealigner --consensusDeterminationModel KNOWNS_ONLY -LOD 0.4 -R /g/data/pq84/malaria/Pf_Malaysia/data/ref_genomes/PlasmoDB-59_Pfalciparum3D7_Genome.fasta -I /g/data/pq84/malaria/Pf_Malaysia/outputs/03_Bam-pre/ERR9907922.dupmarked.reheader.bam --intervals /g/data/pq84/malaria/Pf_Malaysia/data/ref_genomes/PlasmoDB-59_Pfalciparum3D7_Genome.fasta.bed -known /g/data/pq84/malaria/Pf_Malaysia/data/ref_genomes//1202-PF-MY-ANSTEY_genotyped_INDELs.vcf.gz -targetIntervals /g/data/pq84/malaria/Pf_Malaysia/outputs/03_Bam-pre/ERR9907922.dupmarked.realigner.intervals -o /g/data/pq84/malaria/Pf_Malaysia/outputs/03_Bam-pre/ERR9907922.dupmarked.realigned.bam 
+INFO  11:48:59,819 HelpFormatter - Executing as jw1542@gadi-cpu-clx-0612.gadi.nci.org.au on Linux 4.18.0-372.13.1.el8.nci.x86_64 amd64; OpenJDK 64-Bit Server VM 1.8.0_40-b25. 
+INFO  11:48:59,820 HelpFormatter - Date/Time: 2022/09/05 11:48:59 
+INFO  11:48:59,820 HelpFormatter - -------------------------------------------------------------------------------------------- 
+INFO  11:48:59,820 HelpFormatter - -------------------------------------------------------------------------------------------- 
+INFO  11:48:59,891 NativeLibraryLoader - Loading libgkl_compression.so from jar:file:/g/data/pq84/bin/GenomeAnalysisTK-3.8-1-0/GenomeAnalysisTK.jar!/com/intel/gkl/native/libgkl_compression.so 
+INFO  11:48:59,905 GenomeAnalysisEngine - Deflater: IntelDeflater 
+INFO  11:48:59,905 GenomeAnalysisEngine - Inflater: IntelInflater 
+INFO  11:48:59,906 GenomeAnalysisEngine - Strictness is SILENT 
+INFO  11:48:59,995 GenomeAnalysisEngine - Downsampling Settings: No downsampling 
+INFO  11:48:59,999 SAMDataSource$SAMReaders - Initializing SAMRecords in serial 
+INFO  11:49:00,021 SAMDataSource$SAMReaders - Done initializing BAM readers: total time 0.02 
+INFO  11:49:00,051 IntervalUtils - Processing 23332839 bp from intervals 
+WARN  11:49:00,053 IndexDictionaryUtils - Track knownAlleles doesn't have a sequence dictionary built in, skipping dictionary validation 
+INFO  11:49:00,104 GenomeAnalysisEngine - Preparing for traversal over 1 BAM files 
+INFO  11:49:00,118 GenomeAnalysisEngine - Done preparing for traversal 
+INFO  11:49:00,118 ProgressMeter - [INITIALIZATION COMPLETE; STARTING PROCESSING] 
+INFO  11:49:00,118 ProgressMeter -                 | processed |    time |    per 1M |           |   total | remaining 
+INFO  11:49:00,118 ProgressMeter -        Location |     reads | elapsed |     reads | completed | runtime |   runtime 
+INFO  11:49:00,174 ReadShardBalancer$1 - Loading BAM index data 
+INFO  11:49:00,186 ReadShardBalancer$1 - Done loading BAM index data 
+INFO  11:49:07,310 ReadShardBalancer$1 - Loading BAM index data 
+INFO  11:49:07,324 ReadShardBalancer$1 - Done loading BAM index data 
+INFO  11:49:12,491 IndelRealigner - Not attempting realignment in interval Pf3D7_02_v3:715321-715782 because there are too many reads. 
+INFO  11:49:13,974 ReadShardBalancer$1 - Loading BAM index data 
+INFO  11:49:13,980 ReadShardBalancer$1 - Done loading BAM index data 
+INFO  11:49:27,469 ReadShardBalancer$1 - Loading BAM index data 
+INFO  11:49:27,477 ReadShardBalancer$1 - Done loading BAM index data 
+INFO  11:49:30,122 ProgressMeter - Pf3D7_04_v3:257514   1900204.0    30.0 s      15.0 s       12.5%     4.0 m       3.5 m 
+INFO  11:49:38,358 ReadShardBalancer$1 - Loading BAM index data 
+INFO  11:49:38,364 ReadShardBalancer$1 - Done loading BAM index data 
+INFO  11:49:39,825 IndelRealigner - Not attempting realignment in interval Pf3D7_05_v3:101916-102342 because there are too many reads. 
+INFO  11:50:00,124 ProgressMeter - Pf3D7_05_v3:101994   3207680.0    60.0 s      18.0 s       17.0%     5.9 m       4.9 m 
+INFO  11:50:27,910 ReadShardBalancer$1 - Loading BAM index data 
+INFO  11:50:27,918 ReadShardBalancer$1 - Done loading BAM index data 
+INFO  11:50:30,125 ProgressMeter - Pf3D7_06_v3:194450   4551548.0    90.0 s      19.0 s       23.1%     6.5 m       5.0 m 
+INFO  11:50:39,871 ReadShardBalancer$1 - Loading BAM index data 
+INFO  11:50:39,874 ReadShardBalancer$1 - Done loading BAM index data 
+INFO  11:50:40,226 IndelRealigner - Not attempting realignment in interval Pf3D7_06_v3:1321275-1321290 because there are too many reads. 
+INFO  11:50:43,447 IndelRealigner - Not attempting realignment in interval Pf3D7_07_v3:242934-243040 because there are too many reads. 
+INFO  11:50:50,953 IndelRealigner - Not attempting realignment in interval Pf3D7_07_v3:505115-505315 because there are too many reads. 
+INFO  11:51:00,126 ProgressMeter - Pf3D7_07_v3:1119202   6713806.0   120.0 s      17.0 s       33.2%     6.0 m       4.0 m 
+INFO  11:51:01,162 ReadShardBalancer$1 - Loading BAM index data 
+INFO  11:51:01,165 ReadShardBalancer$1 - Done loading BAM index data 
+INFO  11:51:17,735 ReadShardBalancer$1 - Loading BAM index data 
+INFO  11:51:17,738 ReadShardBalancer$1 - Done loading BAM index data 
+INFO  11:51:30,158 ProgressMeter - Pf3D7_09_v3:1008753   8891419.0     2.5 m      16.0 s       45.2%     5.5 m       3.0 m 
+INFO  11:51:37,328 IndelRealigner - Not attempting realignment in interval Pf3D7_09_v3:1455005-1455019 because there are too many reads. 
+INFO  11:51:37,453 ReadShardBalancer$1 - Loading BAM index data 
+INFO  11:51:37,457 ReadShardBalancer$1 - Done loading BAM index data 
+INFO  11:51:57,389 ReadShardBalancer$1 - Loading BAM index data 
+INFO  11:51:57,393 ReadShardBalancer$1 - Done loading BAM index data 
+INFO  11:52:00,159 ProgressMeter - Pf3D7_11_v3:226124   1.1198159E7     3.0 m      16.0 s       55.7%     5.4 m       2.4 m 
+INFO  11:52:11,990 IndelRealigner - Not attempting realignment in interval Pf3D7_11_v3:1500151-1500152 because there are too many reads. 
+INFO  11:52:17,394 ReadShardBalancer$1 - Loading BAM index data 
+INFO  11:52:17,398 ReadShardBalancer$1 - Done loading BAM index data 
+INFO  11:52:30,160 ProgressMeter - Pf3D7_12_v3:1135305   1.3561155E7     3.5 m      15.0 s       68.3%     5.1 m      97.0 s 
+INFO  11:52:31,520 IndelRealigner - Not attempting realignment in interval Pf3D7_12_v3:1285012-1285249 because there are too many reads. 
+INFO  11:52:40,327 ReadShardBalancer$1 - Loading BAM index data 
+INFO  11:52:40,331 ReadShardBalancer$1 - Done loading BAM index data 
+INFO  11:52:47,868 IndelRealigner - Not attempting realignment in interval Pf3D7_13_v3:752811-752929 because there are too many reads. 
+INFO  11:52:53,707 IndelRealigner - Not attempting realignment in interval Pf3D7_13_v3:1141803-1141819 because there are too many reads. 
+INFO  11:52:58,217 IndelRealigner - Not attempting realignment in interval Pf3D7_13_v3:1637925-1638160 because there are too many reads. 
+INFO  11:53:00,167 ProgressMeter - Pf3D7_13_v3:1809694   1.5872895E7     4.0 m      15.0 s       80.9%     4.9 m      56.0 s 
+INFO  11:53:03,254 IndelRealigner - Not attempting realignment in interval Pf3D7_13_v3:1960593-1960912 because there are too many reads. 
+INFO  11:53:13,260 ReadShardBalancer$1 - Loading BAM index data 
+INFO  11:53:13,265 ReadShardBalancer$1 - Done loading BAM index data 
+INFO  11:53:16,540 IndelRealigner - Not attempting realignment in interval Pf3D7_14_v3:141462-141623 because there are too many reads. 
+INFO  11:53:24,645 IndelRealigner - Not attempting realignment in interval Pf3D7_14_v3:793509-793877 because there are too many reads. 
+INFO  11:53:25,838 IndelRealigner - Not attempting realignment in interval Pf3D7_14_v3:817546-817684 because there are too many reads. 
+INFO  11:53:30,168 ProgressMeter - Pf3D7_14_v3:969748   1.8168658E7     4.5 m      14.0 s       89.9%     5.0 m      30.0 s 
+INFO  11:53:50,135 IndelRealigner - Not attempting realignment in interval Pf3D7_14_v3:3053257-3053707 because there are too many reads. 
+INFO  11:53:51,844 ReadShardBalancer$1 - Loading BAM index data 
+INFO  11:53:51,844 ReadShardBalancer$1 - Done loading BAM index data 
+INFO  11:53:52,352 ReadShardBalancer$1 - Loading BAM index data 
+INFO  11:53:52,352 ReadShardBalancer$1 - Done loading BAM index data 
+INFO  11:53:52,366 ProgressMeter -            done   2.0126109E7     4.9 m      14.0 s      100.0%     4.9 m       0.0 s 
+INFO  11:53:52,366 ProgressMeter - Total runtime 292.25 secs, 4.87 min, 0.08 hours 
+INFO  11:53:52,368 MicroScheduler - 0 reads were filtered out during the traversal out of approximately 20126109 total reads (0.00%) 
+INFO  11:53:52,368 MicroScheduler -   -> 0 reads (0.00% of total) failing BadCigarFilter 
+INFO  11:53:52,368 MicroScheduler -   -> 0 reads (0.00% of total) failing MalformedReadFilter 
+------------------------------------------------------------------------------------------
+Done. There were 1 WARN messages, the first 1 are repeated below.
+WARN  11:49:00,053 IndexDictionaryUtils - Track knownAlleles doesn't have a sequence dictionary built in, skipping dictionary validation 
+------------------------------------------------------------------------------------------
+---------------------------------------
+BaseRecalibrator - create recal table
+INFO  11:53:53,784 HelpFormatter - -------------------------------------------------------------------------------------------- 
+INFO  11:53:53,785 HelpFormatter - The Genome Analysis Toolkit (GATK) v3.8-1-0-gf15c1c3ef, Compiled 2018/02/19 05:43:50 
+INFO  11:53:53,785 HelpFormatter - Copyright (c) 2010-2016 The Broad Institute 
+INFO  11:53:53,785 HelpFormatter - For support and documentation go to https://software.broadinstitute.org/gatk 
+INFO  11:53:53,785 HelpFormatter - [Mon Sep 05 11:53:53 GMT+10:00 2022] Executing on Linux 4.18.0-372.13.1.el8.nci.x86_64 amd64 
+INFO  11:53:53,785 HelpFormatter - OpenJDK 64-Bit Server VM 1.8.0_40-b25 
+INFO  11:53:53,787 HelpFormatter - Program Args: -T BaseRecalibrator -R /g/data/pq84/malaria/Pf_Malaysia/data/ref_genomes/PlasmoDB-59_Pfalciparum3D7_Genome.fasta -I /g/data/pq84/malaria/Pf_Malaysia/outputs/03_Bam-pre/ERR9907922.dupmarked.realigned.bam --intervals /g/data/pq84/malaria/Pf_Malaysia/data/ref_genomes/PlasmoDB-59_Pfalciparum3D7_Genome.fasta.bed -knownSites /g/data/pq84/malaria/Pf_Malaysia/data/ref_genomes//1202-PF-MY-ANSTEY_genotyped.vcf.gz -o /g/data/pq84/malaria/Pf_Malaysia/outputs/03_Bam-pre/ERR9907922.dupmarked.realigned.recal.table 
+INFO  11:53:53,792 HelpFormatter - Executing as jw1542@gadi-cpu-clx-0612.gadi.nci.org.au on Linux 4.18.0-372.13.1.el8.nci.x86_64 amd64; OpenJDK 64-Bit Server VM 1.8.0_40-b25. 
+INFO  11:53:53,792 HelpFormatter - Date/Time: 2022/09/05 11:53:53 
+INFO  11:53:53,792 HelpFormatter - -------------------------------------------------------------------------------------------- 
+INFO  11:53:53,792 HelpFormatter - -------------------------------------------------------------------------------------------- 
+INFO  11:53:53,817 NativeLibraryLoader - Loading libgkl_compression.so from jar:file:/g/data/pq84/bin/GenomeAnalysisTK-3.8-1-0/GenomeAnalysisTK.jar!/com/intel/gkl/native/libgkl_compression.so 
+INFO  11:53:53,835 GenomeAnalysisEngine - Deflater: IntelDeflater 
+INFO  11:53:53,836 GenomeAnalysisEngine - Inflater: IntelInflater 
+INFO  11:53:53,836 GenomeAnalysisEngine - Strictness is SILENT 
+INFO  11:53:53,935 GenomeAnalysisEngine - Downsampling Settings: No downsampling 
+INFO  11:53:53,939 SAMDataSource$SAMReaders - Initializing SAMRecords in serial 
+INFO  11:53:53,954 SAMDataSource$SAMReaders - Done initializing BAM readers: total time 0.01 
+INFO  11:53:54,001 IntervalUtils - Processing 23332839 bp from intervals 
+WARN  11:53:54,003 IndexDictionaryUtils - Track knownSites doesn't have a sequence dictionary built in, skipping dictionary validation 
+INFO  11:53:54,040 GenomeAnalysisEngine - Preparing for traversal over 1 BAM files 
+INFO  11:53:54,057 GenomeAnalysisEngine - Done preparing for traversal 
+INFO  11:53:54,057 ProgressMeter - [INITIALIZATION COMPLETE; STARTING PROCESSING] 
+INFO  11:53:54,057 ProgressMeter -                 | processed |    time |    per 1M |           |   total | remaining 
+INFO  11:53:54,058 ProgressMeter -        Location |     reads | elapsed |     reads | completed | runtime |   runtime 
+INFO  11:53:54,090 BaseRecalibrator - The covariates being used here:  
+INFO  11:53:54,090 BaseRecalibrator - 	ReadGroupCovariate 
+INFO  11:53:54,090 BaseRecalibrator - 	QualityScoreCovariate 
+INFO  11:53:54,090 BaseRecalibrator - 	ContextCovariate 
+INFO  11:53:54,090 ContextCovariate - 		Context sizes: base substitution model 2, indel substitution model 3 
+INFO  11:53:54,090 BaseRecalibrator - 	CycleCovariate 
+INFO  11:53:54,093 ReadShardBalancer$1 - Loading BAM index data 
+INFO  11:53:54,102 ReadShardBalancer$1 - Done loading BAM index data 
+INFO  11:54:24,065 ProgressMeter - Pf3D7_01_v3:430478    200003.0    30.0 s       2.5 m        1.8%    27.1 m      26.6 m 
+INFO  11:54:28,282 ReadShardBalancer$1 - Loading BAM index data 
+INFO  11:54:28,294 ReadShardBalancer$1 - Done loading BAM index data 
+INFO  11:54:54,324 ProgressMeter - Pf3D7_02_v3:611699    448060.0    60.0 s       2.2 m        5.4%    18.6 m      17.6 m 
+INFO  11:55:11,174 ReadShardBalancer$1 - Loading BAM index data 
+INFO  11:55:11,183 ReadShardBalancer$1 - Done loading BAM index data 
+INFO  11:55:24,885 ProgressMeter - Pf3D7_03_v3:258068    864823.0    90.0 s     105.0 s        7.9%    19.0 m      17.5 m 
+INFO  11:55:54,887 ProgressMeter - Pf3D7_03_v3:776813   1164835.0   120.0 s     103.0 s       10.1%    19.7 m      17.7 m 
+INFO  11:56:10,714 ReadShardBalancer$1 - Loading BAM index data 
+INFO  11:56:10,724 ReadShardBalancer$1 - Done loading BAM index data 
+INFO  11:56:24,888 ProgressMeter - Pf3D7_04_v3:252369   1421191.0     2.5 m     106.0 s       12.5%    20.1 m      17.6 m 
+INFO  11:56:55,185 ProgressMeter - Pf3D7_04_v3:873712   1821197.0     3.0 m      99.0 s       15.1%    19.9 m      16.9 m 
+INFO  11:57:12,746 ReadShardBalancer$1 - Loading BAM index data 
+INFO  11:57:12,755 ReadShardBalancer$1 - Done loading BAM index data 
+INFO  11:57:25,305 ProgressMeter - Pf3D7_05_v3:112369   2053916.0     3.5 m     102.0 s       17.0%    20.7 m      17.2 m 
+INFO  11:57:56,361 ProgressMeter - Pf3D7_05_v3:781367   2353922.0     4.0 m     102.0 s       19.9%    20.3 m      16.3 m 
+INFO  11:58:12,386 ReadShardBalancer$1 - Loading BAM index data 
+INFO  11:58:12,395 ReadShardBalancer$1 - Done loading BAM index data 
+INFO  11:58:26,362 ProgressMeter - Pf3D7_06_v3:121698   2744784.0     4.5 m      99.0 s       22.8%    19.9 m      15.3 m 
+INFO  11:58:56,364 ProgressMeter - Pf3D7_06_v3:661512   3044788.0     5.0 m      99.0 s       25.1%    20.0 m      15.0 m 
+INFO  11:59:26,366 ProgressMeter - Pf3D7_06_v3:1219802   3344793.0     5.5 m      99.0 s       27.5%    20.1 m      14.6 m 
+INFO  11:59:26,732 ReadShardBalancer$1 - Loading BAM index data 
+INFO  11:59:26,735 ReadShardBalancer$1 - Done loading BAM index data 
+INFO  11:59:56,373 ProgressMeter - Pf3D7_07_v3:367237   3676292.0     6.0 m      98.0 s       29.9%    20.2 m      14.1 m 
+INFO  12:00:26,374 ProgressMeter - Pf3D7_07_v3:884676   4076301.0     6.5 m      96.0 s       32.2%    20.3 m      13.8 m 
+INFO  12:00:42,865 ReadShardBalancer$1 - Loading BAM index data 
+INFO  12:00:42,868 ReadShardBalancer$1 - Done loading BAM index data 
+INFO  12:00:56,441 ProgressMeter - Pf3D7_08_v3:145629   4363981.0     7.0 m      96.0 s       35.2%    20.0 m      13.0 m 
+INFO  12:01:36,443 ProgressMeter - Pf3D7_08_v3:792842   4763987.0     7.7 m      97.0 s       38.0%    20.3 m      12.6 m 
+INFO  12:02:06,761 ProgressMeter - Pf3D7_08_v3:1114168   5164002.0     8.2 m      95.0 s       39.3%    20.8 m      12.6 m 
+INFO  12:02:12,644 ReadShardBalancer$1 - Loading BAM index data 
+INFO  12:02:12,647 ReadShardBalancer$1 - Done loading BAM index data 
+INFO  12:02:36,763 ProgressMeter - Pf3D7_09_v3:412738   5410213.0     8.7 m      96.0 s       42.6%    20.4 m      11.7 m 
+INFO  12:03:06,765 ProgressMeter - Pf3D7_09_v3:718803   5710222.0     9.2 m      96.0 s       44.0%    20.9 m      11.7 m 
+INFO  12:03:36,914 ProgressMeter - Pf3D7_09_v3:1108604   6110230.0     9.7 m      95.0 s       45.6%    21.3 m      11.6 m 
+INFO  12:04:00,487 ReadShardBalancer$1 - Loading BAM index data 
+INFO  12:04:00,491 ReadShardBalancer$1 - Done loading BAM index data 
+INFO  12:04:06,915 ProgressMeter - Pf3D7_10_v3:134516   6464515.0    10.2 m      94.0 s       48.1%    21.2 m      11.0 m 
+INFO  12:04:36,917 ProgressMeter - Pf3D7_10_v3:611748   6764522.0    10.7 m      95.0 s       50.1%    21.4 m      10.7 m 
+INFO  12:05:06,987 ProgressMeter - Pf3D7_10_v3:1098740   7064528.0    11.2 m      95.0 s       52.2%    21.5 m      10.3 m 
+INFO  12:05:26,475 ReadShardBalancer$1 - Loading BAM index data 
+INFO  12:05:26,478 ReadShardBalancer$1 - Done loading BAM index data 
+INFO  12:05:36,988 ProgressMeter - Pf3D7_11_v3:202813   7415254.0    11.7 m      94.0 s       55.6%    21.1 m       9.4 m 
+INFO  12:06:07,049 ProgressMeter - Pf3D7_11_v3:705538   7715257.0    12.2 m      95.0 s       57.7%    21.1 m       8.9 m 
+INFO  12:06:37,067 ProgressMeter - Pf3D7_11_v3:1255534   8015408.0    12.7 m      95.0 s       60.1%    21.2 m       8.4 m 
+INFO  12:07:07,280 ProgressMeter - Pf3D7_11_v3:1737169   8415414.0    13.2 m      94.0 s       62.2%    21.3 m       8.0 m 
+INFO  12:07:23,171 ReadShardBalancer$1 - Loading BAM index data 
+INFO  12:07:23,175 ReadShardBalancer$1 - Done loading BAM index data 
+INFO  12:07:37,281 ProgressMeter - Pf3D7_12_v3:205256   8653775.0    13.7 m      95.0 s       64.3%    21.3 m       7.6 m 
+INFO  12:08:07,283 ProgressMeter - Pf3D7_12_v3:734350   9053782.0    14.2 m      94.0 s       66.6%    21.3 m       7.1 m 
+INFO  12:08:37,315 ProgressMeter - Pf3D7_12_v3:1119960   9353885.0    14.7 m      94.0 s       68.2%    21.6 m       6.8 m 
+INFO  12:09:07,329 ProgressMeter - Pf3D7_12_v3:1570257   9758531.0    15.2 m      93.0 s       70.2%    21.7 m       6.5 m 
+INFO  12:09:23,862 ReadShardBalancer$1 - Loading BAM index data 
+INFO  12:09:23,867 ReadShardBalancer$1 - Done loading BAM index data 
+INFO  12:09:37,401 ProgressMeter - Pf3D7_13_v3:127468   1.0057878E7    15.7 m      93.0 s       73.7%    21.3 m       5.6 m 
+INFO  12:10:07,402 ProgressMeter - Pf3D7_13_v3:718860   1.0357886E7    16.2 m      93.0 s       76.3%    21.3 m       5.0 m 
+INFO  12:10:37,465 ProgressMeter - Pf3D7_13_v3:1202658   1.0657892E7    16.7 m      94.0 s       78.3%    21.3 m       4.6 m 
+INFO  12:11:08,050 ProgressMeter - Pf3D7_13_v3:1803679   1.1057898E7    17.2 m      93.0 s       80.9%    21.3 m       4.1 m 
+INFO  12:11:38,068 ProgressMeter - Pf3D7_13_v3:2317496   1.1357901E7    17.7 m      93.0 s       83.1%    21.3 m       3.6 m 
+INFO  12:11:57,420 ReadShardBalancer$1 - Loading BAM index data 
+INFO  12:11:57,424 ReadShardBalancer$1 - Done loading BAM index data 
+INFO  12:12:08,165 ProgressMeter - Pf3D7_14_v3:85338   1.1711191E7    18.2 m      93.0 s       86.1%    21.2 m       2.9 m 
+INFO  12:12:48,166 ProgressMeter - Pf3D7_14_v3:664052   1.2136657E7    18.9 m      93.0 s       88.6%    21.3 m       2.4 m 
+INFO  12:13:18,219 ProgressMeter - Pf3D7_14_v3:1041590   1.2536665E7    19.4 m      92.0 s       90.2%    21.5 m       2.1 m 
+INFO  12:13:48,219 ProgressMeter - Pf3D7_14_v3:1605536   1.2836668E7    19.9 m      93.0 s       92.6%    21.5 m      95.0 s 
+INFO  12:14:18,253 ProgressMeter - Pf3D7_14_v3:2046709   1.3136673E7    20.4 m      93.0 s       94.5%    21.6 m      71.0 s 
+INFO  12:14:48,346 ProgressMeter - Pf3D7_14_v3:2591882   1.3436677E7    20.9 m      93.0 s       96.8%    21.6 m      41.0 s 
+INFO  12:15:17,952 ReadShardBalancer$1 - Loading BAM index data 
+INFO  12:15:17,954 ReadShardBalancer$1 - Done loading BAM index data 
+INFO  12:15:18,357 ProgressMeter - Pf3D7_14_v3:3054925   1.3736683E7    21.4 m      93.0 s       98.8%    21.7 m      15.0 s 
+INFO  12:15:24,282 ReadShardBalancer$1 - Loading BAM index data 
+INFO  12:15:24,282 ReadShardBalancer$1 - Done loading BAM index data 
+INFO  12:15:24,311 BaseRecalibrator - Calculating quantized quality scores... 
+INFO  12:15:24,333 BaseRecalibrator - Writing recalibration report... 
+INFO  12:15:24,572 BaseRecalibrator - ...done! 
+INFO  12:15:24,572 BaseRecalibrator - BaseRecalibrator was able to recalibrate 13918135 reads 
+INFO  12:15:24,573 ProgressMeter -            done   1.3918135E7    21.5 m      92.0 s      100.0%    21.5 m       0.0 s 
+INFO  12:15:24,573 ProgressMeter - Total runtime 1290.52 secs, 21.51 min, 0.36 hours 
+INFO  12:15:24,573 MicroScheduler - 6207974 reads were filtered out during the traversal out of approximately 20126109 total reads (30.85%) 
+INFO  12:15:24,573 MicroScheduler -   -> 0 reads (0.00% of total) failing BadCigarFilter 
+INFO  12:15:24,573 MicroScheduler -   -> 3930965 reads (19.53% of total) failing DuplicateReadFilter 
+INFO  12:15:24,574 MicroScheduler -   -> 0 reads (0.00% of total) failing FailsVendorQualityCheckFilter 
+INFO  12:15:24,585 MicroScheduler -   -> 0 reads (0.00% of total) failing MalformedReadFilter 
+INFO  12:15:24,585 MicroScheduler -   -> 0 reads (0.00% of total) failing MappingQualityUnavailableFilter 
+INFO  12:15:24,585 MicroScheduler -   -> 1611405 reads (8.01% of total) failing MappingQualityZeroFilter 
+INFO  12:15:24,585 MicroScheduler -   -> 665604 reads (3.31% of total) failing NotPrimaryAlignmentFilter 
+INFO  12:15:24,585 MicroScheduler -   -> 0 reads (0.00% of total) failing UnmappedReadFilter 
+------------------------------------------------------------------------------------------
+Done. There were 1 WARN messages, the first 1 are repeated below.
+WARN  11:53:54,003 IndexDictionaryUtils - Track knownSites doesn't have a sequence dictionary built in, skipping dictionary validation 
+------------------------------------------------------------------------------------------
+---------------------------------------
+PrintReads - get recal reads
+INFO  12:15:25,924 HelpFormatter - -------------------------------------------------------------------------------------------- 
+INFO  12:15:25,925 HelpFormatter - The Genome Analysis Toolkit (GATK) v3.8-1-0-gf15c1c3ef, Compiled 2018/02/19 05:43:50 
+INFO  12:15:25,925 HelpFormatter - Copyright (c) 2010-2016 The Broad Institute 
+INFO  12:15:25,925 HelpFormatter - For support and documentation go to https://software.broadinstitute.org/gatk 
+INFO  12:15:25,926 HelpFormatter - [Mon Sep 05 12:15:25 GMT+10:00 2022] Executing on Linux 4.18.0-372.13.1.el8.nci.x86_64 amd64 
+INFO  12:15:25,926 HelpFormatter - OpenJDK 64-Bit Server VM 1.8.0_40-b25 
+INFO  12:15:25,928 HelpFormatter - Program Args: -T PrintReads -R /g/data/pq84/malaria/Pf_Malaysia/data/ref_genomes/PlasmoDB-59_Pfalciparum3D7_Genome.fasta --intervals /g/data/pq84/malaria/Pf_Malaysia/data/ref_genomes/PlasmoDB-59_Pfalciparum3D7_Genome.fasta.bed -I /g/data/pq84/malaria/Pf_Malaysia/outputs/03_Bam-pre/ERR9907922.dupmarked.realigned.bam -BQSR /g/data/pq84/malaria/Pf_Malaysia/outputs/03_Bam-pre/ERR9907922.dupmarked.realigned.recal.table -o /g/data/pq84/malaria/Pf_Malaysia/outputs/03_Bam-pre/final_bam/ERR9907922.dupmarked.realigned.recal.bam 
+INFO  12:15:25,935 HelpFormatter - Executing as jw1542@gadi-cpu-clx-0612.gadi.nci.org.au on Linux 4.18.0-372.13.1.el8.nci.x86_64 amd64; OpenJDK 64-Bit Server VM 1.8.0_40-b25. 
+INFO  12:15:25,937 HelpFormatter - Date/Time: 2022/09/05 12:15:25 
+INFO  12:15:25,937 HelpFormatter - -------------------------------------------------------------------------------------------- 
+INFO  12:15:25,937 HelpFormatter - -------------------------------------------------------------------------------------------- 
+INFO  12:15:26,002 NativeLibraryLoader - Loading libgkl_compression.so from jar:file:/g/data/pq84/bin/GenomeAnalysisTK-3.8-1-0/GenomeAnalysisTK.jar!/com/intel/gkl/native/libgkl_compression.so 
+INFO  12:15:26,030 GenomeAnalysisEngine - Deflater: IntelDeflater 
+INFO  12:15:26,030 GenomeAnalysisEngine - Inflater: IntelInflater 
+INFO  12:15:26,031 GenomeAnalysisEngine - Strictness is SILENT 
+INFO  12:15:26,308 ContextCovariate - 		Context sizes: base substitution model 2, indel substitution model 3 
+INFO  12:15:26,391 GenomeAnalysisEngine - Downsampling Settings: No downsampling 
+INFO  12:15:26,411 SAMDataSource$SAMReaders - Initializing SAMRecords in serial 
+INFO  12:15:26,445 SAMDataSource$SAMReaders - Done initializing BAM readers: total time 0.03 
+INFO  12:15:26,469 IntervalUtils - Processing 23332839 bp from intervals 
+INFO  12:15:26,521 GenomeAnalysisEngine - Preparing for traversal over 1 BAM files 
+INFO  12:15:26,537 GenomeAnalysisEngine - Done preparing for traversal 
+INFO  12:15:26,537 ProgressMeter - [INITIALIZATION COMPLETE; STARTING PROCESSING] 
+INFO  12:15:26,538 ProgressMeter -                 | processed |    time |    per 1M |           |   total | remaining 
+INFO  12:15:26,538 ProgressMeter -        Location |     reads | elapsed |     reads | completed | runtime |   runtime 
+INFO  12:15:26,542 ReadShardBalancer$1 - Loading BAM index data 
+INFO  12:15:26,558 ReadShardBalancer$1 - Done loading BAM index data 
+INFO  12:15:56,550 ProgressMeter - Pf3D7_01_v3:432857    300003.0    30.0 s     100.0 s        1.9%    27.0 m      26.5 m 
+INFO  12:16:03,172 ReadShardBalancer$1 - Loading BAM index data 
+INFO  12:16:03,188 ReadShardBalancer$1 - Done loading BAM index data 
+INFO  12:16:26,552 ProgressMeter - Pf3D7_02_v3:601718    636282.0    60.0 s      94.0 s        5.3%    18.8 m      17.8 m 
+INFO  12:16:48,328 ReadShardBalancer$1 - Loading BAM index data 
+INFO  12:16:48,337 ReadShardBalancer$1 - Done loading BAM index data 
+INFO  12:16:56,553 ProgressMeter - Pf3D7_03_v3:171459    981686.0    90.0 s      91.0 s        7.5%    19.9 m      18.4 m 
+INFO  12:17:26,554 ProgressMeter - Pf3D7_03_v3:589697   1381692.0   120.0 s      86.0 s        9.3%    21.4 m      19.4 m 
+INFO  12:17:56,569 ProgressMeter - Pf3D7_03_v3:968027   1681700.0     2.5 m      89.0 s       11.0%    22.8 m      20.3 m 
+INFO  12:17:58,987 ReadShardBalancer$1 - Loading BAM index data 
+INFO  12:17:58,996 ReadShardBalancer$1 - Done loading BAM index data 
+INFO  12:18:26,571 ProgressMeter - Pf3D7_04_v3:496256   2000205.0     3.0 m      90.0 s       13.5%    22.2 m      19.2 m 
+INFO  12:18:56,573 ProgressMeter - Pf3D7_04_v3:916111   2400215.0     3.5 m      87.0 s       15.3%    22.9 m      19.4 m 
+INFO  12:19:07,361 ReadShardBalancer$1 - Loading BAM index data 
+INFO  12:19:07,374 ReadShardBalancer$1 - Done loading BAM index data 
+INFO  12:19:26,575 ProgressMeter - Pf3D7_05_v3:101994   2807384.0     4.0 m      85.0 s       17.0%    23.6 m      19.6 m 
+INFO  12:19:56,657 ProgressMeter - Pf3D7_05_v3:101994   3107474.0     4.5 m      86.0 s       17.0%    26.5 m      22.0 m 
+INFO  12:20:26,844 ProgressMeter - Pf3D7_05_v3:101994   3511876.0     5.0 m      85.0 s       17.0%    29.5 m      24.5 m 
+INFO  12:20:56,845 ProgressMeter - Pf3D7_05_v3:481880   3812383.0     5.5 m      86.0 s       18.6%    29.6 m      24.1 m 
+INFO  12:21:26,847 ProgressMeter - Pf3D7_05_v3:1033943   4212388.0     6.0 m      85.0 s       21.0%    28.6 m      22.6 m 
+INFO  12:21:38,532 ReadShardBalancer$1 - Loading BAM index data 
+INFO  12:21:38,537 ReadShardBalancer$1 - Done loading BAM index data 
+INFO  12:21:56,856 ProgressMeter - Pf3D7_06_v3:290633   4551548.0     6.5 m      85.0 s       23.5%    27.6 m      21.1 m 
+INFO  12:22:26,924 ProgressMeter - Pf3D7_06_v3:760777   4951555.0     7.0 m      84.0 s       25.5%    27.4 m      20.4 m 
+INFO  12:22:56,999 ProgressMeter - Pf3D7_06_v3:1229141   5251563.0     7.5 m      85.0 s       27.6%    27.2 m      19.7 m 
+INFO  12:22:57,868 ReadShardBalancer$1 - Loading BAM index data 
+INFO  12:22:57,873 ReadShardBalancer$1 - Done loading BAM index data 
+INFO  12:23:27,001 ProgressMeter - Pf3D7_07_v3:243053   5608953.0     8.0 m      85.0 s       29.4%    27.2 m      19.2 m 
+INFO  12:23:57,004 ProgressMeter - Pf3D7_07_v3:505124   6008976.0     8.5 m      84.0 s       30.5%    27.8 m      19.3 m 
+INFO  12:24:27,006 ProgressMeter - Pf3D7_07_v3:743077   6208978.0     9.0 m      87.0 s       31.5%    28.5 m      19.5 m 
+INFO  12:24:57,007 ProgressMeter - Pf3D7_07_v3:1146138   6713806.0     9.5 m      84.0 s       33.3%    28.5 m      19.0 m 
+INFO  12:25:02,027 ReadShardBalancer$1 - Loading BAM index data 
+INFO  12:25:02,033 ReadShardBalancer$1 - Done loading BAM index data 
+INFO  12:25:27,027 ProgressMeter - Pf3D7_08_v3:335094   7108736.0    10.0 m      84.0 s       36.0%    27.8 m      17.8 m 
+INFO  12:25:57,186 ProgressMeter - Pf3D7_08_v3:771195   7408744.0    10.5 m      85.0 s       37.9%    27.7 m      17.2 m 
+INFO  12:26:37,187 ProgressMeter - Pf3D7_08_v3:1162555   7908792.0    11.2 m      84.0 s       39.5%    28.2 m      17.1 m 
+INFO  12:26:40,869 ReadShardBalancer$1 - Loading BAM index data 
+INFO  12:26:40,873 ReadShardBalancer$1 - Done loading BAM index data 
+INFO  12:27:07,189 ProgressMeter - Pf3D7_09_v3:378852   8291359.0    11.7 m      84.0 s       42.5%    27.5 m      15.8 m 
+INFO  12:27:47,190 ProgressMeter - Pf3D7_09_v3:879410   8791379.0    12.3 m      84.0 s       44.6%    27.6 m      15.3 m 
+INFO  12:28:17,191 ProgressMeter - Pf3D7_09_v3:1140755   9091430.0    12.8 m      84.0 s       45.8%    28.0 m      15.2 m 
+INFO  12:28:47,193 ProgressMeter - Pf3D7_09_v3:1455085   9491444.0    13.3 m      84.0 s       47.1%    28.3 m      15.0 m 
+INFO  12:28:52,647 ReadShardBalancer$1 - Loading BAM index data 
+INFO  12:28:52,650 ReadShardBalancer$1 - Done loading BAM index data 
+INFO  12:29:17,194 ProgressMeter - Pf3D7_10_v3:355464   9810308.0    13.8 m      84.0 s       49.0%    28.2 m      14.4 m 
+INFO  12:29:47,195 ProgressMeter - Pf3D7_10_v3:789611   1.021048E7    14.3 m      84.0 s       50.9%    28.2 m      13.8 m 
+INFO  12:30:17,196 ProgressMeter - Pf3D7_10_v3:934565   1.0310483E7    14.8 m      86.0 s       51.5%    28.8 m      14.0 m 
+INFO  12:30:47,412 ProgressMeter - Pf3D7_10_v3:1272079   1.0933146E7    15.3 m      84.0 s       52.9%    29.0 m      13.6 m 
+INFO  12:30:52,901 ReadShardBalancer$1 - Loading BAM index data 
+INFO  12:30:52,905 ReadShardBalancer$1 - Done loading BAM index data 
+INFO  12:31:17,413 ProgressMeter - Pf3D7_11_v3:315161   1.1298161E7    15.8 m      84.0 s       56.1%    28.2 m      12.4 m 
+INFO  12:31:47,415 ProgressMeter - Pf3D7_11_v3:945732   1.1598165E7    16.3 m      84.0 s       58.8%    27.8 m      11.5 m 
+INFO  12:32:17,421 ProgressMeter - Pf3D7_11_v3:1398717   1.1998175E7    16.8 m      84.0 s       60.7%    27.7 m      10.9 m 
+INFO  12:32:47,422 ProgressMeter - Pf3D7_11_v3:1742710   1.2298179E7    17.3 m      84.0 s       62.2%    27.9 m      10.5 m 
+INFO  12:33:04,366 ReadShardBalancer$1 - Loading BAM index data 
+INFO  12:33:04,370 ReadShardBalancer$1 - Done loading BAM index data 
+INFO  12:33:17,451 ProgressMeter - Pf3D7_12_v3:189291   1.2661128E7    17.8 m      84.0 s       64.3%    27.8 m       9.9 m 
+INFO  12:33:47,453 ProgressMeter - Pf3D7_12_v3:654213   1.3061138E7    18.3 m      84.0 s       66.3%    27.7 m       9.3 m 
+INFO  12:34:17,454 ProgressMeter - Pf3D7_12_v3:1021535   1.3461149E7    18.8 m      84.0 s       67.8%    27.8 m       8.9 m 
+INFO  12:34:47,455 ProgressMeter - Pf3D7_12_v3:1285141   1.366117E7    19.3 m      84.0 s       69.0%    28.0 m       8.7 m 
+INFO  12:35:17,542 ProgressMeter - Pf3D7_12_v3:1638342   1.4159063E7    19.9 m      84.0 s       70.5%    28.2 m       8.3 m 
+INFO  12:35:39,584 ReadShardBalancer$1 - Loading BAM index data 
+INFO  12:35:39,589 ReadShardBalancer$1 - Done loading BAM index data 
+INFO  12:35:47,543 ProgressMeter - Pf3D7_13_v3:152718   1.4510178E7    20.4 m      84.0 s       73.8%    27.6 m       7.2 m 
+INFO  12:36:18,041 ProgressMeter - Pf3D7_13_v3:718206   1.4810181E7    20.9 m      84.0 s       76.3%    27.3 m       6.5 m 
+INFO  12:36:48,042 ProgressMeter - Pf3D7_13_v3:837626   1.5268048E7    21.4 m      83.0 s       76.8%    27.8 m       6.5 m 
+INFO  12:37:28,043 ProgressMeter - Pf3D7_13_v3:1575318   1.5671189E7    22.0 m      84.0 s       79.9%    27.5 m       5.5 m 
+INFO  12:37:58,150 ProgressMeter - Pf3D7_13_v3:1894398   1.5973513E7    22.5 m      84.0 s       81.3%    27.7 m       5.2 m 
+INFO  12:38:28,161 ProgressMeter - Pf3D7_13_v3:1960758   1.6073514E7    23.0 m      85.0 s       81.6%    28.2 m       5.2 m 
+INFO  12:38:58,274 ProgressMeter - Pf3D7_13_v3:2371259   1.6674674E7    23.5 m      84.0 s       83.3%    28.2 m       4.7 m 
+INFO  12:39:14,975 ReadShardBalancer$1 - Loading BAM index data 
+INFO  12:39:14,980 ReadShardBalancer$1 - Done loading BAM index data 
+INFO  12:39:28,456 ProgressMeter - Pf3D7_14_v3:100444   1.7059298E7    24.0 m      84.0 s       86.1%    27.9 m       3.9 m 
+INFO  12:39:58,586 ProgressMeter - Pf3D7_14_v3:242780   1.7468588E7    24.5 m      84.0 s       86.8%    28.3 m       3.7 m 
+INFO  12:40:28,587 ProgressMeter - Pf3D7_14_v3:686316   1.7768644E7    25.0 m      84.0 s       88.7%    28.2 m       3.2 m 
+INFO  12:40:58,660 ProgressMeter - Pf3D7_14_v3:943998   1.8171825E7    25.5 m      84.0 s       89.8%    28.4 m       2.9 m 
+INFO  12:41:28,731 ProgressMeter - Pf3D7_14_v3:1260778   1.8471873E7    26.0 m      84.0 s       91.1%    28.6 m       2.5 m 
+INFO  12:41:58,773 ProgressMeter - Pf3D7_14_v3:1694420   1.887188E7    26.5 m      84.0 s       93.0%    28.5 m     120.0 s 
+INFO  12:42:28,817 ProgressMeter - Pf3D7_14_v3:2231161   1.927189E7    27.0 m      84.0 s       95.3%    28.4 m      80.0 s 
+INFO  12:42:58,818 ProgressMeter - Pf3D7_14_v3:2715572   1.9571895E7    27.5 m      84.0 s       97.4%    28.3 m      44.0 s 
+INFO  12:43:28,819 ProgressMeter - Pf3D7_14_v3:3055710   1.9972179E7    28.0 m      84.0 s       98.8%    28.4 m      20.0 s 
+INFO  12:43:32,323 ReadShardBalancer$1 - Loading BAM index data 
+INFO  12:43:32,325 ReadShardBalancer$1 - Done loading BAM index data 
+INFO  12:43:36,514 ReadShardBalancer$1 - Loading BAM index data 
+INFO  12:43:36,515 ReadShardBalancer$1 - Done loading BAM index data 
+INFO  12:43:36,576 Walker - [REDUCE RESULT] Traversal result is: org.broadinstitute.gatk.engine.io.stubs.SAMFileWriterStub@166ddfb7 
+INFO  12:43:36,578 ProgressMeter -            done   2.0126109E7    28.2 m      83.0 s      100.0%    28.2 m       0.0 s 
+INFO  12:43:36,579 ProgressMeter - Total runtime 1690.04 secs, 28.17 min, 0.47 hours 
+INFO  12:43:36,579 MicroScheduler - 0 reads were filtered out during the traversal out of approximately 20126109 total reads (0.00%) 
+INFO  12:43:36,579 MicroScheduler -   -> 0 reads (0.00% of total) failing BadCigarFilter 
+INFO  12:43:36,579 MicroScheduler -   -> 0 reads (0.00% of total) failing MalformedReadFilter 
+------------------------------------------------------------------------------------------
+Done. There were no warn messages.
+------------------------------------------------------------------------------------------
+---------------------------------------
+Clean up
+---------------------------------------
+Finished
+
+======================================================================================
+                  Resource Usage on 2022-09-05 12:43:40:
+   Job Id:             57131881.gadi-pbs
+   Project:            pq84
+   Exit Status:        0
+   Service Units:      22.99
+   NCPUs Requested:    10                     NCPUs Used: 10              
+                                           CPU Time Used: 03:16:44                                   
+   Memory Requested:   40.0GB                Memory Used: 25.39GB         
+   Walltime requested: 12:00:00            Walltime Used: 01:08:58        
+   JobFS requested:    100.0MB                JobFS used: 0B              
+======================================================================================

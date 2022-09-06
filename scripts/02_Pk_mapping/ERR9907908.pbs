@@ -1,0 +1,35 @@
+#!/bin/bash
+#PBS -P pq84
+#PBS -q normalbw
+#PBS -N Align_to_Pk
+#PBS -j oe
+#PBS -m ae
+#PBS -l walltime=4:00:00,mem=20GB,ncpus=10
+#PBS -l storage=gdata/pq84+scratch/pq84
+#PBS -M jacob.westaway@menzies.edu.au
+
+echo "---------------------------------------"
+echo "PBS: Job identifier is $PBS_JOBID"
+echo "PBS: Job name is $PBS_JOBNAME"
+
+echo "---------------------------------------"
+echo "Define paths and load modules"
+module load samtools/1.12  
+module load bwa/0.7.17 
+
+echo "---------------------------------------"
+echo 'Change to working directory' 
+cd /g/data/pq84/malaria/Pf_Malaysia/outputs/01_QC_Trim/trimmed_fastq
+
+echo "---------------------------------------"
+echo 'Set environment vars'
+OUTDIR="/g/data/pq84/malaria/Pf_Malaysia/outputs/02_Mapping"
+INDEXTDIR="/g/data/pq84/malaria/Pf_Malaysia/data/ref_genomes/PlasmoDB-59_Pfalciparum3D7_Genome.fasta"
+
+echo "---------------------------------------"
+echo 'Exectue alignment with bwa to hg and sort to bam'
+
+bwa mem -t 10 -M -R "@RG\tID:ERR9907908\tPL:ILLUMINA" $INDEXTDIR ERR9907908_1_val_1.fq.gz ERR9907908_2_val_2.fq.gz | samtools view -u -S - | samtools sort -n -o $OUTDIR/ERR9907908.bam
+
+echo "---------------------------------------"
+echo "Finsihed!"

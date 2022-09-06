@@ -1,0 +1,83 @@
+#!/bin/bash
+#PBS -P pq84
+#PBS -q normalbw
+#PBS -N Map_Qual
+#PBS -j oe
+#PBS -m ae
+#PBS -l walltime=24:00:00,mem=100GB,ncpus=21
+#PBS -l storage=gdata/pq84+scratch/pq84
+#PBS -M jacob.westaway@menzies.edu.au
+
+echo "---------------------------------------"
+echo "PBS: Job identifier is $PBS_JOBID"
+echo "PBS: Job name is $PBS_JOBNAME"
+
+echo "---------------------------------------"
+echo "Define paths and load modules"
+module load bbmap/38.93
+module load samtools/1.12  
+module load sambamba/0.8.1 
+module load java/jdk-8.40 
+BED="/g/data/pq84/malaria/Pf_Malaysia/scripts/04_Variant_calling/PlasmoDB-59_Pfalciparum3D7_Genome.fasta.bed"
+OUTDIR="/g/data/pq84/malaria/Pf_Malaysia/outputs/06_Analyses/Mapping"
+mkdir $OUTDIR
+INDIR="/g/data/pq84/malaria/Pf_Malaysia/outputs/02_Mapping/"
+cd $INDIR
+
+echo "---------------------------------------"
+echo 'Mapping Quality'
+echo "---------------------------------------"
+for i in *.bam
+do
+samtools view -h --threads 21 $i | pileup.sh in=stdin 2> $OUTDIR/${i%.bam}.mapstats
+done 
+
+for i in *.bam
+do
+samtools view -h --threads 5 $i | pileup.sh in=stdin 2> $OUTDIR/${i%.bam}.mapstats
+done 
+
+
+echo "---------------------------------------"
+echo "Aggregate bbmap outputs"
+cd $OUTDIR
+tail -n +1 *mapstats | grep '.mapstats\|Read\|Mapped\|Ref\|Percent\|Average\|Standard' | sed 's/:/,/' | sed 's/<==/,/' > mapstats_summary.csv
+
+
+echo "---------------------------------------"
+echo 'Read Depth'
+echo "---------------------------------------"
+
+cd $INDIR
+
+echo "---------------------------------------"
+echo 'Sort bam files'
+for i in *.bam
+do
+samtools sort -@ 21 $i > $OUTDIR/${i%.bam}.sorted.bam
+done 
+
+echo "---------------------------------------"
+echo 'Index bam files'
+cd $OUTDIR
+for i in *.sorted.bam
+do
+samtools index -@ 21 $i 
+done 
+
+echo "---------------------------------------"
+echo 'Create file with list of filenames'
+ls *sorted.bam > filenames.txt
+
+echo "---------------------------------------"
+echo 'Exectue samtools depth'
+samtools depth -a -b $BED -f filenames.txt -o depth_summary.depth
+
+echo "---------------------------------------"
+echo 'Clean Up'
+echo "---------------------------------------"
+rm -f *sorted*
+
+echo "---------------------------------------------------------------------------------------------------------------------"
+echo "FINISHED"
+echo "---------------------------------------------------------------------------------------------------------------------"
