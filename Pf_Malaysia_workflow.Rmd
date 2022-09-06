@@ -1,0 +1,160 @@
+---
+title: "Pf-Malaysia Variant Calling Workflow"
+author: "Jacob Westaway"
+date: "Last updated on `r Sys.Date()`"
+output:
+  pdf_document:
+    toc: yes
+    toc_depth: 1
+  html_document:
+    df_print: paged
+    toc: yes
+header-includes:
+  \usepackage{float}
+  \floatplacement{figure}{H}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+\newpage
+
+# About.
+
+
+
+# 01_QC_&_TRIM
+
+File(s):  
+
+Version(s): 
+fastqc/0.11.7, parallel/20191022, multiqc/1.9, python3/3.8.5, TrimGalore/0.6.6 & cutadapt/3.5.
+
+Submission: 
+Several scripts with several samples per script (functions exectuted using loops).
+
+Notes: 
+Need to have the "paired" argument of trim_galore at the end, despite what the documentation says.
+Next was quality and adaptor trimming, which was executed with [Trim_Galore](https://github.com/FelixKrueger/TrimGalore/blob/master/Docs/Trim_Galore_User_Guide.md), a wrapper around Cutadapt and FastQC written by Felix Krueger.
+Trim_Galore was used in combination with [GNU parallel](https://www.gnu.org/software/parallel/parallel_tutorial.html), which is needed to handle the multiple file inputs.
+
+    -j16 - threads
+    --xapply - runs each pair (if not included then Trim_Galore will run every combination)
+    --illumina - illumina adapters to be removed in trimming
+    --fastqc  - trim_galore to perform QC on trimmed files
+    --paired - paired (forward and reverse) file input
+    ::: - specifies input files to parallel
+
+Script:
+
+```{R,eval=F}
+
+
+```
+
+
+# 02_MAPPING
+
+File(s): 
+
+
+Version(s): 
+samtools/1.12 & bwa/0.7.17 
+
+Submission: 
+PBS job for each sample. Create a Template.pbs file and sample_names.txt file, and then run the following:
+for i in $(cat sample_names.txt); do sed s/SAMPLE/$i/g Template.pbs > ${i}.pbs; done
+for file in *L4.pbs; do qsub $file; done
+
+Notes:
+Need to sort output from BWA by the read name (this is not compatible with indexing of the BAM file but is required for subsequent steps).
+Reference genome must be indexed - can use `bwa index -p PKA1H1_index -a is strain_A1_H.1.Icor.fasta`.
+
+BWA 
+    M - Mark shorter split hits as secondary (for Picard compatibility).
+    R - Complete read group header line. ’\t’ can be used in STR and will be converted to a TAB in the output SAM/BAM. The read group ID will be attached to every read in the output. An example is ’@RG\tID:foo\tSM:bar’. 
+
+Samtools view 
+    u - Output uncompressed BAM. This option saves time spent on compression/decompression and is thus preferred when the output is piped to another samtools command.
+    S - sam file compatibility.
+
+Samtools sort 
+    n - Sort by name.
+    o - Write final sorted output to FILE (rather than standard output).
+
+Script:
+
+```{R,eval=F}
+
+
+```
+
+# 03_BAM PRE PROCESSING
+
+File(s):  
+
+
+Version(s): 
+java/jdk-8.40 & samtools/1.12 & GATK/3.8.1
+
+Submission:
+PBS job for each sample.
+
+Notes:
+
+Why GATK have removed indel realignment from their software - https://github.com/broadinstitute/gatk-docs/blob/master/blog-2012-to-2019/2016-06-21-Changing_workflows_around_calling_SNPs_and_indels.md?id=7847
+Why we decide to use GATK3 so that we can include it - "These changes are about improving efficiency in the face of incremental returns." & "influences should be subtle for high quality data but make a difference for lower quality data" - although QC suggests our data is high quality we cannot always gurantee that this will be the case and we want these incremental returns in accruacy. There appears to be no problem including indel realignment, except efficiency, and I am willing to sacrifice this (to an extent) to get peace of mind and reduce the potential for false positive mismatches around indels, in turn improving the base quality scrore recalibration.
+Poor quality data without indel realignment should result in regions with poor mapping quality post BQSR where variants cannot be called. But if the quality is still above the threshold for variant calling, you could call false positive variants. So, the hope of GATK is that BQSR will catch the misaligned reads and minimise the number of false positives, and that with greater read quality and depth (~ x30) you are more likely to pick up on a poorly aligned read that will end up having a poor BQSR score that can be ignored. Obviously, this is less likely to be the case if you have lower quality or depth, and you can still end up with some false positives. This is what needs to be weighed up - efficiency vs quality. Thus, I think the decision should be made case by case, and in our case, where are working in the context of discovery with little to no need to scale, I think we want to guarantee quality.
+
+To download GATK 3.8 - `wget https://storage.googleapis.com/gatk-software/package-archive/gatk/GenomeAnalysisTK-3.8-1-0-gf15c1c3ef.tar.bz2`
+
+GATK requires that the reference genome has .bed, .dict and .fai files:
+  'java -jar picard.jar CreateSequenceDictionary R=PlasmoDB-59_Pfalciparum3D7_Genome.fasta'
+  'samtools faidx PlasmoDB-59_Pfalciparum3D7_Genome.fasta'
+  'awk 'BEGIN {FS="\t"}; {print $1 FS "0" FS $2}' PlasmoDB-59_Pfalciparum3D7_Genome.fasta.fai'
+
+GATK is run through Java, which requires compatible [jdk and jre](https://www.guru99.com/difference-between-jdk-jre-jvm.html#:~:text=The%20full%20form%20of%20JDK%20is%20Java%20Development,also%20platform%20dependent%2C%20but%20JVM%20is%20platform%20independent. installations).
+Java uses a [Picard](https://github.com/broadinstitute/picard) jar file to run GATK.
+
+
+GATK does not provide support for previous iterations of their software, so any additional information required needs to be obtained using `--help`.
+Arguments:
+  - T - GATK tool
+  - intervals - genomic intervals (i.e. contigs and their base positon - BED file)
+  - known - known **indels** - VCF file
+  - knownsites - known **variants** - VCF file
+  - consensusDeterminationModel - model for computing possible alternates - KNOWNS_ONLY uses known indels only
+  - LOD - threshold for cleaning above
+  - ERC - mode for emitting experimental reference confidence scores 
+  - minPruning - minimum allowed pruning factor in assembly graph - paths with < x supporting kmers are pruned for the graph
+  - maxNumHaplotypesInPopulation - self explanatory - number needs to be increased when calling organisms with high heterozygosity
+  - variant_index_type - type of index creator
+  - variant_index_parameter - to be passed to the VCF index creator
+  - contamination - fraction of contamination in seq data to aggresively remove 
+  - G - annotation
+  - hets - heterozygosity value to be used to compute likelihoods 
+  - indelHeterozygosity - heterozygosity value to be used for variant calling
+
+Calculate approximate heterozygosity (needed for -hets and -indelHeterozygosity arguments):
+
+To get an indels only VCF:
+
+java -jar /g/data/pq84/bin/GenomeAnalysisTK-3.8-1-0/GenomeAnalysisTK.jar \
+    -T SelectVariants \
+    -R PlasmoDB-59_Pfalciparum3D7_Genome.fasta \
+    -V 1202-PF-MY-ANSTEY_genotyped.vcf.gz \
+    -selectType INDEL \
+    -o 1202-PF-MY-ANSTEY_genotyped_INDELs.vcf.gz
+
+Script:
+
+```{R,eval=F}
+
+```
+
+# 04_VARIANT_CALLING 
+
+## GATK
+
+### HAPLOTYPE CALLER
