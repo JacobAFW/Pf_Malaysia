@@ -1,0 +1,325 @@
+# Calculate depth and number of mapped reads
+
+```{R,eval=F}
+#!/bin/bash
+#PBS -P pq84
+#PBS -q normalbw
+#PBS -N Map_Qual
+#PBS -j oe
+#PBS -m ae
+#PBS -l walltime=24:00:00,mem=100GB,ncpus=21
+#PBS -l storage=gdata/pq84+scratch/pq84
+#PBS -M jacob.westaway@menzies.edu.au
+
+echo "---------------------------------------"
+echo "PBS: Job identifier is $PBS_JOBID"
+echo "PBS: Job name is $PBS_JOBNAME"
+
+echo "---------------------------------------"
+echo "Define paths and load modules"
+module load bbmap/38.93
+module load samtools/1.12  
+module load sambamba/0.8.1 
+module load java/jdk-8.40 
+BED="/g/data/pq84/malaria/Pf_Malaysia/data/ref_genomes/PlasmoDB-59_Pfalciparum3D7_Genome.fasta.bed"
+OUTDIR="/g/data/pq84/malaria/Pf_Malaysia/outputs/06_Analyses/Mapping"
+mkdir $OUTDIR
+INDIR="/g/data/pq84/malaria/Pf_Malaysia/outputs/02_Mapping/"
+cd $INDIR
+
+echo "---------------------------------------"
+echo 'Mapping Quality'
+echo "---------------------------------------"
+for i in *.bam
+do
+samtools view -h --threads 21 $i | pileup.sh in=stdin 2> $OUTDIR/${i%.bam}.mapstats
+done 
+
+for i in *.bam
+do
+samtools view -h --threads 5 $i | pileup.sh in=stdin 2> $OUTDIR/${i%.bam}.mapstats
+done 
+
+
+echo "---------------------------------------"
+echo "Aggregate bbmap outputs"
+cd $OUTDIR
+tail -n +1 *mapstats | grep '.mapstats\|Read\|Mapped\|Ref\|Percent\|Average\|Standard' | sed 's/:/,/' | sed 's/<==/,/' > mapstats_summary.csv
+
+
+echo "---------------------------------------"
+echo 'Read Depth'
+echo "---------------------------------------"
+
+cd $INDIR
+
+echo "---------------------------------------"
+echo 'Sort bam files'
+for i in *.bam
+do
+samtools sort -@ 21 $i > $OUTDIR/${i%.bam}.sorted.bam
+done 
+
+echo "---------------------------------------"
+echo 'Index bam files'
+cd $OUTDIR
+for i in *.sorted.bam
+do
+samtools index -@ 21 $i 
+done 
+
+echo "---------------------------------------"
+echo 'Create file with list of filenames'
+ls *sorted.bam > filenames.txt
+
+echo "---------------------------------------"
+echo 'Exectue samtools depth'
+samtools depth -a -b $BED -f filenames.txt -o depth_summary.depth
+
+echo "---------------------------------------"
+echo 'Clean Up'
+echo "---------------------------------------"
+rm -f *sorted*
+
+echo "---------------------------------------------------------------------------------------------------------------------"
+echo "FINISHED"
+echo "---------------------------------------------------------------------------------------------------------------------"
+```
+
+
+## Visuale outputs 
+
+### Add header line to depth depth summary
+
+Break file up into individual contigs - too big for R to process effficiently as a single job
+  - get list of chromosomes
+  - use a loop to grep individual contigs into their own depth file
+  - use a loop to add a header to each of these new depth files
+  - run a batch of PBS jobs to create the depth summary tables for each contig 
+
+```{R,eval=F}
+cd /g/data/pq84/malaria/Pf_Malaysia/outputs/06_Analyses/Mapping
+
+awk '{print $1}' depth_summary.depth | uniq > chromosome.txt
+
+for i in $(cat chromosome.txt)
+    do 
+      grep $i depth_summary.depth > ${i}_contig.depth
+    done 
+
+for i in *_contig.depth
+  do
+    echo -e Contig"\n"Bases | cat - filenames.txt | sed 's/.sorted.bam//g' | tr '\n' '\t' | awk '{print $0}' - | cat - $i > ${i%contig.depth}depth_with_header.tsv
+    rm -f $i
+  done 
+```
+
+### Create summary data using PBS submissions
+
+PBS job for each sample. Create a Template.pbs file and sample_names.txt file, and then run the following:
+
+```{R,eval=F}
+cp /g/data/pq84/malaria/Pf_Malaysia/outputs/06_Analyses/Mapping/chromosome.txt chromosome.txt
+for i in $(cat chromosome.txt); do sed s/chromosome/$i/g depth_wrangle.R > ${i}.R; done
+for i in $(cat chromosome.txt); do sed s/chromosome/$i/g depth_wrangle.pbs > ${i}.pbs; done
+
+for file in *v3.pbs; do qsub $file; done
+```
+Templates:
+
+PBS
+```{R,eval=F}
+#!/bin/bash
+#PBS -P pq84
+#PBS -q normalbw
+#PBS -N Depth_R_wrangle
+#PBS -j oe
+#PBS -m ae
+#PBS -l walltime=12:00:00,mem=50GB,ncpus=11
+#PBS -l storage=gdata/pq84+scratch/pq84
+#PBS -M jacob.westaway@menzies.edu.au
+
+echo "---------------------------------------"
+echo "PBS: Job identifier is $PBS_JOBID"
+echo "PBS: Job name is $PBS_JOBNAME"
+
+echo "---------------------------------------"
+echo "Define paths and load modules"
+module load R/4.1.0 
+export R_LIBS_USER="/g/data/pq84/R"
+cd /g/data/pq84/malaria/Pf_Malaysia/outputs/06_Analyses/Mapping
+
+Rscript /g/data/pq84/malaria/Pf_Malaysia/scripts/06_Analyses/chromosome.R
+
+echo "---------------------------------------"
+echo "FINSIHED"
+```
+
+R script
+```{R,eval=F}
+library(tidyverse)
+library(janitor)
+
+read_depth_data <- function(file_path, dataset, alignment){
+read_tsv(file_path, col_names = TRUE) %>% 
+  select(!Bases) %>% 
+  filter(grepl("ordered", Contig)) %>% 
+  group_by(Contig) %>% 
+  summarise_all(mean) %>%
+  t() %>% 
+  as.data.frame() %>% 
+  row_to_names(1) %>% 
+  add_column(Data = dataset, Alignment = alignment) %>% 
+  rownames_to_column("Sample")
+}
+
+# define base_pairs function to change names and get percentage of bases that are NA
+base_pairs <- function(file_path, dataset, alignment){
+read_tsv(file_path, col_names = TRUE) %>% 
+  select(!Bases) %>% 
+  filter(grepl("ordered", Contig)) %>% 
+  na_if(0) %>% 
+  group_by(Contig) %>% 
+  summarise_all(funs(sum(is.na(.))/length(.) * 100)) %>% 
+  t() %>% 
+  as.data.frame() %>% 
+  row_to_names(1) %>% 
+  add_column(Data = dataset, Alignment = alignment) %>% 
+  rownames_to_column("Sample")
+}
+
+
+depth_data <- read_depth_data("chromosome_depth_with_header.tsv", "Sanger", "Direct")
+base_data <- base_pairs("chromosome_depth_with_header.tsv", "Sanger", "Direct")
+
+write_tsv(depth_data, "chromosome_read_depth.tsv")
+write_tsv(base_data, "chromosome_bases.tsv")
+```
+
+### Read in, wrangle data, and plot
+
+```{R,eval=F}
+module load R/4.1.0 
+export R_LIBS_USER="/g/data/pq84/R"
+cd /g/data/pq84/malaria/Pf_Malaysia/outputs/06_Analyses/Mapping
+R
+```
+
+```{R,eval=F}
+library(tidyverse)
+library(janitor)
+library(data.table)
+
+bbmap_func <- function(file_path, grep_pattern, bbmap_data, alignment, genome){ 
+read_csv(file_path, col_names = c("Variable", "Value")) %>%
+  mutate(Variable = str_remove(Variable, "==> ")) %>% 
+  filter(!grepl(grep_pattern, Variable)) %>% # data specific
+  add_column(
+    (read_csv(file_path, col_names = c("Variable", "Value")) %>% 
+       mutate(Variable = str_remove(Variable, "==> ")) %>% 
+       filter(grepl(grep_pattern, Variable)) %>% # data specific
+       mutate(Variable = Variable) %>% 
+       rbind(.,.,.,.,.,.,.,.,.,.,.,.) %>% # represents the number of variables
+       arrange(Variable) %>% 
+       mutate_if(is.character, as.factor) %>% 
+       select(Variable) %>% 
+       rename("ID" = Variable))) %>% 
+  pivot_wider(names_from = Variable, values_from = Value) %>% 
+  add_column(Data = bbmap_data, Alignment = alignment, Genome = genome)  %>% 
+  as.tibble(.name_repair = "universal")
+}
+
+bbmap_data <- bbmap_func("mapstats_summary.csv",  "ERR", "Sanger", "Direct", "Pk") %>%
+  mutate(Sample = str_remove(ID, ".mapstats")) %>%
+  select(-ID)
+
+depth_data <- list.files(pattern = "*read_depth.tsv") %>% 
+  map_dfc(~fread(.)) %>%
+  rename("Sample" = "Sample...1") %>%
+  rename("Data" = "Data...2") %>%
+  rename("Alignment" = "Alignment...3") %>%
+  select(Sample, Data, Alignment, ends_with("v2"))  %>%
+  rename_with(function(x){gsub("ordered","depth",x)}) %>%
+  na.omit()
+
+base_data <- list.files(pattern = "*bases.tsv") %>% 
+  map_dfc(~fread(.)) %>%
+  rename("Sample" = "Sample...1") %>%
+  rename("Data" = "Data...2") %>%
+  rename("Alignment" = "Alignment...3") %>%
+  select(Sample, Data, Alignment, ends_with("v2")) %>%
+  rename_with(function(x){gsub("ordered","bases",x)}) %>%
+  na.omit()
+
+
+# Plot mapped reads - sWGA vs non-sWGA - paired
+bbmap_plot <- bbmap_data %>%
+  arrange(desc(Mapped.reads)) %>%
+  add_column(sample = 1:nrow(.)) %>%
+  ggplot(aes(x = sample, y = Mapped.reads/1000000)) +
+  geom_col() +
+  theme(axis.text.x = element_blank(), axis.ticks = element_blank()) +
+  ylab("Mapped Reads (M)") +
+  xlab("Sample")
+
+ggsave("bbmap_plot.png", bbmap_plot, dpi = 600)
+
+# Plot mapped - boxplot
+mapped_improvement <- bbmap_data %>%
+  ggplot(aes(x = Genome, y = Mapped.reads/1000000)) +
+  geom_boxplot() +
+  geom_point() +
+  theme(axis.text.x = element_blank(), axis.ticks = element_blank(), legend.position = "none") +
+  ylab("Mapped Reads (M)") 
+
+ggsave("mapped_box.png", mapped_improvement)
+
+
+
+# Summary for read depth and missing bases
+summary_table_depth_bases <- depth_data %>% 
+  select(1:4, 20:ncol(.)) %>%  
+  group_by(study_id, sWGA) %>% 
+  summarise(across(where(is.numeric), ~ mean(.x, na.rm = TRUE))) %>% 
+  group_by(sWGA) %>% 
+  summarise(across(where(is.numeric), ~ mean(.x, na.rm = TRUE))) 
+
+read_depth_plot <- linked_mapping_data %>% 
+  select(1:4, 20:ncol(.)) %>%  
+  group_by(study_id, sWGA) %>% 
+  summarise(across(where(is.numeric), ~ mean(.x, na.rm = TRUE))) %>% 
+  group_by(sWGA) %>% 
+  summarise(across(where(is.numeric), ~ mean(.x, na.rm = TRUE))) %>% 
+  pivot_longer(cols = 2:ncol(.), names_to = "contig", values_to = "value") %>% 
+  filter(grepl("depth", contig)) %>% 
+  rename(depth = value) %>% 
+  mutate(contig = str_remove(contig, "depth_PKNH_")) %>% 
+  mutate(contig = str_remove(contig, "_v2")) %>% 
+  ggplot(aes(x = contig, colour = sWGA)) +
+  geom_point(aes(y = depth))
+
+missing_bases_plot <- linked_mapping_data %>% 
+  select(1:4, 20:ncol(.)) %>%  
+  group_by(study_id, sWGA) %>% 
+  summarise(across(where(is.numeric), ~ mean(.x, na.rm = TRUE))) %>% 
+  group_by(sWGA) %>% 
+  summarise(across(where(is.numeric), ~ mean(.x, na.rm = TRUE))) %>% 
+  pivot_longer(cols = 2:ncol(.), names_to = "contig", values_to = "value") %>% 
+  filter(grepl("bases", contig)) %>% 
+  rename(miss_bases = value) %>% 
+  mutate(contig = str_remove(contig, "bases_PKNH_")) %>% 
+  mutate(contig = str_remove(contig, "_v2")) %>% 
+  ggplot(aes(x = contig, colour = sWGA)) +
+  geom_point(aes(y = miss_bases))
+
+# Mean/min/max/SD for depth and missing bases across contigs
+linked_mapping_data %>% 
+  select(1:4, 20:ncol(.)) %>%  
+  group_by(study_id, sWGA) %>% 
+  pivot_longer(cols = 5:ncol(.), names_to = "contig", values_to = "value") %>% 
+  group_by(sWGA, contig) %>% 
+  summarise(mean = mean(value),  SD = sd(value), max = max(value), min = min(value)) 
+
+#ggsave("FILE_PATH.png", plot_name)
+```
+

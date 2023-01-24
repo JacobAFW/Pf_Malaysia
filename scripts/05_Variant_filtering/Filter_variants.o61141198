@@ -1,0 +1,191 @@
+---------------------------------------
+PBS: Job identifier is 61141198.gadi-pbs
+PBS: Job name is Filter_variants
+---------------------------------------
+Define paths and load modules
+---------------------------------------
+Define paths and change to working directory
+---------------------------------------
+Correct bcftools introduced changes to make java happy
+---------------------------------------
+---------------------------------------
+SUBSET TO VARIANT TYPE
+---------------------------------------
+---------------------------------------
+SNPs
+INFO  15:19:57,897 HelpFormatter - -------------------------------------------------------------------------------------------- 
+INFO  15:19:57,898 HelpFormatter - The Genome Analysis Toolkit (GATK) v3.8-1-0-gf15c1c3ef, Compiled 2018/02/19 05:43:50 
+INFO  15:19:57,899 HelpFormatter - Copyright (c) 2010-2016 The Broad Institute 
+INFO  15:19:57,899 HelpFormatter - For support and documentation go to https://software.broadinstitute.org/gatk 
+INFO  15:19:57,899 HelpFormatter - [Thu Oct 20 15:19:57 GMT+10:00 2022] Executing on Linux 4.18.0-372.26.1.el8.nci.x86_64 amd64 
+INFO  15:19:57,899 HelpFormatter - OpenJDK 64-Bit Server VM 1.8.0_40-b25 
+INFO  15:19:57,901 HelpFormatter - Program Args: -T SelectVariants -R /g/data/pq84/malaria/Pf_Malaysia/data/ref_genomes/PlasmoDB-59_Pfalciparum3D7_Genome.fasta -V Consensus_fixed.vcf -selectType SNP -o /g/data/pq84/malaria/Pf_Malaysia/outputs/04_Variant_calling/consensus/filtered//GVCFall_SNPs.vcf 
+INFO  15:19:57,912 HelpFormatter - Executing as jw1542@gadi-cpu-bdw-0051.gadi.nci.org.au on Linux 4.18.0-372.26.1.el8.nci.x86_64 amd64; OpenJDK 64-Bit Server VM 1.8.0_40-b25. 
+INFO  15:19:57,913 HelpFormatter - Date/Time: 2022/10/20 15:19:57 
+INFO  15:19:57,913 HelpFormatter - -------------------------------------------------------------------------------------------- 
+INFO  15:19:57,913 HelpFormatter - -------------------------------------------------------------------------------------------- 
+INFO  15:19:57,951 NativeLibraryLoader - Loading libgkl_compression.so from jar:file:/g/data/pq84/bin/GenomeAnalysisTK-3.8-1-0/GenomeAnalysisTK.jar!/com/intel/gkl/native/libgkl_compression.so 
+INFO  15:19:57,986 GenomeAnalysisEngine - Deflater: IntelDeflater 
+INFO  15:19:57,987 GenomeAnalysisEngine - Inflater: IntelInflater 
+INFO  15:19:57,987 GenomeAnalysisEngine - Strictness is SILENT 
+INFO  15:19:58,308 GenomeAnalysisEngine - Downsampling Settings: Method: BY_SAMPLE, Target Coverage: 1000 
+INFO  15:20:00,536 RMDTrackBuilder - Writing Tribble index to disk for file /g/data/pq84/malaria/Pf_Malaysia/outputs/04_Variant_calling/consensus/Consensus_fixed.vcf.idx 
+INFO  15:20:00,812 GenomeAnalysisEngine - Preparing for traversal 
+INFO  15:20:00,813 GenomeAnalysisEngine - Done preparing for traversal 
+INFO  15:20:00,813 ProgressMeter - [INITIALIZATION COMPLETE; STARTING PROCESSING] 
+INFO  15:20:00,813 ProgressMeter -                 | processed |    time |    per 1M |           |   total | remaining 
+INFO  15:20:00,814 ProgressMeter -        Location |     sites | elapsed |     sites | completed | runtime |   runtime 
+INFO  15:20:10,586 SelectVariants - 76717 records processed. 
+INFO  15:20:10,653 ProgressMeter -            done    225539.0     9.0 s      43.0 s      100.0%     9.0 s       0.0 s 
+INFO  15:20:10,653 ProgressMeter - Total runtime 9.84 secs, 0.16 min, 0.00 hours 
+------------------------------------------------------------------------------------------
+Done. There were no warn messages.
+------------------------------------------------------------------------------------------
+---------------------------------------
+Indels
+INFO  15:20:12,174 HelpFormatter - -------------------------------------------------------------------------------------------- 
+INFO  15:20:12,176 HelpFormatter - The Genome Analysis Toolkit (GATK) v3.8-1-0-gf15c1c3ef, Compiled 2018/02/19 05:43:50 
+INFO  15:20:12,177 HelpFormatter - Copyright (c) 2010-2016 The Broad Institute 
+INFO  15:20:12,177 HelpFormatter - For support and documentation go to https://software.broadinstitute.org/gatk 
+INFO  15:20:12,177 HelpFormatter - [Thu Oct 20 15:20:12 GMT+10:00 2022] Executing on Linux 4.18.0-372.26.1.el8.nci.x86_64 amd64 
+INFO  15:20:12,177 HelpFormatter - OpenJDK 64-Bit Server VM 1.8.0_40-b25 
+INFO  15:20:12,180 HelpFormatter - Program Args: -T SelectVariants -R /g/data/pq84/malaria/Pf_Malaysia/data/ref_genomes/PlasmoDB-59_Pfalciparum3D7_Genome.fasta -V Consensus_fixed.vcf -selectType INDEL -o /g/data/pq84/malaria/Pf_Malaysia/outputs/04_Variant_calling/consensus/filtered//GVCFall_INDELs.vcf 
+INFO  15:20:12,187 HelpFormatter - Executing as jw1542@gadi-cpu-bdw-0051.gadi.nci.org.au on Linux 4.18.0-372.26.1.el8.nci.x86_64 amd64; OpenJDK 64-Bit Server VM 1.8.0_40-b25. 
+INFO  15:20:12,188 HelpFormatter - Date/Time: 2022/10/20 15:20:12 
+INFO  15:20:12,188 HelpFormatter - -------------------------------------------------------------------------------------------- 
+INFO  15:20:12,188 HelpFormatter - -------------------------------------------------------------------------------------------- 
+INFO  15:20:12,212 NativeLibraryLoader - Loading libgkl_compression.so from jar:file:/g/data/pq84/bin/GenomeAnalysisTK-3.8-1-0/GenomeAnalysisTK.jar!/com/intel/gkl/native/libgkl_compression.so 
+INFO  15:20:12,228 GenomeAnalysisEngine - Deflater: IntelDeflater 
+INFO  15:20:12,228 GenomeAnalysisEngine - Inflater: IntelInflater 
+INFO  15:20:12,229 GenomeAnalysisEngine - Strictness is SILENT 
+INFO  15:20:12,358 GenomeAnalysisEngine - Downsampling Settings: Method: BY_SAMPLE, Target Coverage: 1000 
+INFO  15:20:12,454 GenomeAnalysisEngine - Preparing for traversal 
+INFO  15:20:12,455 GenomeAnalysisEngine - Done preparing for traversal 
+INFO  15:20:12,455 ProgressMeter - [INITIALIZATION COMPLETE; STARTING PROCESSING] 
+INFO  15:20:12,456 ProgressMeter -                 | processed |    time |    per 1M |           |   total | remaining 
+INFO  15:20:12,456 ProgressMeter -        Location |     sites | elapsed |     sites | completed | runtime |   runtime 
+INFO  15:20:18,042 SelectVariants - 76717 records processed. 
+INFO  15:20:18,083 ProgressMeter -            done    225539.0     5.0 s      24.0 s      100.0%     5.0 s       0.0 s 
+INFO  15:20:18,084 ProgressMeter - Total runtime 5.63 secs, 0.09 min, 0.00 hours 
+------------------------------------------------------------------------------------------
+Done. There were no warn messages.
+------------------------------------------------------------------------------------------
+---------------------------------------
+FILTER
+---------------------------------------
+INFO  15:20:19,602 HelpFormatter - -------------------------------------------------------------------------------------------- 
+INFO  15:20:19,604 HelpFormatter - The Genome Analysis Toolkit (GATK) v3.8-1-0-gf15c1c3ef, Compiled 2018/02/19 05:43:50 
+INFO  15:20:19,604 HelpFormatter - Copyright (c) 2010-2016 The Broad Institute 
+INFO  15:20:19,604 HelpFormatter - For support and documentation go to https://software.broadinstitute.org/gatk 
+INFO  15:20:19,604 HelpFormatter - [Thu Oct 20 15:20:19 GMT+10:00 2022] Executing on Linux 4.18.0-372.26.1.el8.nci.x86_64 amd64 
+INFO  15:20:19,604 HelpFormatter - OpenJDK 64-Bit Server VM 1.8.0_40-b25 
+INFO  15:20:19,607 HelpFormatter - Program Args: -T VariantFiltration -V /g/data/pq84/malaria/Pf_Malaysia/outputs/04_Variant_calling/consensus//Consensus_fixed.vcf -R /g/data/pq84/malaria/Pf_Malaysia/data/ref_genomes/PlasmoDB-59_Pfalciparum3D7_Genome.fasta -filter QD < 15.0 -filterName QD15 -filter FS > 1.0 -filterName FS1 -filter MQ < 40.0 -filterName MQ40 -o /g/data/pq84/malaria/Pf_Malaysia/outputs/04_Variant_calling/consensus/filtered//PK_consensus_FILTERED.vcf 
+INFO  15:20:19,613 HelpFormatter - Executing as jw1542@gadi-cpu-bdw-0051.gadi.nci.org.au on Linux 4.18.0-372.26.1.el8.nci.x86_64 amd64; OpenJDK 64-Bit Server VM 1.8.0_40-b25. 
+INFO  15:20:19,614 HelpFormatter - Date/Time: 2022/10/20 15:20:19 
+INFO  15:20:19,614 HelpFormatter - -------------------------------------------------------------------------------------------- 
+INFO  15:20:19,614 HelpFormatter - -------------------------------------------------------------------------------------------- 
+INFO  15:20:19,640 NativeLibraryLoader - Loading libgkl_compression.so from jar:file:/g/data/pq84/bin/GenomeAnalysisTK-3.8-1-0/GenomeAnalysisTK.jar!/com/intel/gkl/native/libgkl_compression.so 
+INFO  15:20:19,660 GenomeAnalysisEngine - Deflater: IntelDeflater 
+INFO  15:20:19,660 GenomeAnalysisEngine - Inflater: IntelInflater 
+INFO  15:20:19,660 GenomeAnalysisEngine - Strictness is SILENT 
+INFO  15:20:19,778 GenomeAnalysisEngine - Downsampling Settings: Method: BY_SAMPLE, Target Coverage: 1000 
+INFO  15:20:19,894 GenomeAnalysisEngine - Preparing for traversal 
+INFO  15:20:19,894 GenomeAnalysisEngine - Done preparing for traversal 
+INFO  15:20:19,895 ProgressMeter - [INITIALIZATION COMPLETE; STARTING PROCESSING] 
+INFO  15:20:19,895 ProgressMeter -                 | processed |    time |    per 1M |           |   total | remaining 
+INFO  15:20:19,896 ProgressMeter -        Location |     sites | elapsed |     sites | completed | runtime |   runtime 
+WARN  15:20:20,984 Interpreter - ![0,2]: 'QD < 15.0;' undefined variable QD 
+WARN  15:20:21,917 Interpreter - ![0,2]: 'QD < 15.0;' undefined variable QD 
+WARN  15:20:22,629 Interpreter - ![0,2]: 'QD < 15.0;' undefined variable QD 
+WARN  15:20:23,098 Interpreter - ![0,2]: 'QD < 15.0;' undefined variable QD 
+WARN  15:20:23,100 Interpreter - ![0,2]: 'QD < 15.0;' undefined variable QD 
+WARN  15:20:23,108 Interpreter - ![0,2]: 'QD < 15.0;' undefined variable QD 
+WARN  15:20:23,128 Interpreter - ![0,2]: 'QD < 15.0;' undefined variable QD 
+WARN  15:20:23,131 Interpreter - ![0,2]: 'QD < 15.0;' undefined variable QD 
+WARN  15:20:23,350 Interpreter - ![0,2]: 'QD < 15.0;' undefined variable QD 
+WARN  15:20:23,351 Interpreter - ![0,2]: 'QD < 15.0;' undefined variable QD 
+INFO  15:20:23,648 ProgressMeter -            done    225539.0     3.0 s      16.0 s      100.0%     3.0 s       0.0 s 
+INFO  15:20:23,648 ProgressMeter - Total runtime 3.75 secs, 0.06 min, 0.00 hours 
+------------------------------------------------------------------------------------------
+Done. There were no warn messages.
+------------------------------------------------------------------------------------------
+INFO  15:20:25,223 HelpFormatter - -------------------------------------------------------------------------------------------- 
+INFO  15:20:25,225 HelpFormatter - The Genome Analysis Toolkit (GATK) v3.8-1-0-gf15c1c3ef, Compiled 2018/02/19 05:43:50 
+INFO  15:20:25,225 HelpFormatter - Copyright (c) 2010-2016 The Broad Institute 
+INFO  15:20:25,225 HelpFormatter - For support and documentation go to https://software.broadinstitute.org/gatk 
+INFO  15:20:25,225 HelpFormatter - [Thu Oct 20 15:20:25 GMT+10:00 2022] Executing on Linux 4.18.0-372.26.1.el8.nci.x86_64 amd64 
+INFO  15:20:25,226 HelpFormatter - OpenJDK 64-Bit Server VM 1.8.0_40-b25 
+INFO  15:20:25,228 HelpFormatter - Program Args: -T VariantFiltration -V /g/data/pq84/malaria/Pf_Malaysia/outputs/04_Variant_calling/consensus/filtered//GVCFall_SNPs.vcf -R /g/data/pq84/malaria/Pf_Malaysia/data/ref_genomes/PlasmoDB-59_Pfalciparum3D7_Genome.fasta -filter QD < 15.0 -filterName QD15 -filter FS > 1.0 -filterName FS1 -filter MQ < 40.0 -filterName MQ40 -o /g/data/pq84/malaria/Pf_Malaysia/outputs/04_Variant_calling/consensus/filtered//FILTERED_SNPs.vcf 
+INFO  15:20:25,235 HelpFormatter - Executing as jw1542@gadi-cpu-bdw-0051.gadi.nci.org.au on Linux 4.18.0-372.26.1.el8.nci.x86_64 amd64; OpenJDK 64-Bit Server VM 1.8.0_40-b25. 
+INFO  15:20:25,235 HelpFormatter - Date/Time: 2022/10/20 15:20:25 
+INFO  15:20:25,235 HelpFormatter - -------------------------------------------------------------------------------------------- 
+INFO  15:20:25,235 HelpFormatter - -------------------------------------------------------------------------------------------- 
+INFO  15:20:25,267 NativeLibraryLoader - Loading libgkl_compression.so from jar:file:/g/data/pq84/bin/GenomeAnalysisTK-3.8-1-0/GenomeAnalysisTK.jar!/com/intel/gkl/native/libgkl_compression.so 
+INFO  15:20:25,286 GenomeAnalysisEngine - Deflater: IntelDeflater 
+INFO  15:20:25,286 GenomeAnalysisEngine - Inflater: IntelInflater 
+INFO  15:20:25,287 GenomeAnalysisEngine - Strictness is SILENT 
+INFO  15:20:25,404 GenomeAnalysisEngine - Downsampling Settings: Method: BY_SAMPLE, Target Coverage: 1000 
+INFO  15:20:25,504 GenomeAnalysisEngine - Preparing for traversal 
+INFO  15:20:25,504 GenomeAnalysisEngine - Done preparing for traversal 
+INFO  15:20:25,504 ProgressMeter - [INITIALIZATION COMPLETE; STARTING PROCESSING] 
+INFO  15:20:25,505 ProgressMeter -                 | processed |    time |    per 1M |           |   total | remaining 
+INFO  15:20:25,505 ProgressMeter -        Location |     sites | elapsed |     sites | completed | runtime |   runtime 
+WARN  15:20:26,197 Interpreter - ![0,2]: 'QD < 15.0;' undefined variable QD 
+WARN  15:20:26,921 Interpreter - ![0,2]: 'QD < 15.0;' undefined variable QD 
+WARN  15:20:27,357 Interpreter - ![0,2]: 'QD < 15.0;' undefined variable QD 
+WARN  15:20:27,608 Interpreter - ![0,2]: 'QD < 15.0;' undefined variable QD 
+WARN  15:20:27,610 Interpreter - ![0,2]: 'QD < 15.0;' undefined variable QD 
+WARN  15:20:27,617 Interpreter - ![0,2]: 'QD < 15.0;' undefined variable QD 
+WARN  15:20:27,637 Interpreter - ![0,2]: 'QD < 15.0;' undefined variable QD 
+WARN  15:20:27,640 Interpreter - ![0,2]: 'QD < 15.0;' undefined variable QD 
+WARN  15:20:27,718 Interpreter - ![0,2]: 'QD < 15.0;' undefined variable QD 
+WARN  15:20:27,719 Interpreter - ![0,2]: 'QD < 15.0;' undefined variable QD 
+INFO  15:20:27,954 ProgressMeter -            done     44925.0     2.0 s      54.0 s      100.0%     2.0 s       0.0 s 
+INFO  15:20:27,954 ProgressMeter - Total runtime 2.45 secs, 0.04 min, 0.00 hours 
+------------------------------------------------------------------------------------------
+Done. There were no warn messages.
+------------------------------------------------------------------------------------------
+INFO  15:20:29,453 HelpFormatter - -------------------------------------------------------------------------------------------- 
+INFO  15:20:29,454 HelpFormatter - The Genome Analysis Toolkit (GATK) v3.8-1-0-gf15c1c3ef, Compiled 2018/02/19 05:43:50 
+INFO  15:20:29,454 HelpFormatter - Copyright (c) 2010-2016 The Broad Institute 
+INFO  15:20:29,455 HelpFormatter - For support and documentation go to https://software.broadinstitute.org/gatk 
+INFO  15:20:29,455 HelpFormatter - [Thu Oct 20 15:20:29 GMT+10:00 2022] Executing on Linux 4.18.0-372.26.1.el8.nci.x86_64 amd64 
+INFO  15:20:29,455 HelpFormatter - OpenJDK 64-Bit Server VM 1.8.0_40-b25 
+INFO  15:20:29,457 HelpFormatter - Program Args: -T VariantFiltration -V /g/data/pq84/malaria/Pf_Malaysia/outputs/04_Variant_calling/consensus/filtered//GVCFall_INDELs.vcf -R /g/data/pq84/malaria/Pf_Malaysia/data/ref_genomes/PlasmoDB-59_Pfalciparum3D7_Genome.fasta -filter QD < 15.0 -filterName QD15 -filter FS > 1.0 -filterName FS1 -filter MQ < 40.0 -filterName MQ40 -o /g/data/pq84/malaria/Pf_Malaysia/outputs/04_Variant_calling/consensus/filtered//FILTERED_INDELs.vcf 
+INFO  15:20:29,464 HelpFormatter - Executing as jw1542@gadi-cpu-bdw-0051.gadi.nci.org.au on Linux 4.18.0-372.26.1.el8.nci.x86_64 amd64; OpenJDK 64-Bit Server VM 1.8.0_40-b25. 
+INFO  15:20:29,464 HelpFormatter - Date/Time: 2022/10/20 15:20:29 
+INFO  15:20:29,465 HelpFormatter - -------------------------------------------------------------------------------------------- 
+INFO  15:20:29,465 HelpFormatter - -------------------------------------------------------------------------------------------- 
+INFO  15:20:29,490 NativeLibraryLoader - Loading libgkl_compression.so from jar:file:/g/data/pq84/bin/GenomeAnalysisTK-3.8-1-0/GenomeAnalysisTK.jar!/com/intel/gkl/native/libgkl_compression.so 
+INFO  15:20:29,522 GenomeAnalysisEngine - Deflater: IntelDeflater 
+INFO  15:20:29,522 GenomeAnalysisEngine - Inflater: IntelInflater 
+INFO  15:20:29,523 GenomeAnalysisEngine - Strictness is SILENT 
+INFO  15:20:29,643 GenomeAnalysisEngine - Downsampling Settings: Method: BY_SAMPLE, Target Coverage: 1000 
+INFO  15:20:29,733 GenomeAnalysisEngine - Preparing for traversal 
+INFO  15:20:29,734 GenomeAnalysisEngine - Done preparing for traversal 
+INFO  15:20:29,734 ProgressMeter - [INITIALIZATION COMPLETE; STARTING PROCESSING] 
+INFO  15:20:29,734 ProgressMeter -                 | processed |    time |    per 1M |           |   total | remaining 
+INFO  15:20:29,735 ProgressMeter -        Location |     sites | elapsed |     sites | completed | runtime |   runtime 
+INFO  15:20:31,882 ProgressMeter -            done    179513.0     2.0 s      11.0 s       99.8%     2.0 s       0.0 s 
+INFO  15:20:31,882 ProgressMeter - Total runtime 2.15 secs, 0.04 min, 0.00 hours 
+------------------------------------------------------------------------------------------
+Done. There were no warn messages.
+------------------------------------------------------------------------------------------
+---------------------------------------
+Clean up
+---------------------------------------
+---------------------------------------
+Finsihed
+
+======================================================================================
+                  Resource Usage on 2022-10-20 16:20:34:
+   Job Id:             61141198.gadi-pbs
+   Project:            pq84
+   Exit Status:        0
+   Service Units:      0.14
+   NCPUs Requested:    10                     NCPUs Used: 10              
+                                           CPU Time Used: 00:02:00        
+   Memory Requested:   80.0GB                Memory Used: 1.79GB          
+   Walltime requested: 12:00:00            Walltime Used: 00:00:39        
+   JobFS requested:    100.0MB                JobFS used: 0B              
+======================================================================================

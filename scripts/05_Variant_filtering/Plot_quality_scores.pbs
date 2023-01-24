@@ -1,7 +1,7 @@
 #!/bin/bash
 #PBS -P pq84
 #PBS -q normalbw
-#PBS -N Variant_quality
+#PBS -N Plot_variant_quality
 #PBS -j oe
 #PBS -m ae
 #PBS -l walltime=1:00:00,mem=40GB,ncpus=10
@@ -16,15 +16,15 @@ echo "Pk pop gen in Malaysia"
 echo "---------------------------------------"
 echo "---------------------------------------"
 echo 'Change to working directory and set env variables'
-OUTDIR="/g/data/pq84/malaria/Pk_Malaysian_Population_Genetics/outputs/04_Variant_calling/filtered/quality/"
 PICARD="/g/data/pq84/bin/picard/build/libs/picard.jar"
-INDEXTDIR="/g/data/pq84/malaria/Parasite_and_human_genetic_risk_factors_for_Pk_malaria/data/ref_genomes/PKA1H1/fasta/strain_A1_H.1.Icor.fasta"
-GATK="/g/data/pq84/bin/GenomeAnalysisTK-3.8-1-0/GenomeAnalysisTK.jar"
+GATK="/g/data/pq84/bin/GenomeAnalysisTK-3.8-1-0/GenomeAnalysisTK.jar" 
+INDEXTDIR="/g/data/pq84/malaria/Pf_Malaysia/data/ref_genomes/PlasmoDB-59_Pfalciparum3D7_Genome.fasta"
+OUTDIR="/g/data/pq84/malaria/Pf_Malaysia/outputs/04_Variant_calling/consensus/filtered/quality/"
 module load R/4.1.0 
 export R_LIBS_USER="/g/data/pq84/R"
 
 mkdir $OUTDIR
-cd /g/data/pq84/malaria/Pk_Malaysian_Population_Genetics/outputs/04_Variant_calling/filtered/
+cd /g/data/pq84/malaria/Pf_Malaysia/outputs/04_Variant_calling/consensus/filtered/
 
 echo "---------------------------------------"
 echo 'Make diagnostic tables for Variants Scores - snps'
@@ -50,7 +50,7 @@ java -Djava.iodir=$PBS_JOBFS -Xms3200m -Xmx3600m -jar $GATK \
 echo "---------------------------------------"
 echo 'Plot with R'
 
-Rscript /g/data/pq84/malaria/Pk_Malaysian_Population_Genetics/scripts/05_Variant_filtering/Plot_quality_scores.R
+Rscript /g/data/pq84/malaria/Pf_Malaysia/scripts/05_Variant_filtering/Plot_quality_scores.R
 
 echo "---------------------------------------"
 echo 'Finished'

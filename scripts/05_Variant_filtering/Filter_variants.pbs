@@ -19,10 +19,10 @@ module load java/jdk-8.40
 echo "---------------------------------------"
 echo "Define paths and change to working directory"
 PICARD="/g/data/pq84/bin/picard/build/libs/picard.jar"
-INDEXTDIR="/g/data/pq84/malaria/Parasite_and_human_genetic_risk_factors_for_Pk_malaria/data/ref_genomes/PKA1H1/fasta/strain_A1_H.1.Icor.fasta"
-GATK="/g/data/pq84/bin/GenomeAnalysisTK-3.8-1-0/GenomeAnalysisTK.jar"
-INDIR="/g/data/pq84/malaria/Pk_Malaysian_Population_Genetics/outputs/04_Variant_calling/consensus/"
-OUTDIR="/g/data/pq84/malaria/Pk_Malaysian_Population_Genetics/outputs/04_Variant_calling/filtered/"
+GATK="/g/data/pq84/bin/GenomeAnalysisTK-3.8-1-0/GenomeAnalysisTK.jar" 
+INDEXTDIR="/g/data/pq84/malaria/Pf_Malaysia/data/ref_genomes/PlasmoDB-59_Pfalciparum3D7_Genome.fasta"
+INDIR="/g/data/pq84/malaria/Pf_Malaysia/outputs/04_Variant_calling/consensus/"
+OUTDIR="/g/data/pq84/malaria/Pf_Malaysia/outputs/04_Variant_calling/consensus/filtered/"
 
 mkdir $OUTDIR
 cd $INDIR

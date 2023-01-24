@@ -21,12 +21,13 @@ knitr::opts_chunk$set(echo = TRUE)
 \newpage
 
 # About.
-
+This is the full workflow for a study exploring the population genetics of Pf infections imported into into Malaysia.
 
 
 # 01_QC_&_TRIM
 
 File(s):  
+/g/data/pq84/malaria/Pf_Malaysia/scripts/01_QC_Trim/01_Trim.pbs
 
 Version(s): 
 fastqc/0.11.7, parallel/20191022, multiqc/1.9, python3/3.8.5, TrimGalore/0.6.6 & cutadapt/3.5.
@@ -49,15 +50,96 @@ Trim_Galore was used in combination with [GNU parallel](https://www.gnu.org/soft
 Script:
 
 ```{R,eval=F}
+#!/bin/bash
+#PBS -P pq84
+#PBS -q normalbw
+#PBS -N Map_Qual
+#PBS -j oe
+#PBS -m ae
+#PBS -l walltime=24:00:00,mem=100GB,ncpus=21
+#PBS -l storage=gdata/pq84+scratch/pq84
+#PBS -M jacob.westaway@menzies.edu.au
+
+echo "---------------------------------------"
+echo "PBS: Job identifier is $PBS_JOBID"
+echo "PBS: Job name is $PBS_JOBNAME"
+
+echo "---------------------------------------"
+echo "Define paths and load modules"
+module load bbmap/38.93
+module load samtools/1.12  
+module load sambamba/0.8.1 
+module load java/jdk-8.40 
+BED="/g/data/pq84/malaria/Pf_Malaysia/data/ref_genomes/PlasmoDB-59_Pfalciparum3D7_Genome.fasta.bed"
+OUTDIR="/g/data/pq84/malaria/Pf_Malaysia/outputs/06_Analyses/Mapping"
+mkdir $OUTDIR
+INDIR="/g/data/pq84/malaria/Pf_Malaysia/outputs/02_Mapping/"
+cd $INDIR
+
+echo "---------------------------------------"
+echo 'Mapping Quality'
+echo "---------------------------------------"
+for i in *.bam
+do
+samtools view -h --threads 21 $i | pileup.sh in=stdin 2> $OUTDIR/${i%.bam}.mapstats
+done 
+
+for i in *.bam
+do
+samtools view -h --threads 5 $i | pileup.sh in=stdin 2> $OUTDIR/${i%.bam}.mapstats
+done 
 
 
+echo "---------------------------------------"
+echo "Aggregate bbmap outputs"
+cd $OUTDIR
+tail -n +1 *mapstats | grep '.mapstats\|Read\|Mapped\|Ref\|Percent\|Average\|Standard' | sed 's/:/,/' | sed 's/<==/,/' > mapstats_summary.csv
+
+
+echo "---------------------------------------"
+echo 'Read Depth'
+echo "---------------------------------------"
+
+cd $INDIR
+
+echo "---------------------------------------"
+echo 'Sort bam files'
+for i in *.bam
+do
+samtools sort -@ 21 $i > $OUTDIR/${i%.bam}.sorted.bam
+done 
+
+echo "---------------------------------------"
+echo 'Index bam files'
+cd $OUTDIR
+for i in *.sorted.bam
+do
+samtools index -@ 21 $i 
+done 
+
+echo "---------------------------------------"
+echo 'Create file with list of filenames'
+ls *sorted.bam > filenames.txt
+
+echo "---------------------------------------"
+echo 'Exectue samtools depth'
+samtools depth -a -b $BED -f filenames.txt -o depth_summary.depth
+
+echo "---------------------------------------"
+echo 'Clean Up'
+echo "---------------------------------------"
+rm -f *sorted*
+
+echo "---------------------------------------------------------------------------------------------------------------------"
+echo "FINISHED"
+echo "---------------------------------------------------------------------------------------------------------------------"
 ```
 
 
 # 02_MAPPING
 
 File(s): 
-
+/g/data/pq84/malaria/Pf_Malaysia/scripts/02_Pk_mapping/Template.pbs
 
 Version(s): 
 samtools/1.12 & bwa/0.7.17 
@@ -65,7 +147,7 @@ samtools/1.12 & bwa/0.7.17
 Submission: 
 PBS job for each sample. Create a Template.pbs file and sample_names.txt file, and then run the following:
 for i in $(cat sample_names.txt); do sed s/SAMPLE/$i/g Template.pbs > ${i}.pbs; done
-for file in *L4.pbs; do qsub $file; done
+for file in ERR*.pbs; do qsub $file; done
 
 Notes:
 Need to sort output from BWA by the read name (this is not compatible with indexing of the BAM file but is required for subsequent steps).
@@ -86,14 +168,148 @@ Samtools sort
 Script:
 
 ```{R,eval=F}
+#!/bin/bash
+#PBS -P pq84
+#PBS -q normalbw
+#PBS -N Mapping
+#PBS -j oe
+#PBS -m ae
+#PBS -l walltime=4:00:00,mem=20GB,ncpus=10
+#PBS -l storage=gdata/pq84+scratch/pq84
+#PBS -M jacob.westaway@menzies.edu.au
+
+echo "---------------------------------------"
+echo "PBS: Job identifier is $PBS_JOBID"
+echo "PBS: Job name is $PBS_JOBNAME"
+
+echo "---------------------------------------"
+echo "Define paths and load modules"
+module load samtools/1.12  
+module load bwa/0.7.17 
+
+echo "---------------------------------------"
+echo 'Change to working directory' 
+cd /g/data/pq84/malaria/Pf_Malaysia/outputs/01_QC_Trim/trimmed_fastq
+
+echo "---------------------------------------"
+echo 'Set environment vars'
+OUTDIR="/g/data/pq84/malaria/Pf_Malaysia/outputs/02_Mapping"
+INDEXTDIR="/g/data/pq84/malaria/Pf_Malaysia/data/ref_genomes/PlasmoDB-59_Pfalciparum3D7_Genome.fasta"
+
+echo "---------------------------------------"
+echo 'Exectue alignment with bwa to hg and sort to bam'
+
+bwa mem -t 10 -M -R "@RG\tID:SAMPLE\tPL:ILLUMINA" $INDEXTDIR SAMPLE_1_val_1.fq.gz SAMPLE_2_val_2.fq.gz | samtools view -u -S - | samtools sort -n -o $OUTDIR/SAMPLE.bam
+
+echo "---------------------------------------"
+echo "Finsihed!"
+```
+
+## Exploring mapping/read depth
+
+File(s):  
+/g/data/pq84/malaria/Pf_Malaysia/scripts/06_Analyses/Mapping_Quality.pbs
+
+Version(s): 
+java/jdk-8.40 & samtools/1.12 & GATK/3.8.1 & bbmap/38.93 & sambamba/0.8.1 
+
+Submission:
+PBS job for each sample.
+
+Notes:
+
+Script:
+
+```{R,eval=F}
+#!/bin/bash
+#PBS -P pq84
+#PBS -q normalbw
+#PBS -N Map_Qual
+#PBS -j oe
+#PBS -m ae
+#PBS -l walltime=24:00:00,mem=100GB,ncpus=21
+#PBS -l storage=gdata/pq84+scratch/pq84
+#PBS -M jacob.westaway@menzies.edu.au
+
+echo "---------------------------------------"
+echo "PBS: Job identifier is $PBS_JOBID"
+echo "PBS: Job name is $PBS_JOBNAME"
+
+echo "---------------------------------------"
+echo "Define paths and load modules"
+module load bbmap/38.93
+module load samtools/1.12  
+module load sambamba/0.8.1 
+module load java/jdk-8.40 
+BED="/g/data/pq84/malaria/Pf_Malaysia/data/ref_genomes/PlasmoDB-59_Pfalciparum3D7_Genome.fasta.bed"
+OUTDIR="/g/data/pq84/malaria/Pf_Malaysia/outputs/06_Analyses/Mapping"
+mkdir $OUTDIR
+INDIR="/g/data/pq84/malaria/Pf_Malaysia/outputs/02_Mapping/"
+cd $INDIR
+
+echo "---------------------------------------"
+echo 'Mapping Quality'
+echo "---------------------------------------"
+for i in *.bam
+do
+samtools view -h --threads 21 $i | pileup.sh in=stdin 2> $OUTDIR/${i%.bam}.mapstats
+done 
+
+for i in *.bam
+do
+samtools view -h --threads 5 $i | pileup.sh in=stdin 2> $OUTDIR/${i%.bam}.mapstats
+done 
 
 
+echo "---------------------------------------"
+echo "Aggregate bbmap outputs"
+cd $OUTDIR
+tail -n +1 *mapstats | grep '.mapstats\|Read\|Mapped\|Ref\|Percent\|Average\|Standard' | sed 's/:/,/' | sed 's/<==/,/' > mapstats_summary.csv
+
+
+echo "---------------------------------------"
+echo 'Read Depth'
+echo "---------------------------------------"
+
+cd $INDIR
+
+echo "---------------------------------------"
+echo 'Sort bam files'
+for i in *.bam
+do
+samtools sort -@ 21 $i > $OUTDIR/${i%.bam}.sorted.bam
+done 
+
+echo "---------------------------------------"
+echo 'Index bam files'
+cd $OUTDIR
+for i in *.sorted.bam
+do
+samtools index -@ 21 $i 
+done 
+
+echo "---------------------------------------"
+echo 'Create file with list of filenames'
+ls *sorted.bam > filenames.txt
+
+echo "---------------------------------------"
+echo 'Exectue samtools depth'
+samtools depth -a -b $BED -f filenames.txt -o depth_summary.depth
+
+echo "---------------------------------------"
+echo 'Clean Up'
+echo "---------------------------------------"
+rm -f *sorted*
+
+echo "---------------------------------------------------------------------------------------------------------------------"
+echo "FINISHED"
+echo "---------------------------------------------------------------------------------------------------------------------"
 ```
 
 # 03_BAM PRE PROCESSING
 
 File(s):  
-
+/g/data/pq84/malaria/Pf_Malaysia/scripts/03_Bam_pre-processing/Template.pbs
 
 Version(s): 
 java/jdk-8.40 & samtools/1.12 & GATK/3.8.1
@@ -150,7 +366,124 @@ java -jar /g/data/pq84/bin/GenomeAnalysisTK-3.8-1-0/GenomeAnalysisTK.jar \
 Script:
 
 ```{R,eval=F}
+#!/bin/bash
+#PBS -P pq84
+#PBS -q normal 
+#PBS -N Bam_pre-pro
+#PBS -j oe
+#PBS -m ae
+#PBS -l walltime=12:00:00,mem=40GB,ncpus=10
+#PBS -l storage=gdata/pq84+scratch/pq84
+#PBS -M jacob.westaway@menzies.edu.au
 
+echo "---------------------------------------"
+echo "PBS: Job identifier is $PBS_JOBID"
+echo "PBS: Job name is $PBS_JOBNAME"
+
+echo "---------------------------------------"
+echo "Define paths and load modules"
+module load java/jdk-8.40 
+module load samtools/1.12 
+
+echo "---------------------------------------"
+echo "---------------------------------------"
+echo 'Change to working directory and set env variables'
+
+INDIR="/g/data/pq84/malaria/Pf_Malaysia/outputs/02_Mapping"
+OUTDIR="/g/data/pq84/malaria/Pf_Malaysia/outputs/03_Bam-pre"
+PICARD="/g/data/pq84/bin/picard/build/libs/picard.jar"
+GATK="/g/data/pq84/bin/GenomeAnalysisTK-3.8-1-0/GenomeAnalysisTK.jar"
+INDEXTDIR="/g/data/pq84/malaria/Pf_Malaysia/data/ref_genomes/PlasmoDB-59_Pfalciparum3D7_Genome.fasta"
+INTERVALS="/g/data/pq84/malaria/Pf_Malaysia/data/ref_genomes/PlasmoDB-59_Pfalciparum3D7_Genome.fasta.bed"
+KNOWNSITES="/g/data/pq84/malaria/Pf_Malaysia/data/ref_genomes/"
+
+echo "---------------------------------------"
+echo 'Sort and Index bam files'
+
+cd $INDIR
+mkdir sorted
+
+samtools sort -@ 10 SAMPLE.bam > sorted/SAMPLE.sorted.bam
+samtools index -@ 10 sorted/SAMPLE.sorted.bam
+
+echo "---------------------------------------"
+echo 'MarkDuplicates'
+
+java -Djava.iodir=$PBS_JOBFS -jar $PICARD \
+    MarkDuplicates AS=TRUE VALIDATION_STRINGENCY=LENIENT \
+    I=$INDIR/sorted/SAMPLE.sorted.bam \
+    O=$OUTDIR/SAMPLE.dupmarked.bam \
+    M=$OUTDIR/SAMPLE_picard_metrics_file.txt 
+
+echo "---------------------------------------"
+echo 'Change header @RG and index' 
+
+samtools view -H $OUTDIR/SAMPLE.dupmarked.bam | \
+    sed 's,^@RG.*,@RG\tID:SAMPLE\tSM:SAMPLE\tLB:None\tPL:Illumina,g' |  \
+    samtools reheader - $OUTDIR/SAMPLE.dupmarked.bam > $OUTDIR/SAMPLE.dupmarked.reheader.bam
+
+samtools index $OUTDIR/SAMPLE.dupmarked.reheader.bam 
+
+echo "---------------------------------------"
+echo 'RealignerTargetCreator'
+
+java -Djava.iodir=$PBS_JOBFS -Xms3200m -Xmx3600m -jar $GATK \
+    -T RealignerTargetCreator \
+    -nt 10 \
+    -R $INDEXTDIR \
+    -I $OUTDIR/SAMPLE.dupmarked.reheader.bam \
+    --intervals $INTERVALS \
+    -known $KNOWNSITES/1202-PF-MY-ANSTEY_genotyped_INDELs.vcf.gz \
+    -o $OUTDIR/SAMPLE.dupmarked.realigner.intervals
+
+echo "---------------------------------------"
+echo 'IndelRealigner' 
+
+java -Djava.iodir=$PBS_JOBFS -Xms3200m -Xmx3600m -jar $GATK \
+    -T IndelRealigner \
+    --consensusDeterminationModel KNOWNS_ONLY \
+    -LOD 0.4 \
+    -R $INDEXTDIR \
+    -I $OUTDIR/SAMPLE.dupmarked.reheader.bam \
+    --intervals $INTERVALS \
+    -known $KNOWNSITES/1202-PF-MY-ANSTEY_genotyped_INDELs.vcf.gz \
+    -targetIntervals $OUTDIR/SAMPLE.dupmarked.realigner.intervals \
+    -o $OUTDIR/SAMPLE.dupmarked.realigned.bam
+
+echo "---------------------------------------"
+echo 'BaseRecalibrator - create recal table' 
+
+java -Djava.iodir=$PBS_JOBFS -Xms3200m -Xmx3600m -jar $GATK \
+    -T BaseRecalibrator \
+    -R $INDEXTDIR \
+    -I $OUTDIR/SAMPLE.dupmarked.realigned.bam \
+    --intervals $INTERVALS \
+    -knownSites $KNOWNSITES/1202-PF-MY-ANSTEY_genotyped.vcf.gz \
+    -o $OUTDIR/SAMPLE.dupmarked.realigned.recal.table
+
+echo "---------------------------------------"
+echo 'PrintReads - get recal reads' 
+
+java -Djava.iodir=$PBS_JOBFS -Xms3200m -Xmx3600m -jar $GATK  \
+    -T PrintReads \
+    -R $INDEXTDIR \
+    --intervals $INTERVALS \
+    -I $OUTDIR/SAMPLE.dupmarked.realigned.bam \
+    -BQSR $OUTDIR/SAMPLE.dupmarked.realigned.recal.table \
+    -o $OUTDIR/final_bam/SAMPLE.dupmarked.realigned.recal.bam
+
+echo "---------------------------------------"
+echo 'Clean up' 
+
+rm -f $OUTDIR/SAMPLE.dupmarked.b*
+rm -f $OUTDIR/SAMPLE.dupmarked.realigned.recal.table
+rm -f $OUTDIR/SAMPLE.dupmarked.realigned.b* 
+rm -f $OUTDIR/SAMPLE.dupmarked.realigner.intervals
+rm -f $OUTDIR/SAMPLE.dupmarked.reheader.b*
+rm -f $OUTDIR/SAMPLE_picard_metrics_file.txt 
+
+echo "---------------------------------------"
+echo 'Finished' 
 ```
 
 # 04_VARIANT_CALLING 
@@ -158,3 +491,587 @@ Script:
 ## GATK
 
 ### HAPLOTYPE CALLER
+
+File(s):  
+/g/data/pq84/malaria/Pf_Malaysia/scripts/04_Variant_calling/Haplotype_caller/Template.pbs
+
+Version(s): 
+java/jdk-8.40 & & GATK/3.8.1
+
+Submission:
+PBS job for each sample.
+
+Notes:
+ - nt - number of threads
+ - ERC - mode for emitting reference confidence scores
+ - minPruning - the number of samples that must pass the pruning threshold
+ - maxNumHaplotypesInPopulation - each haplotype considered requires n evaluations if there are n reads across all samples, so this argument defines a specific number to control this. Dropping this too low can result in missing variants.
+ - max_alternate_alleles - maximum number of alternate alleles to genotype
+ - contamination - fraction of contamination in sequencing data to aggresively remove. If > 0, the caller will remove contamination through biased down sampling of the reads
+ - variant_index_type LINEAR & variant_index_parameter 128000 - old dodgey workaround that GATK used for index compression. Newer versions no longer need this 
+
+Script:
+
+```{R,eval=F}
+#!/bin/bash
+#PBS -P pq84
+#PBS -q normalbw
+#PBS -N Haplotype_call
+#PBS -j oe
+#PBS -m ae
+#PBS -l walltime=12:00:00,mem=20GB,ncpus=10
+#PBS -l storage=gdata/pq84+scratch/pq84
+#PBS -M jacob.westaway@menzies.edu.au
+
+echo "---------------------------------------"
+echo "PBS: Job identifier is $PBS_JOBID"
+echo "PBS: Job name is $PBS_JOBNAME"
+
+echo "---------------------------------------"
+echo "Define paths and load modules"
+module load java/jdk-8.40 
+
+echo "---------------------------------------"
+echo "---------------------------------------"
+echo 'Change to working directory and set env variables'
+OUTDIR="/g/data/pq84/malaria/Pf_Malaysia/outputs/04_Variant_calling/haplotype_call"
+INDIR="/g/data/pq84/malaria/Pf_Malaysia/outputs/03_Bam-pre/final_bam"
+PICARD="/g/data/pq84/bin/picard/build/libs/picard.jar"
+GATK="/g/data/pq84/bin/GenomeAnalysisTK-3.8-1-0/GenomeAnalysisTK.jar"
+INDEXTDIR="/g/data/pq84/malaria/Pf_Malaysia/data/ref_genomes/PlasmoDB-59_Pfalciparum3D7_Genome.fasta"
+INTERVALS="/g/data/pq84/malaria/Pf_Malaysia/data/ref_genomes/PlasmoDB-59_Pfalciparum3D7_Genome.fasta.bed"
+
+echo "---------------------------------------------------------------------------------------------------------------------"
+echo "GATK"
+echo "---------------------------------------------------------------------------------------------------------------------"
+java -Djava.iodir=$PBS_JOBFS -Xms3200m -Xmx3600m -jar $GATK \
+    -T HaplotypeCaller \
+    -ERC GVCF \
+    --minPruning 3 \
+    --maxNumHaplotypesInPopulation 200 \
+    --max_alternate_alleles 3 \
+    --variant_index_type LINEAR \
+    --variant_index_parameter 128000 \
+    -contamination 0.0 \
+    -G Standard \
+    -R $INDEXTDIR \
+    -I $INDIR/SAMPLE.dupmarked.realigned.recal.bam \
+    -o $OUTDIR/SAMPLE.dupmarked.realigned.recal.g.vcf.gz
+
+echo "---------------------------------------------------------------------------------------------------------------------"
+echo "FINISHED"
+echo "---------------------------------------------------------------------------------------------------------------------"
+```
+
+### JOINT CALLING 
+
+File(s):  
+/g/data/pq84/malaria/Pf_Malaysia/scripts/04_Variant_calling/gatk_variant_calling.pbs
+
+Version(s): 
+java/jdk-8.40 & & GATK/3.8.1
+
+Submission: 
+Single pbs script.
+
+Notes:
+`ls *gz | tr '\n' ' ' | sed 's/ / -V /g'` to get the file list
+
+Script:
+
+```{R,eval=F}
+#!/bin/bash
+#PBS -P pq84
+#PBS -q normalbw
+#PBS -N Variant_calling_gatk
+#PBS -j oe
+#PBS -m ae
+#PBS -l walltime=48:00:00,mem=128GB,ncpus=16
+#PBS -l storage=gdata/pq84+scratch/pq84
+#PBS -M jacob.westaway@menzies.edu.au
+
+echo "---------------------------------------"
+echo "PBS: Job identifier is $PBS_JOBID"
+echo "PBS: Job name is $PBS_JOBNAME"
+
+echo "---------------------------------------"
+echo "Define paths and load modules"
+module load java/jdk-8.40 
+
+echo "---------------------------------------"
+echo "---------------------------------------"
+echo 'Change to working directory and set env variables'
+OUTDIR="/g/data/pq84/malaria/Pf_Malaysia/outputs/04_Variant_calling/gatk"
+INDIR="/g/data/pq84/malaria/Pf_Malaysia/outputs/04_Variant_calling/haplotype_call"
+PICARD="/g/data/pq84/bin/picard/build/libs/picard.jar"
+GATK="/g/data/pq84/bin/GenomeAnalysisTK-3.8-1-0/GenomeAnalysisTK.jar"
+INDEXTDIR="/g/data/pq84/malaria/Pf_Malaysia/data/ref_genomes/PlasmoDB-59_Pfalciparum3D7_Genome.fasta"
+INTERVALS="/g/data/pq84/malaria/Pf_Malaysia/data/ref_genomes/PlasmoDB-59_Pfalciparum3D7_Genome.fasta.bed"
+
+cd $INDIR
+
+echo "---------------------------------------------------------------------------------------------------------------------"
+echo "GATK"
+echo "---------------------------------------------------------------------------------------------------------------------"
+
+echo "---------------------------------------------------------------------------------------------------------------------"
+echo "Combine GVCFs"
+
+java -Djava.iodir=$PBS_JOBFS -Xms3200m -Xmx3600m -jar $GATK \
+    -T CombineGVCFs \
+    -R $INDEXTDIR \
+    -V ERR9907878.dupmarked.realigned.recal.g.vcf.gz -V ERR9907879.dupmarked.realigned.recal.g.vcf.gz -V ERR9907880.dupmarked.realigned.recal.g.vcf.gz -V ERR9907881.dupmarked.realigned.recal.g.vcf.gz -V ERR9907882.dupmarked.realigned.recal.g.vcf.gz -V ERR9907883.dupmarked.realigned.recal.g.vcf.gz -V ERR9907884.dupmarked.realigned.recal.g.vcf.gz -V ERR9907885.dupmarked.realigned.recal.g.vcf.gz -V ERR9907886.dupmarked.realigned.recal.g.vcf.gz -V ERR9907887.dupmarked.realigned.recal.g.vcf.gz -V ERR9907888.dupmarked.realigned.recal.g.vcf.gz -V ERR9907889.dupmarked.realigned.recal.g.vcf.gz -V ERR9907890.dupmarked.realigned.recal.g.vcf.gz -V ERR9907891.dupmarked.realigned.recal.g.vcf.gz -V ERR9907892.dupmarked.realigned.recal.g.vcf.gz -V ERR9907893.dupmarked.realigned.recal.g.vcf.gz -V ERR9907894.dupmarked.realigned.recal.g.vcf.gz -V ERR9907895.dupmarked.realigned.recal.g.vcf.gz -V ERR9907896.dupmarked.realigned.recal.g.vcf.gz -V ERR9907897.dupmarked.realigned.recal.g.vcf.gz -V ERR9907898.dupmarked.realigned.recal.g.vcf.gz -V ERR9907899.dupmarked.realigned.recal.g.vcf.gz -V ERR9907900.dupmarked.realigned.recal.g.vcf.gz -V ERR9907901.dupmarked.realigned.recal.g.vcf.gz -V ERR9907902.dupmarked.realigned.recal.g.vcf.gz -V ERR9907903.dupmarked.realigned.recal.g.vcf.gz -V ERR9907904.dupmarked.realigned.recal.g.vcf.gz -V ERR9907905.dupmarked.realigned.recal.g.vcf.gz -V ERR9907906.dupmarked.realigned.recal.g.vcf.gz -V ERR9907907.dupmarked.realigned.recal.g.vcf.gz -V ERR9907908.dupmarked.realigned.recal.g.vcf.gz -V ERR9907909.dupmarked.realigned.recal.g.vcf.gz -V ERR9907910.dupmarked.realigned.recal.g.vcf.gz -V ERR9907911.dupmarked.realigned.recal.g.vcf.gz -V ERR9907912.dupmarked.realigned.recal.g.vcf.gz -V ERR9907913.dupmarked.realigned.recal.g.vcf.gz -V ERR9907914.dupmarked.realigned.recal.g.vcf.gz -V ERR9907915.dupmarked.realigned.recal.g.vcf.gz -V ERR9907916.dupmarked.realigned.recal.g.vcf.gz -V ERR9907917.dupmarked.realigned.recal.g.vcf.gz -V ERR9907918.dupmarked.realigned.recal.g.vcf.gz -V ERR9907919.dupmarked.realigned.recal.g.vcf.gz -V ERR9907920.dupmarked.realigned.recal.g.vcf.gz -V ERR9907921.dupmarked.realigned.recal.g.vcf.gz -V ERR9907922.dupmarked.realigned.recal.g.vcf.gz -V ERR9907923.dupmarked.realigned.recal.g.vcf.gz -V ERR9907924.dupmarked.realigned.recal.g.vcf.gz -V ERR9907925.dupmarked.realigned.recal.g.vcf.gz -V ERR9937125.dupmarked.realigned.recal.g.vcf.gz -V ERR9937126.dupmarked.realigned.recal.g.vcf.gz -V ERR9937127.dupmarked.realigned.recal.g.vcf.gz -V ERR9937128.dupmarked.realigned.recal.g.vcf.gz -V ERR9937129.dupmarked.realigned.recal.g.vcf.gz -V ERR9937130.dupmarked.realigned.recal.g.vcf.gz -V ERR9937131.dupmarked.realigned.recal.g.vcf.gz -V ERR9937132.dupmarked.realigned.recal.g.vcf.gz -V ERR9937133.dupmarked.realigned.recal.g.vcf.gz -V ERR9937134.dupmarked.realigned.recal.g.vcf.gz -V ERR9937135.dupmarked.realigned.recal.g.vcf.gz -V ERR9937136.dupmarked.realigned.recal.g.vcf.gz -V ERR9937137.dupmarked.realigned.recal.g.vcf.gz -V ERR9937138.dupmarked.realigned.recal.g.vcf.gz -V ERR9937139.dupmarked.realigned.recal.g.vcf.gz -V ERR9937140.dupmarked.realigned.recal.g.vcf.gz -V ERR9937141.dupmarked.realigned.recal.g.vcf.gz -V ERR9937142.dupmarked.realigned.recal.g.vcf.gz -V ERR9937143.dupmarked.realigned.recal.g.vcf.gz -V ERR9937144.dupmarked.realigned.recal.g.vcf.gz -V ERR9937145.dupmarked.realigned.recal.g.vcf.gz -V ERR9937146.dupmarked.realigned.recal.g.vcf.gz -V ERR9937147.dupmarked.realigned.recal.g.vcf.gz -V ERR9937148.dupmarked.realigned.recal.g.vcf.gz \
+    -o $OUTDIR/GATK_combined.g.vcf.gz
+
+echo "---------------------------------------------------------------------------------------------------------------------"
+echo "Genotype GVCFs"
+
+cd $OUTDIR
+
+java -Djava.iodir=$PBS_JOBFS -Xms3200m -Xmx3600m -jar $GATK \
+    -T GenotypeGVCFs \
+    -nt 16 \
+    -R $INDEXTDIR \
+    -L $INTERVALS \
+    -V GATK_combined.g.vcf.gz \
+    -o GATK_genotyped.vcf.gz
+
+echo "---------------------------------------"
+echo "Finished "
+```
+
+## BCFTOOLS
+
+File(s):  
+/g/data/pq84/malaria/Pf_Malaysia/scripts/04_Variant_calling/bcftools_variant_calling_*.pbs
+/g/data/pq84/malaria/Pf_Malaysia/scripts/04_Variant_calling/merge_bcftools_vcfs.pbs
+
+Version(s):
+bcftools/1.12
+
+Submission: 
+Single PBS script.
+
+Notes:
+ - m - Alternative model for multiallelic and rare-variant calling
+ - Oz - compressed output
+ - a - annotate with the following parameters
+ - v - variants only  
+
+This job had to be split up by chromosome due to the large dataset and Gadi's 48 walltime limit. Thus, it was split up into 5 jobs. 4 initially but after a failed job I had to further divide one.
+After running the separate bcftools jobs I then needed to recombine the VCF files containg differnt chromosomes.
+
+Script: The first script is an example of the four that was submitted prior to merging the VCF files. The second script is applying GATK to merge the VCF files containing different contigs/chromosomes.
+
+```{R,eval=F}
+#!/bin/bash
+#PBS -P pq84
+#PBS -q normal 
+#PBS -N Variant_calling_bcftools
+#PBS -j oe
+#PBS -m ae
+#PBS -l walltime=48:00:00,mem=128GB,ncpus=16
+#PBS -l storage=gdata/pq84+scratch/pq84
+#PBS -M jacob.westaway@menzies.edu.au
+
+echo "---------------------------------------"
+echo "PBS: Job identifier is $PBS_JOBID"
+echo "PBS: Job name is $PBS_JOBNAME"
+echo "Chromosomes 1 to 4"
+
+echo "---------------------------------------"
+echo "Define paths and load modules"
+module load bcftools/1.12
+
+echo "---------------------------------------"
+echo "---------------------------------------"
+echo 'Change to working directory and set env variables'
+INDEXTDIR="/g/data/pq84/malaria/Pf_Malaysia/data/ref_genomes/PlasmoDB-59_Pfalciparum3D7_Genome.fasta"
+OUTDIR="/g/data/pq84/malaria/Pf_Malaysia/outputs/04_Variant_calling/bcftools"
+INDIR="/g/data/pq84/malaria/Pf_Malaysia/outputs/03_Bam-pre/final_bam"
+
+echo "---------------------------------------------------------------------------------------------------------------------"
+echo "create input bam file list"
+echo "---------------------------------------------------------------------------------------------------------------------"
+cd $INDIR
+
+ls *bam | cut -d ' ' -f 10 > input_bam_files.list
+
+echo "---------------------------------------------------------------------------------------------------------------------"
+echo "bcftools"
+echo "---------------------------------------------------------------------------------------------------------------------"
+
+bcftools mpileup --threads 16 -f $INDEXTDIR -b $INDIR/input_bam_files.list \
+   -r Pf3D7_01_v3,Pf3D7_02_v3,Pf3D7_03_v3,Pf3D7_04_v3 \
+   | bcftools call --threads 16 -m -Oz -a FORMAT/GQ,FORMAT/GP,INFO/PV4 -v -o $OUTDIR/bcftools_genotyped_1.vcf.gz
+
+bcftools index --threads 16 -t -o $OUTDIR/bcftools_genotyped_1.vcf.gz.tbi $OUTDIR/bcftools_genotyped_1.vcf.gz
+
+echo "---------------------------------------"
+echo "Finished "
+```
+
+
+```{R,eval=F}
+#!/bin/bash
+#PBS -P pq84
+#PBS -q normal 
+#PBS -N Merge_VCFs_from_bcftools
+#PBS -j oe
+#PBS -m ae
+#PBS -l walltime=8:00:00,mem=80GB,ncpus=10 
+#PBS -l storage=gdata/pq84+scratch/pq84
+#PBS -M jacob.westaway@menzies.edu.au
+
+echo "---------------------------------------"
+echo "PBS: Job identifier is $PBS_JOBID"
+echo "PBS: Job name is $PBS_JOBNAME"
+
+echo "---------------------------------------"
+echo "Define paths and load modules"
+module load java/jdk-8.40 
+PICARD="/g/data/pq84/bin/picard/build/libs/picard.jar"
+GATK="/g/data/pq84/bin/GenomeAnalysisTK-3.8-1-0/GenomeAnalysisTK.jar"
+
+echo "---------------------------------------"
+echo "---------------------------------------"
+echo 'Change to working directory and set env variables'
+cd /g/data/pq84/malaria/Pf_Malaysia/outputs/04_Variant_calling/bcftools
+
+echo "---------------------------------------"
+echo "---------------------------------------"
+echo 'Use GATK to merge VCF files containing the SAME samples BUT DIFFERENT contigs'
+java -Djava.iodir=$PBS_JOBFS -Xms3200m -Xmx3600m -jar $PICARD \
+    MergeVcfs \
+    I=bcftools_genotyped_1.vcf.gz \
+    I=bcftools_genotyped_2.vcf.gz \
+    I=bcftools_genotyped_3.vcf.gz \
+    I=bcftools_genotyped_4.vcf.gz \
+    O=bcftools_genotyped.vcf.gz
+
+echo "---------------------------------------"
+echo "Finished "
+```
+
+
+## CREATING A CONSENSUS VCF 
+
+File(s):
+/g/data/pq84/malaria/Pf_Malaysia/scripts/04_Variant_calling/Consensus/consensus_vcf_1.pbs
+/g/data/pq84/malaria/Pf_Malaysia/scripts/04_Variant_calling/Consensus/consensus_vcf_2.pbs
+/g/data/pq84/malaria/Pf_Malaysia/scripts/04_Variant_calling/Consensus/consensus_vcf_3.pbs
+
+Version(s):
+bcftools/1.12 & R/4.1.0 
+
+Submission: 
+Had to break this up into multiple scripts and create a consensus for each of the chromosomes before recombining them all. The R script uses a large amount of resources (> 240GB for the ~220 samples and all 16 contigs together) and even Gadi couldn't handle it.
+
+ - Step 1: consensus_vcf_1.pbs is run as a single script, and within it, consensus_vcf_2.pbs is used to create a batch of scripts (both pbs and R) for the second step.
+ - Step 2: has a pbs and R script for each chromosome - to submit - `for file in *_chr.pbs; do qsub $file; done`.
+ - Step 3: the final step takes the outputs from the previous step and combines them back into a single VCF.
+
+Notes:
+To intall packages on GADI - module load R/4.1.0 & module load intel-compiler/2021.5.0 - need a compiler. 
+Need to specificy library - export R_LIBS_USER="/g/data/pq84/R"
+
+  - bcftools query
+    - f - format - inside the square brackets are for the annotation-specific column, whereas the annotations outside have their own column
+  - fgrep 
+    - f - file of patterns to search for
+
+Scripts:
+
+Step 1
+
+```{R,eval=F}
+#!/bin/bash
+#PBS -P pq84
+#PBS -q normal
+#PBS -N Consensus_split_into_chr
+#PBS -j oe
+#PBS -m ae
+#PBS -l walltime=12:00:00,mem=20GB,ncpus=10
+#PBS -l storage=gdata/pq84+scratch/pq84
+#PBS -M jacob.westaway@menzies.edu.au
+
+echo "---------------------------------------"
+echo "PBS: Job identifier is $PBS_JOBID"
+echo "PBS: Job name is $PBS_JOBNAME"
+echo "Pk pop gen in Malaysia"
+
+echo "---------------------------------------"
+echo "Define paths"
+module load bcftools/1.12
+
+echo "---------------------------------------"
+echo "---------------------------------------"
+echo 'Change to working directory and set env variables'
+OUTDIR="/g/data/pq84/malaria/Pf_Malaysia/outputs/04_Variant_calling/consensus/"
+INDIR="/g/data/pq84/malaria/Pf_Malaysia/outputs/04_Variant_calling/"
+
+mkdir $OUTDIR
+cd $OUTDIR
+
+echo "---------------------------------------"
+echo 'Merge variants from the two variant callers'
+bcftools merge --threads 10 --force-samples -o $OUTDIR/merged_variants_only.vcf.gz $INDIR/gatk/GATK_genotyped.vcf.gz $INDIR/bcftools/bcftools_genotyped.vcf.gz
+
+
+echo "---------------------------------------"
+echo "Query VCF files to get a list of 'variant IDs' from each tool"
+bcftools view merged_variants_only.vcf.gz | sed -n '/#CHROM/,$p' > merged_variants_only.tsv
+
+
+echo "---------------------------------------"
+echo "Create a list of chromsome names and copy over to script directory - needed in both"
+awk '!a[$1]++' merged_variants_only.tsv | awk '{print $1}' | grep -v '#CHROM' > chromosomes.txt
+
+cp chromosomes.txt /g/data/pq84/malaria/Pf_Malaysia/scripts/04_Variant_calling/Consensus/chromosomes.txt
+
+
+echo "---------------------------------------"
+echo "Split up into separate tsv files for each chromosomes"
+for i in $(cat chromosomes.txt)
+    do grep $i'\|#CHROM' merged_variants_only.tsv > ${i}.tsv
+done 
+
+
+echo "---------------------------------------"
+echo "Create R and PBS scripts to wrangle each chromosome"
+cd /g/data/pq84/malaria/Pf_Malaysia/scripts/04_Variant_calling/Consensus/
+
+for i in $(cat chromosomes.txt)
+do
+sed s/CHROMOSOME/$i/g vcf_wrangle_2.R > ${i}.R
+done
+    
+for i in $(cat chromosomes.txt)
+do
+sed s/CHROMOSOME/$i/g consensus_vcf_2.pbs > ${i}_chr.pbs
+done
+
+
+echo "---------------------------------------"
+echo "Finished "
+```
+
+Step 2
+```{R,eval=F}
+#!/bin/bash
+#PBS -P pq84
+#PBS -q normalbw
+#PBS -N Consensus_CHROMOSOME
+#PBS -j oe
+#PBS -m ae
+#PBS -l walltime=12:00:00,mem=80GB,ncpus=10
+#PBS -l storage=gdata/pq84+scratch/pq84
+#PBS -M jacob.westaway@menzies.edu.au
+
+echo "---------------------------------------"
+echo "PBS: Job identifier is $PBS_JOBID"
+echo "PBS: Job name is $PBS_JOBNAME"
+echo "Pk pop gen in Malaysia"
+
+echo "---------------------------------------"
+echo "Define paths"
+module load bcftools/1.12
+module load R/4.1.0 
+export R_LIBS_USER="/g/data/pq84/R"
+
+echo "---------------------------------------"
+echo "---------------------------------------"
+echo 'Change to working directory and set env variables'
+OUTDIR="/g/data/pq84/malaria/Pf_Malaysia/outputs/04_Variant_calling/consensus/"
+
+cd $OUTDIR
+
+echo "---------------------------------------"
+echo "Execute R script - performs an inner join on the 'variant IDs' above to find the overlapping variants"
+Rscript /g/data/pq84/malaria/Pf_Malaysia/scripts/04_Variant_calling/Consensus/CHROMOSOME.R
+
+
+echo "---------------------------------------"
+echo "Remove the column names from the variant names document to create a list of grep patterns"
+tail -n +2 CHROMOSOME_variant_names.tsv > CHROMOSOME_patterns.txt 
+
+
+echo "---------------------------------------"
+echo "Filter for variants from the original vcf that are called by both callers by using grep to match patterns created above" 
+bcftools view merged_variants_only.vcf.gz | fgrep -f CHROMOSOME_patterns.txt - > CHROMOSOME_filtered.vcf
+
+    
+echo "---------------------------------------"
+echo "Finished "
+```
+
+R script (template) nested in consensus script 2
+
+```{R,veal=F}
+# Wrangle variant calling data - version 2 - using merged VCF file
+
+# Load Packages
+library(readr)
+library(dplyr)
+library(tidyr)
+library(stringr)
+library(data.table)
+library(tibble)
+
+VCF <- read_tsv("/g/data/pq84/malaria/Pf_Malaysia/outputs/04_Variant_calling/consensus/CHROMOSOME.tsv", col_names = TRUE) %>% 
+  rename("CHROM" = "#CHROM") %>% 
+  mutate_at(1:5, as.factor) %>% 
+  unite(variant_name, CHROM, POS, ID, REF, ALT, sep = "_") %>% 
+  select(-c(2:5)) %>% 
+  mutate_at(c(2:ncol(.)), ~str_remove(., ":.*")) %>% 
+  mutate_at(c(2:ncol(.)), ~ifelse(. %like% "1/1", "1", .)) %>% # homozygous
+  mutate_at(c(2:ncol(.)), ~ifelse(. %like% "1/0" | . %like% "0/1" , "0.5", .)) %>%  # heterozygous
+  mutate_at(c(2:ncol(.)), ~ifelse(. != "1" & . != "0.5" , "0", .)) %>% 
+  mutate(variant_name = str_remove(variant_name, "_\\.")) 
+
+ordered_VCF <- VCF %>% 
+  #filter(grepl("ordered", variant_name)) %>% 
+  select(1, starts_with("2:")) %>% 
+  pivot_longer(!variant_name, names_to = "sample", values_to = "variant_1") %>% 
+  mutate(sample = str_remove(sample, "2:")) %>% 
+  left_join(
+    VCF %>% 
+      #filter(grepl("ordered", variant_name)) %>% 
+      select(1, !starts_with("2:")) %>% 
+      pivot_longer(!variant_name, names_to = "sample", values_to = "variant_2")
+  ) %>% 
+  mutate_at(c(3:4), as.numeric) %>% 
+  mutate(consensus_variant = ifelse((variant_1 == variant_2) & (variant_1 + variant_2 >= 1), 1, 0)) %>%
+  filter(consensus_variant == 1) %>% 
+  select(1,2,5) %>% 
+  pivot_wider(names_from = sample, values_from = consensus_variant) %>%  
+  select(1) %>%  
+  separate(variant_name, into = c("X1", "X2", "X3", "POS", "REF", "ALT"), sep = "_") %>%  
+  unite(CHROM, starts_with("X")) %>% 
+  add_column(ID = ".") %>% 
+  relocate(CHROM, POS, ID)  
+
+MIT_VCF <- VCF %>% 
+  filter(grepl("MIT", variant_name)) %>% 
+  select(1, starts_with("2:")) %>% 
+  pivot_longer(!variant_name, names_to = "sample", values_to = "variant_1") %>% 
+  mutate(sample = str_remove(sample, "2:")) %>% 
+  left_join(
+    VCF %>% 
+      filter(grepl("MIT", variant_name)) %>% 
+      select(1, !starts_with("2:")) %>% 
+      pivot_longer(!variant_name, names_to = "sample", values_to = "variant_2")
+  ) %>% 
+  mutate_at(c(3:4), as.numeric) %>% 
+  mutate(consensus_variant = ifelse((variant_1 == variant_2) & (variant_1 + variant_2 >= 1), 1, 0)) %>%
+  filter(consensus_variant == 1) %>% 
+  select(1,2,5) %>% 
+  pivot_wider(names_from = sample, values_from = consensus_variant) %>%  
+  select(1) %>%  
+  separate(variant_name, into = c("X1", "X2", "X3", "POS", "REF", "ALT"), sep = "_") %>%  
+  unite(CHROM, starts_with("X")) %>% 
+  add_column(ID = ".") %>% 
+  relocate(CHROM, POS, ID)  
+
+API_VCF <- VCF %>% 
+  filter(grepl("API", variant_name)) %>% 
+  select(1, starts_with("2:")) %>% 
+  pivot_longer(!variant_name, names_to = "sample", values_to = "variant_1") %>% 
+  mutate(sample = str_remove(sample, "2:")) %>% 
+  left_join(
+    VCF %>% 
+      filter(grepl("API", variant_name)) %>% 
+      select(1, !starts_with("2:")) %>% 
+      pivot_longer(!variant_name, names_to = "sample", values_to = "variant_2")
+  ) %>% 
+  mutate_at(c(3:4), as.numeric) %>% 
+  mutate(consensus_variant = ifelse((variant_1 == variant_2) & (variant_1 + variant_2 >= 1), 1, 0)) %>%
+  filter(consensus_variant == 1) %>% 
+  select(1,2,5) %>% 
+  pivot_wider(names_from = sample, values_from = consensus_variant) %>%  
+  select(1) %>%  
+  separate(variant_name, into = c("X1", "X2", "X3", "POS", "REF", "ALT"), sep = "_") %>%  
+  unite(CHROM, starts_with("X")) %>% 
+  add_column(ID = ".") %>% 
+  relocate(CHROM, POS, ID)  
+
+ordered_VCF %>% 
+  rbind(MIT_VCF, API_VCF) %>% 
+  write_tsv("/g/data/pq84/malaria/Pf_Malaysia/outputs/04_Variant_calling/consensus/CHROMOSOME_variant_names.tsv")
+```
+
+Step 3
+
+```{R,eval=F}
+#!/bin/bash
+#PBS -P pq84
+#PBS -q normalbw
+#PBS -N Consensus_final_assembly
+#PBS -j oe
+#PBS -m ae
+#PBS -l walltime=24:00:00,mem=128GB,ncpus=16
+#PBS -l storage=gdata/pq84+scratch/pq84
+#PBS -M jacob.westaway@menzies.edu.au
+
+echo "---------------------------------------"
+echo "PBS: Job identifier is $PBS_JOBID"
+echo "PBS: Job name is $PBS_JOBNAME"
+echo "Pk pop gen in Malaysia"
+
+echo "---------------------------------------"
+echo "Define paths"
+module load bcftools/1.12
+module load R/4.1.0 
+export R_LIBS_USER="/g/data/pq84/R"
+module load java/jdk-8.40 
+
+echo "---------------------------------------"
+echo "---------------------------------------"
+echo 'Change to working directory and set env variables'
+PICARD="/g/data/pq84/bin/picard/build/libs/picard.jar"
+GATK="/g/data/pq84/bin/GenomeAnalysisTK-3.8-1-0/GenomeAnalysisTK.jar" 
+INDEXTDIR="/g/data/pq84/malaria/Pf_Malaysia/data/ref_genomes/PlasmoDB-59_Pfalciparum3D7_Genome.fasta"
+OUTDIR="/g/data/pq84/malaria/Pf_Malaysia/outputs/04_Variant_calling/consensus/"
+
+cd $OUTDIR
+
+echo "---------------------------------------"
+echo "Create a seperate file that contains all the header information for the vcf"
+bcftools view $INDIR/merged_variants_only.vcf.gz | sed '/#CHROM/q' > vcf_head.vcf
+
+
+echo "---------------------------------------"
+echo "Concatenate the vcf header add all the CHROMSOME consensus VCF files"
+cat vcf_head.vcf *filtered.vcf > Consensus_with_duplicates.vcf
+
+
+echo "---------------------------------------"
+echo "Sort VCF so that its in the same order as the reference"
+bcftools sort -o Consensus_with_duplicates_sorted.vcf.gz Consensus_with_duplicates.vcf
+
+
+echo "---------------------------------------"
+echo "Index VCF"
+bcftools index --threads 16 -t -o Consensus_with_duplicates_sorted.vcf.gz.tbi Consensus_with_duplicates_sorted.vcf.gz
+
+
+echo "---------------------------------------"
+echo "Remove duplicate sample names from VCF"
+java -Djava.iodir=$PBS_JOBFS -Xms3200m -Xmx3600m -jar $GATK \
+    -T SelectVariants \
+    -R $INDEXTDIR \
+    -V Consensus_with_duplicates_sorted.vcf.gz \
+    -xl_se '2:' \
+    -o Consensus.vcf.gz
+
+
+echo "---------------------------------------"
+echo "Clean Up"
+rm -f *filtered.vcf
+rm -f *variant_names.tsv
+rm -f *patterns.txt
+
+
+echo "---------------------------------------"
+echo "Finished"
+```

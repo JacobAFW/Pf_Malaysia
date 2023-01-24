@@ -22,13 +22,13 @@ export R_LIBS_USER="/g/data/pq84/R"
 echo "---------------------------------------"
 echo "---------------------------------------"
 echo 'Change to working directory and set env variables'
-OUTDIR="/g/data/pq84/malaria/Pk_Malaysian_Population_Genetics/outputs/04_Variant_calling/consensus/"
+OUTDIR="/g/data/pq84/malaria/Pf_Malaysia/outputs/04_Variant_calling/consensus/"
 
 cd $OUTDIR
 
 echo "---------------------------------------"
 echo "Execute R script - performs an inner join on the 'variant IDs' above to find the overlapping variants"
-Rscript /g/data/pq84/malaria/Pk_Malaysian_Population_Genetics/scripts/04_Variant_calling/Consensus/CHROMOSOME.R
+Rscript /g/data/pq84/malaria/Pf_Malaysia/scripts/04_Variant_calling/Consensus/CHROMOSOME.R
 
 
 echo "---------------------------------------"

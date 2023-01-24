@@ -15,16 +15,16 @@ VCF <- read.csv(snp_filepath, header = T, na.strings=c("","NA"), sep = "\t") %>%
 
 QD <- ggplot(VCF, aes(x=QD, fill=Variant)) + 
   geom_density(alpha=.3) +
-  geom_vline(xintercept=20, size=0.7) 
+  geom_vline(xintercept=15, size=0.7) 
 
 FS <- ggplot(VCF, aes(x=FS, fill=Variant)) + 
   geom_density(alpha=.3) +
-  geom_vline(xintercept=2, size=0.7) + 
+  geom_vline(xintercept=1, size=0.7) + 
   coord_cartesian(xlim = c(0,100)) 
 
 MQ <- ggplot(VCF, aes(x=MQ, fill=Variant)) + 
   geom_density(alpha=.3) +
-  geom_vline(xintercept=59, size=0.7) 
+  geom_vline(xintercept=40, size=0.7) 
 
 grid.arrange(QD, FS, MQ)
 }

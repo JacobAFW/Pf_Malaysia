@@ -1,10 +1,10 @@
 #!/bin/bash
 #PBS -P pq84
-#PBS -q normalbw
+#PBS -q normal
 #PBS -N Consensus_split_into_chr
 #PBS -j oe
 #PBS -m ae
-#PBS -l walltime=12:00:00,mem=80GB,ncpus=10
+#PBS -l walltime=12:00:00,mem=20GB,ncpus=10
 #PBS -l storage=gdata/pq84+scratch/pq84
 #PBS -M jacob.westaway@menzies.edu.au
 
@@ -20,8 +20,8 @@ module load bcftools/1.12
 echo "---------------------------------------"
 echo "---------------------------------------"
 echo 'Change to working directory and set env variables'
-OUTDIR="/g/data/pq84/malaria/Pk_Malaysian_Population_Genetics/outputs/04_Variant_calling/consensus/"
-INDIR="/g/data/pq84/malaria/Pk_Malaysian_Population_Genetics/outputs/04_Variant_calling/"
+OUTDIR="/g/data/pq84/malaria/Pf_Malaysia/outputs/04_Variant_calling/consensus/"
+INDIR="/g/data/pq84/malaria/Pf_Malaysia/outputs/04_Variant_calling/"
 
 mkdir $OUTDIR
 cd $OUTDIR
@@ -40,7 +40,7 @@ echo "---------------------------------------"
 echo "Create a list of chromsome names and copy over to script directory - needed in both"
 awk '!a[$1]++' merged_variants_only.tsv | awk '{print $1}' | grep -v '#CHROM' > chromosomes.txt
 
-cp chromosomes.txt /g/data/pq84/malaria/Pk_Malaysian_Population_Genetics/scripts/04_Variant_calling/Consensus/chromosomes.txt
+cp chromosomes.txt /g/data/pq84/malaria/Pf_Malaysia/scripts/04_Variant_calling/Consensus/chromosomes.txt
 
 
 echo "---------------------------------------"
@@ -52,7 +52,7 @@ done
 
 echo "---------------------------------------"
 echo "Create R and PBS scripts to wrangle each chromosome"
-cd /g/data/pq84/malaria/Pk_Malaysian_Population_Genetics/scripts/04_Variant_calling/Consensus/
+cd /g/data/pq84/malaria/Pf_Malaysia/scripts/04_Variant_calling/Consensus/
 
 for i in $(cat chromosomes.txt)
 do

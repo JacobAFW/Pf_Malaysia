@@ -21,7 +21,7 @@ GATK="/g/data/pq84/bin/GenomeAnalysisTK-3.8-1-0/GenomeAnalysisTK.jar"
 echo "---------------------------------------"
 echo "---------------------------------------"
 echo 'Change to working directory and set env variables'
-cd /g/data/pq84/malaria/Pk_clusters/outputs/04_Variant_calling/bcftools
+cd /g/data/pq84/malaria/Pf_Malaysia/outputs/04_Variant_calling/bcftools
 
 echo "---------------------------------------"
 echo "---------------------------------------"
@@ -30,8 +30,7 @@ java -Djava.iodir=$PBS_JOBFS -Xms3200m -Xmx3600m -jar $PICARD \
     MergeVcfs \
     I=bcftools_genotyped_1.vcf.gz \
     I=bcftools_genotyped_2.vcf.gz \
-    I=bcftools_genotyped_3.1.vcf.gz \
-    I=bcftools_genotyped_3.2.vcf.gz \
+    I=bcftools_genotyped_3.vcf.gz \
     I=bcftools_genotyped_4.vcf.gz \
     O=bcftools_genotyped.vcf.gz
 

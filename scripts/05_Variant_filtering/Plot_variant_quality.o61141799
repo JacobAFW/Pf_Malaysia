@@ -1,0 +1,99 @@
+---------------------------------------
+PBS: Job identifier is 61141799.gadi-pbs
+PBS: Job name is Plot_variant_quality
+Pk pop gen in Malaysia
+---------------------------------------
+---------------------------------------
+Change to working directory and set env variables
+mkdir: cannot create directory '/g/data/pq84/malaria/Pf_Malaysia/outputs/04_Variant_calling/consensus/filtered/quality/': File exists
+---------------------------------------
+Make diagnostic tables for Variants Scores - snps
+INFO  15:29:57,038 HelpFormatter - -------------------------------------------------------------------------------------------- 
+INFO  15:29:57,040 HelpFormatter - The Genome Analysis Toolkit (GATK) v3.8-1-0-gf15c1c3ef, Compiled 2018/02/19 05:43:50 
+INFO  15:29:57,040 HelpFormatter - Copyright (c) 2010-2016 The Broad Institute 
+INFO  15:29:57,040 HelpFormatter - For support and documentation go to https://software.broadinstitute.org/gatk 
+INFO  15:29:57,040 HelpFormatter - [Thu Oct 20 15:29:57 GMT+10:00 2022] Executing on Linux 4.18.0-372.26.1.el8.nci.x86_64 amd64 
+INFO  15:29:57,040 HelpFormatter - OpenJDK 64-Bit Server VM 1.8.0_345-b01 
+INFO  15:29:57,042 HelpFormatter - Program Args: -T VariantsToTable -R /g/data/pq84/malaria/Pf_Malaysia/data/ref_genomes/PlasmoDB-59_Pfalciparum3D7_Genome.fasta -V GVCFall_SNPs.vcf -F CHROM -F POS -F QUAL -F QD -F DP -F MQ -F GQ -F MQRankSum -F FS -F ReadPosRankSum -F SOR -o /g/data/pq84/malaria/Pf_Malaysia/outputs/04_Variant_calling/consensus/filtered/quality//GVCFall_SNPs.table 
+INFO  15:29:57,052 HelpFormatter - Executing as jw1542@gadi-cpu-bdw-0021.gadi.nci.org.au on Linux 4.18.0-372.26.1.el8.nci.x86_64 amd64; OpenJDK 64-Bit Server VM 1.8.0_345-b01. 
+INFO  15:29:57,052 HelpFormatter - Date/Time: 2022/10/20 15:29:57 
+INFO  15:29:57,052 HelpFormatter - -------------------------------------------------------------------------------------------- 
+INFO  15:29:57,052 HelpFormatter - -------------------------------------------------------------------------------------------- 
+INFO  15:29:57,076 NativeLibraryLoader - Loading libgkl_compression.so from jar:file:/g/data/pq84/bin/GenomeAnalysisTK-3.8-1-0/GenomeAnalysisTK.jar!/com/intel/gkl/native/libgkl_compression.so 
+INFO  15:29:57,099 GenomeAnalysisEngine - Deflater: IntelDeflater 
+INFO  15:29:57,099 GenomeAnalysisEngine - Inflater: IntelInflater 
+INFO  15:29:57,100 GenomeAnalysisEngine - Strictness is SILENT 
+INFO  15:29:57,248 GenomeAnalysisEngine - Downsampling Settings: Method: BY_SAMPLE, Target Coverage: 1000 
+INFO  15:29:57,357 GenomeAnalysisEngine - Preparing for traversal 
+INFO  15:29:57,358 GenomeAnalysisEngine - Done preparing for traversal 
+INFO  15:29:57,358 ProgressMeter - [INITIALIZATION COMPLETE; STARTING PROCESSING] 
+INFO  15:29:57,358 ProgressMeter -                 | processed |    time |    per 1M |           |   total | remaining 
+INFO  15:29:57,359 ProgressMeter -        Location |     sites | elapsed |     sites | completed | runtime |   runtime 
+INFO  15:29:58,993 ProgressMeter -            done     44925.0     1.0 s      36.0 s      100.0%     1.0 s       0.0 s 
+INFO  15:29:58,993 ProgressMeter - Total runtime 1.64 secs, 0.03 min, 0.00 hours 
+------------------------------------------------------------------------------------------
+Done. There were no warn messages.
+------------------------------------------------------------------------------------------
+---------------------------------------
+Make diagnostic tables for Variants Scores - indels
+INFO  15:30:00,347 HelpFormatter - -------------------------------------------------------------------------------------------- 
+INFO  15:30:00,348 HelpFormatter - The Genome Analysis Toolkit (GATK) v3.8-1-0-gf15c1c3ef, Compiled 2018/02/19 05:43:50 
+INFO  15:30:00,349 HelpFormatter - Copyright (c) 2010-2016 The Broad Institute 
+INFO  15:30:00,349 HelpFormatter - For support and documentation go to https://software.broadinstitute.org/gatk 
+INFO  15:30:00,349 HelpFormatter - [Thu Oct 20 15:30:00 GMT+10:00 2022] Executing on Linux 4.18.0-372.26.1.el8.nci.x86_64 amd64 
+INFO  15:30:00,349 HelpFormatter - OpenJDK 64-Bit Server VM 1.8.0_345-b01 
+INFO  15:30:00,351 HelpFormatter - Program Args: -T VariantsToTable -R /g/data/pq84/malaria/Pf_Malaysia/data/ref_genomes/PlasmoDB-59_Pfalciparum3D7_Genome.fasta -V GVCFall_INDELs.vcf -F CHROM -F POS -F QUAL -F QD -F DP -F MQ -F GQ -F MQRankSum -F FS -F ReadPosRankSum -F SOR -o /g/data/pq84/malaria/Pf_Malaysia/outputs/04_Variant_calling/consensus/filtered/quality//GVCFall_INDELs.table 
+INFO  15:30:00,360 HelpFormatter - Executing as jw1542@gadi-cpu-bdw-0021.gadi.nci.org.au on Linux 4.18.0-372.26.1.el8.nci.x86_64 amd64; OpenJDK 64-Bit Server VM 1.8.0_345-b01. 
+INFO  15:30:00,360 HelpFormatter - Date/Time: 2022/10/20 15:30:00 
+INFO  15:30:00,360 HelpFormatter - -------------------------------------------------------------------------------------------- 
+INFO  15:30:00,360 HelpFormatter - -------------------------------------------------------------------------------------------- 
+INFO  15:30:00,378 NativeLibraryLoader - Loading libgkl_compression.so from jar:file:/g/data/pq84/bin/GenomeAnalysisTK-3.8-1-0/GenomeAnalysisTK.jar!/com/intel/gkl/native/libgkl_compression.so 
+INFO  15:30:00,395 GenomeAnalysisEngine - Deflater: IntelDeflater 
+INFO  15:30:00,395 GenomeAnalysisEngine - Inflater: IntelInflater 
+INFO  15:30:00,396 GenomeAnalysisEngine - Strictness is SILENT 
+INFO  15:30:00,514 GenomeAnalysisEngine - Downsampling Settings: Method: BY_SAMPLE, Target Coverage: 1000 
+INFO  15:30:00,621 GenomeAnalysisEngine - Preparing for traversal 
+INFO  15:30:00,622 GenomeAnalysisEngine - Done preparing for traversal 
+INFO  15:30:00,622 ProgressMeter - [INITIALIZATION COMPLETE; STARTING PROCESSING] 
+INFO  15:30:00,622 ProgressMeter -                 | processed |    time |    per 1M |           |   total | remaining 
+INFO  15:30:00,622 ProgressMeter -        Location |     sites | elapsed |     sites | completed | runtime |   runtime 
+INFO  15:30:02,110 ProgressMeter -            done    179513.0     1.0 s       8.0 s       99.8%     1.0 s       0.0 s 
+INFO  15:30:02,110 ProgressMeter - Total runtime 1.49 secs, 0.02 min, 0.00 hours 
+------------------------------------------------------------------------------------------
+Done. There were no warn messages.
+------------------------------------------------------------------------------------------
+---------------------------------------
+Plot with R
+-- Attaching packages --------------------------------------- tidyverse 1.3.1 --
+v ggplot2 3.3.6     v purrr   0.3.4
+v tibble  3.1.7     v dplyr   1.0.9
+v tidyr   1.2.0     v stringr 1.4.0
+v readr   2.1.2     v forcats 0.5.1
+-- Conflicts ------------------------------------------ tidyverse_conflicts() --
+x dplyr::filter() masks stats::filter()
+x dplyr::lag()    masks stats::lag()
+
+Attaching package: 'gridExtra'
+
+The following object is masked from 'package:dplyr':
+
+    combine
+
+Warning message:
+Removed 10 rows containing non-finite values (stat_density). 
+Saving 7 x 7 in image
+---------------------------------------
+Finished
+
+======================================================================================
+                  Resource Usage on 2022-10-20 16:30:09:
+   Job Id:             61141799.gadi-pbs
+   Project:            pq84
+   Exit Status:        0
+   Service Units:      0.04
+   NCPUs Requested:    10                     NCPUs Used: 10              
+                                           CPU Time Used: 00:00:22        
+   Memory Requested:   40.0GB                Memory Used: 964.13MB        
+   Walltime requested: 01:00:00            Walltime Used: 00:00:12        
+   JobFS requested:    100.0MB                JobFS used: 0B              
+======================================================================================
