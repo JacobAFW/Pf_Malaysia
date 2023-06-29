@@ -1,0 +1,24 @@
+---------------------------------------
+PBS: Job identifier is 88659296.gadi-pbs
+PBS: Job name is Exclude_high_fws
+---------------------------------------
+Define paths and load modules
+Loading bcftools/1.12
+  Loading requirement: intel-mkl/2020.3.304 python3/3.9.2
+---------------------------------------
+Exclude high fws samples - and more
+---------------------------------------
+Finished
+
+======================================================================================
+                  Resource Usage on 2023-06-22 16:13:46:
+   Job Id:             88659296.gadi-pbs
+   Project:            pq84
+   Exit Status:        0
+   Service Units:      72.02
+   NCPUs Requested:    10                     NCPUs Used: 10              
+                                           CPU Time Used: 11:56:42        
+   Memory Requested:   50.0GB                Memory Used: 48.1GB          
+   Walltime requested: 48:00:00            Walltime Used: 05:45:43        
+   JobFS requested:    100.0MB                JobFS used: 0B              
+======================================================================================

@@ -1,0 +1,26 @@
+---------------------------------------
+PBS: Job identifier is 88764707.gadi-pbs
+PBS: Job name is vcf_to_bcf
+---------------------------------------
+Define paths and load modules
+Loading bcftools/1.12
+  Loading requirement: intel-mkl/2020.3.304 python3/3.9.2
+---------------------------------------
+VCF to BCF
+Lines   total/split/realigned/skipped:	314575/0/0/0
+Lines   total/split/realigned/skipped:	314575/0/0/0
+---------------------------------------
+FINISHED
+
+======================================================================================
+                  Resource Usage on 2023-06-23 12:51:29:
+   Job Id:             88764707.gadi-pbs
+   Project:            pq84
+   Exit Status:        0
+   Service Units:      1.27
+   NCPUs Requested:    2                      NCPUs Used: 2               
+                                           CPU Time Used: 00:43:56        
+   Memory Requested:   16.0GB                Memory Used: 10.58GB         
+   Walltime requested: 48:00:00            Walltime Used: 00:30:23        
+   JobFS requested:    100.0MB                JobFS used: 0B              
+======================================================================================

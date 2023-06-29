@@ -58,7 +58,7 @@ echo "---------------------------------------"
 echo "FINISHED"
 ```
 
-## Subset to countries/studies of interest
+## Subset to countries/studies/samples of interest
 
 File(s):  
 /g/data/pq84/malaria/Pf_Malaysia/data/malariaGEN/subset_data_*.pbs
@@ -72,6 +72,39 @@ Multiple PBS scripts - again this can be done in a single script if you have the
 Notes:
 [Pf7_samples.txt](https://www.malariagen.net/data/open-dataset-plasmodium-falciparum-v70) containts all the metadata for the Pf7 release. 
 We subset this downt to the samples we want using simple bash scripting, generating both a metadata subset and a file/list of samples to be input into the -S flag of bcftools view (for the subset).
+
+We used a combination of bash and R to subset the metadata to the samples we want, which represent the all the genetic populations described in the Pf7 manuscript, without going overboard. 
+
+Populations: sA, AF-W, AF-C, AF-NE, AF-E, AS-S-E, AS-S-FE, AS-SE-W, AS-SE-E, OC-NG, AF-E, SA
+
+```{R,eval=F}
+cat Pf7_samples.txt | grep "1169-PF-CO-CORREDOR\|1095-PF-TZ-ISHENGOMA\|1195-PF-TRAC2-DONDORP\|1146-PF-MULTI-PRICE\|1185-PF-KH-KYLE\|1207-PF-KH-CNM-GENRE\|1011-PF-KH-SU\|1044-PF-KH-FAIRHURST\|1180-PF-TRAC2-DONDORP\|1198-PF-METF-NOSTEN\|1010-PF-TH-ANDERSON\|1016-PF-TH-NOSTEN\|1031-PF-SEA-PLOWE\|1052-PF-TRAC-WHITE\|1125-PF-TH-NOSTEN\|1181-PF-VN-THUYNHIEN\|1209-PF-VN-IMPEQN-GENRE\|1224-PF-VN-ROSANAS-URGELL\|1238-PF-VN-NIMPE-GENRE\|1020-PF-VN-BONI\|1149-PF-MM-RINGWALD\|1008-PF-SEA-RINGWALD\|1021-PF-PG-MUELLER\|1062-PF-PG-BARRY\|1233-PF-PG-MITA\|1052-PF-TRAC-WHITE\|1180-PF-TRAC2-DONDORP" > tmp.txt
+head -n 1 Pf7_samples.txt | cat - tmp.txt > Pf7_analysis_metadata.txt
+cp Pf7_analysis_metadata.txt Pf7_analysis_metadata.tsv
+rm -f tmp.txt
+```
+
+```{R,eval=F}
+library(tidyverse)
+
+AS_SE_data <- read_tsv("Pf7_analysis_metadata.tsv") %>%
+  filter(Population == "AS-SE-E" | Population == "AS-SE-W") %>%
+  filter(Country == "Vietnam" & Year > 2017 | 
+          Country == "Myanmar" & Year > 2016 | 
+          Country == "Cambodia" & Year > 2014 |
+          Country == "Thailand" & Population == "AS-SE-W" & Year > 2010 |
+          Country == "Thailand" & Population == "AS-SE-E")
+
+read_tsv("Pf7_analysis_metadata.tsv") %>%
+  filter(Population != "AS-SE-E" & Population != "AS-SE-W") %>%
+  rbind(AS_SE_data) %>%
+  write_tsv("Pf7_analysis_metadata.tsv")
+```
+
+Creat list of samples to subset VCF for
+```{R,eval=F}
+awk '{print $1}' Pf7_analysis_metadata.tsv | tail -n +2 - > Pf7_analysis_subset.txt
+```
 
 Script: The script is an example of the four that was submitted prior to merging the VCF files.
 
@@ -94,11 +127,6 @@ echo "PBS: Job name is $PBS_JOBNAME"
 module load bcftools/1.12
 cd /g/data/pq84/malaria/Pf_Malaysia/data/malariaGEN/Pf7
 
-cat Pf7_samples.txt | grep "1146-PF-MULTI-PRICE\|1185-PF-KH-KYLE\|1207-PF-KH-CNM-GENRE\|1011-PF-KH-SU\|1044-PF-KH-FAIRHURST\|1180-PF-TRAC2-DONDORP\|1198-PF-METF-NOSTEN\|1010-PF-TH-ANDERSON\|1016-PF-TH-NOSTEN\|1031-PF-SEA-PLOWE\|1052-PF-TRAC-WHITE\|1125-PF-TH-NOSTEN\|1181-PF-VN-THUYNHIEN\|1209-PF-VN-IMPEQN-GENRE\|1224-PF-VN-ROSANAS-URGELL\|1238-PF-VN-NIMPE-GENRE\|1020-PF-VN-BONI\|1149-PF-MM-RINGWALD\|1008-PF-SEA-RINGWALD\|1021-PF-PG-MUELLER\|1062-PF-PG-BARRY\|1233-PF-PG-MITA\|1052-PF-TRAC-WHITE\|1180-PF-TRAC2-DONDORP" > tmp.txt
-head -n 1 Pf7_samples.txt | cat - tmp.txt > Pf7_analysis_metadata.txt
-awk '{print $1}' tmp.txt > Pf7_analysis_subset.txt
-rm -f tmp.txt
-
 bcftools view --threads 16 -o Pf3D7_01_v3.pf7_subset.vcf.gz Pf3D7_01_v3.pf7.vcf.gz -S Pf7_analysis_subset.txt 
 rm -f Pf3D7_01_v3.pf7.vcf.gz
 
@@ -120,13 +148,15 @@ echo "FINISHED"
 To check subset worked: bcftools view Pf3D7_01_v3.pf7_subset.vcf.gz | head -n 105 | tail | tr '\t' '\n' | wc -l
 
 
-## Merge the chromosomes
+## Merge the chromosomes & update AF field
 
 File(s):  
 /g/data/pq84/malaria/Pf_Malaysia/data/malariaGEN/merge_VCFs.pbs
 
 Version(s):
 GATK/3.8.10
+java/jdk-8.40 
+bcftools/1.12
 
 Submission: 
 Single PBS script.
@@ -138,10 +168,10 @@ Notes:
 #!/bin/bash
 #PBS -P pq84
 #PBS -q normalbw
-#PBS -N Merge_VCFs
+#PBS -N Merge_Pf_VCFs
 #PBS -j oe
 #PBS -m ae
-#PBS -l walltime=24:00:00,mem=80GB,ncpus=10
+#PBS -l walltime=48:00:00,mem=160GB,ncpus=21
 #PBS -l storage=gdata/pq84+scratch/pq84
 #PBS -M jacob.westaway@menzies.edu.au
 
@@ -152,8 +182,10 @@ echo "PBS: Job name is $PBS_JOBNAME"
 echo "---------------------------------------"
 echo "Define paths and load modules"
 module load java/jdk-8.40 
+module load bcftools/1.12
 PICARD="/g/data/pq84/bin/picard/build/libs/picard.jar"
 GATK="/g/data/pq84/bin/GenomeAnalysisTK-3.8-1-0/GenomeAnalysisTK.jar"
+ANSTEY="/g/data/pq84/malaria/Pf_Malaysia/data/malariaGEN"
 
 echo "---------------------------------------"
 echo "---------------------------------------"
@@ -181,13 +213,46 @@ java -Djava.iodir=$PBS_JOBFS -Xms3200m -Xmx3600m -jar $PICARD \
     I=Pf3D7_14_v3.pf7_subset.vcf.gz \
     I=Pf3D7_API_v3.pf7_subset.vcf.gz \
     I=Pf_M76611.pf7_subset.vcf.gz \
-    O=Pf3D7_subset.vcf.gz
+    O=Pf3D7_subset_tmp.vcf.gz
+
+echo "---------------------------------------"
+echo 'Use GATK to merge newly created VCF and ANSTEY samples'
+bcftools merge -o Pf3D7_subset.vcf.gz --threads 21 Pf3D7_subset_tmp.vcf.gz $ANSTEY/Pf.7.1/1202-PF-MY-ANSTEY_genotyped.vcf.gz $ANSTEY/Pf.7.2/1202-PF-MY-ANSTEY_genotyped.vcf.gz
 
 echo "---------------------------------------"
 echo "Finished "
 ```
 
+################################# WIP
+
+## Subset to Anstey-1202 SNPs
+
+
+File(s):  
+/g/data/pq84/malaria/Pf_Malaysia/data/malariaGEN/subset_to_ANSTEY/Template.pbs
+
+Version(s):
+bcftools/1.12
+
+Submission: 
+PBS job for each contig. Created Template.pbs and CONTIGS.txt and then looped over to create scripts.
+
+Notes:
+bcftools view Pf.7.1/1202-PF-MY-ANSTEY_genotyped.vcf.gz \ head -n 50 | grep 'contig' | sed 's/##contig=<ID=\|,length.*//g' > subset_to_ANSTEY/CONTIGS.txt
+cd subset_to_ANSTEY/
+for i in $(cat CONTIGS.txt); do sed s/CONTIG/$i/g Template.pbs > ${i}.pbs; done
+for file in Pf*; do qsub $file; done
+
+
+
+
+
+################################# WIP
+
+
 ## Required tools/libraries for Analyses
+
+**Some steps are run interactively using the below settings, however, many steps are run as a PBS job due to compute requirements - this is noted at these steps.**
 
 ```{bash}
 module load bcftools/1.12
@@ -196,62 +261,10 @@ module load R/4.1.0
 export R_LIBS_USER="/g/data/pq84/R"
 export PATH=$PATH:/g/data/pq84/bin/plink2/
 
-FASTA="/g/data/pq84/malaria/Parasite_and_human_genetic_risk_factors_for_Pk_malaria/data/ref_genomes/PKA1H1/fasta"
-VCF="/g/data/pq84/malaria/Pk_Malaysian_Population_Genetics/outputs/04_Variant_calling/filtered/"
+FASTA="/g/data/pq84/malaria/Pf_Malaysia/data/ref_genomes/"
+VCF="/g/data/pq84/malaria/Pf_Malaysia/data/malariaGEN/Pf7"
 GATK="/g/data/pq84/bin/GenomeAnalysisTK-3.8-1-0/GenomeAnalysisTK.jar"
-REGIONS_TO_MASK="/g/data/pq84/malaria/Pk_Malaysian_Population_Genetics/outputs/05_Analyses/regions_to_mask.list"
-
-cd /g/data/pq84/malaria/Pk_Malaysian_Population_Genetics/outputs/05_Analyses
-```
-
-## Filter for variants that pass filters and select chromosomes 1 to 14
-
-```{bash,eval=F}
-java -Djava.iodir=$PBS_JOBFS -Xms3200m -Xmx3600m -jar $GATK \
-    -T SelectVariants \
-    -R $FASTA/strain_A1_H.1.Icor.fasta \
-    -V $VCF/FILTERED_SNPs.vcf  \
-    --excludeFiltered \
-    --excludeIntervals PKNH_MIT_v2 --excludeIntervals new_API_strain_A1_H.1 \
-    -o PK_consensus_filtered_pass.vcf
-```
-
-
-## Annotate VCF for downstream analysis
-
-```{bash,eval=F}
-#!/bin/bash
-#PBS -P pq84
-#PBS -q normalbw
-#PBS -N Annotate_variants
-#PBS -j oe
-#PBS -m ae
-#PBS -l walltime=12:00:00,mem=80GB,ncpus=10
-#PBS -l storage=gdata/pq84+scratch/pq84
-#PBS -M jacob.westaway@menzies.edu.au
-
-echo "---------------------------------------"
-echo "PBS: Job identifier is $PBS_JOBID"
-echo "PBS: Job name is $PBS_JOBNAME"
-
-echo "---------------------------------------"
-echo "Define paths and load modules"
-export PATH=$PATH:/g/data/pq84/bin/ensembl-vep
-
-echo "---------------------------------------"
-echo "---------------------------------------"
-echo 'Change to working directory and set env variables'
-GFF="/g/data/pq84/malaria/Parasite_and_human_genetic_risk_factors_for_Pk_malaria/data/ref_genomes/PKA1H1/gff/updated_version"
-FASTA="/g/data/pq84/malaria/Parasite_and_human_genetic_risk_factors_for_Pk_malaria/data/ref_genomes/PKA1H1/fasta/strain_A1_H.1.Icor.fasta"
-
-cd /g/data/pq84/malaria/Pk_Malaysian_Population_Genetics/outputs/05_Analyses
-
-echo "---------------------------------------------------------------------------------------------------------------------"
-echo "Annotate SNPs"
-vep -i PK_consensus_filtered_pass.vcf --gff $GFF/PlasmoDB-55_PknowlesiA1H1.gff.gz --fasta $FASTA -o PK_consensus_filtered_annotation.txt --force_overwrite --everything
-
-echo "---------------------------------------"
-echo "FINISHED"
+cd /g/data/pq84/malaria/Pf_Malaysia/outputs/06_Analyses
 ```
 
 
@@ -260,7 +273,7 @@ echo "FINISHED"
 To install MCMCpack on Gadi: https://opus.nci.org.au/display/Help/R 
 
 Steps:
- - Mask problematic regions (GATK)
+ - Mask problematic regions and subset to biallelic SNPs (assumption of moimix)
  - Convert VCF to GDS
  - Estimate BAF matrix 
     - estimate B-allele freq for each isolate. 
@@ -271,41 +284,66 @@ Steps:
  - Estimating MOI with Fws
     - alternative way of assessing clonality is to estmate Fws, with Fws < 0.95 indicating clonal infection (low MOI)
 
-**NB.** Clean up VCF.
-Add annotation to the ID column of your VCF file and subset to only biallelic site (assumption of moimix).
-bcftools view PK_consensus_no_MOI.vcf-M2 | bcftools annotate --threads 10 --set-id +'%CHROM\_%POS\_%REF\_%FIRST_ALT' - > moimix/PK_consensus_biallelic.vcf
 
+File(s):  
+/g/data/pq84/malaria/Pf_Malaysia/06_Analyses/moimix/moimix_2.pbs
+/g/data/pq84/malaria/Pf_Malaysia/06_Analyses/moimix/seqVCF2GDS_2.R
 
+Version(s):
+bcftools/1.12
+R/4.1.0 
 
-```{bash,eval=F}
-cd moimix
+Submission: 
+Single PBS script with nested R script.
 
-java -Djava.iodir=$PBS_JOBFS -Xms3200m -Xmx3600m -jar $GATK \
-        -T SelectVariants \
-        -R $FASTA/strain_A1_H.1.Icor.fasta \
-        -V PK_consensus_biallelic.vcf \
-        -XL $REGIONS_TO_MASK \
-        -o PK_consensus_masked.vcf.gz
+Notes:
 
-cdd 1
+```{R, eval=F}
+#!/bin/bash
+#PBS -P pq84
+#PBS -q normalbw
+#PBS -N moimix
+#PBS -j oe
+#PBS -m ae
+#PBS -l walltime=48:00:00,mem=128GB,ncpus=28
+#PBS -l storage=gdata/pq84+scratch/pq84
+#PBS -M jacob.westaway@menzies.edu.au
+
+echo "---------------------------------------"
+echo "PBS: Job identifier is $PBS_JOBID"
+echo "PBS: Job name is $PBS_JOBNAME"
+
+echo "---------------------------------------"
+echo "Define paths and load modules"
+module load bcftools/1.12
+module load R/4.1.0 
+export R_LIBS_USER="/g/data/pq84/R"
+VCF="/g/data/pq84/malaria/Pf_Malaysia/data/malariaGEN/Pf7"
+cd /g/data/pq84/malaria/Pf_Malaysia/outputs/06_Analyses
+
+echo "---------------------------------------"
+echo "Update VCF"
+bcftools view $VCF/Pf3D7_subset.vcf.gz -M2 | bcftools view -f PASS - | bcftools view -v snps - | bcftools view -e "MAC<2" -o moimix/Pf3D7_moimix_subset_2.vcf.gz 
+
+echo "---------------------------------------"
+echo "Create GDS file"
+Rscript /g/data/pq84/malaria/Pf_Malaysia/scripts/06_Analyses/moimix/seqVCF2GDS_2.R
+
+echo "---------------------------------------"
+echo "Finished"
 ```
 
-Run below in R
 ```{R,eval=F}
 # Converting VCF to GDS for estMOI
 library(tidyverse)
 library(SeqArray)
-seqVCF2GDS("moimix/PK_consensus_masked.vcf.gz", "moimix/PK_consensus_filtered_pass.gds", storage.option = "LZ4_RA")
-isolates <- seqOpen("moimix/PK_consensus_filtered_pass.gds") # read into R
+library(moimix)
+
+seqVCF2GDS("moimix/Pf3D7_moimix_subset_2.vcf.gz", "moimix/Pf3D7_moimix_subset_2.gds", storage.option = "LZ4_RA")
+isolates <- seqOpen("moimix/Pf3D7_moimix_subset_2.gds") # read into R
 seqSummary(isolates)
 sample.id <- seqGetData(isolates, "sample.id")
-seqCheck(isolates)
-str(seqGetData(isolates, "annotation/info/AC"))
 
-head(seqGetData(isolates, "sample.id"))
-
-# moimix analysis
-library(moimix)
 coords <- getCoordinates(isolates) # get genomic coordinates of all variants
 
 ## estimating BAF matrix 
@@ -323,9 +361,99 @@ baf_df <- isolate_baf$coords %>%
       as.data.frame() %>%
       rownames_to_column("variant.id") %>%
       mutate(variant.id = as.numeric(variant.id)) 
-    ) %>%
-  mutate(chromosome = str_remove(chromosome, ".*PKNH_")) %>%
-  mutate(chromosome = str_remove(chromosome, "_v2"))
+    ) 
+
+write_tsv(baf_df, "moimix/BAF_dataframe_2.tsv")
+
+
+# Estimate Fws
+set.seed(2023)
+
+fws_all <- getFws(isolates) %>%
+  as.data.frame() %>%
+  rownames_to_column(var = "sample") %>%
+  rename("Proportion" = ".")
+
+## Plot MOI distribution and export ######################
+
+## output MOI data
+fws_all %>%  
+  write_tsv("moimix/fws_MOI_2.tsv")
+
+## output samples with HIGH MOI data
+fws_all %>%  
+  filter(Proportion < 0.85) %>% 
+  select(sample) %>%
+  write_tsv("moimix/fws_high_MOI_2.tsv")
+```
+
+Plot Fws
+
+```{R,eval=F}
+library(tidyverse)
+library(janitor)
+library(viridis)
+
+fws_all <- read_tsv("moimix/fws_MOI_2.tsv") %>%
+  rename(Sample = sample) 
+
+Pf7_meta <- read_tsv("/g/data/pq84/malaria/Pf_Malaysia/data/malariaGEN/Pf7/Pf7_analysis_metadata.tsv") %>% 
+  rename(Region = "Admin level 1") %>% 
+  select(1:4, Population, Year) %>% 
+  add_column(partner_sample_id = NA)
+
+anstey_meta <- read.table("/g/data/pq84/malaria/Pf_Malaysia/data/malariaGEN/Pf.7.1/Pf_71__1202-PF-MY-ANSTEY__sample_metadata.txt", sep ="\t") %>% 
+  row_to_names(1) %>% 
+  rbind(
+    read.table("/g/data/pq84/malaria/Pf_Malaysia/data/malariaGEN/Pf.7.2/Pf_72__1202-PF-MY-ANSTEY__sample_metadata.txt", sep ="\t") %>%
+      row_to_names(1) %>%
+      mutate(partner_sample_id = Sample_External_ID)
+  ) %>% 
+  select(1,2,4) %>% 
+  add_column(Country = "Malaysia") %>% 
+  add_column(Region = "Sabah") %>% 
+  add_column(Population = NA) %>% 
+  add_column(Year = "2018") %>%
+  rename(Sample = sample) %>% 
+  rename(Study = study) 
+
+fws_meta <- Pf7_meta %>%
+  rbind(anstey_meta) %>% 
+  left_join(fws_all)
+
+# Plot - column
+fws_plot <- fws_meta %>%
+  arrange(desc(Proportion)) %>%
+  add_column(Sample_name = 1:nrow(.)) %>%
+  mutate(MOI = ifelse(Proportion >= 0.98, "No MOI",
+        ifelse(Proportion < 0.98 & Proportion > 0.85, "Low MOI", "High MOI"))) %>%
+  ggplot(aes(x = Sample_name, y = Proportion, fill = MOI)) +
+  geom_col() +
+  theme(axis.text.x = element_blank(), axis.ticks.x = element_blank()) +
+  scale_fill_viridis_d()
+
+ggsave("/g/data/pq84/malaria/Pf_Malaysia/outputs/06_Analyses/fws_plots/fws_col_plot.png", width = 14, dpi = 300, fws_plot)
+
+# Plot - box
+fws_plot <- fws_meta %>% 
+  ggplot(aes(x = Country, y = Proportion, colour = Country)) +
+  geom_boxplot() +
+  coord_flip() +
+  scale_colour_viridis_d() +
+  theme(legend.position = "none")
+  
+ggsave("/g/data/pq84/malaria/Pf_Malaysia/outputs/06_Analyses/fws_plots/fws_box_plot.png", width = 14, dpi = 300, fws_plot)
+```
+
+# Plot NRAF
+
+```{R,eval=F}
+library(tidyverse)
+
+baf_df <- read_tsv("moimix/BAF_dataframe_2.tsv") %>% # Generated with previous script
+  mutate(chromosome = str_remove(chromosome, "Pf3D7_")) %>% 
+  mutate(chromosome = str_remove(chromosome, "_v3")) %>%
+  rename_with(~str_remove(., "-"))
 
 ## Plot BAF for different Fws samples with ggplot
 plot_baf <- function(DATA, SAMPLE){
@@ -345,155 +473,108 @@ DATA %>%
     guides(colour = guide_legend(nrow = 1))
 }
 
-baf_plot <- plot_baf(baf_df, "ERR2214850")
-ggsave("/g/data/pq84/malaria/Pk_Malaysian_Population_Genetics/outputs/05_Analyses/MAF-Fws_plots/ERR2214850_72.png", width = 14, dpi = 300, baf_plot)
+sample_list <- c("SPT37003", "SPT38036", "SPT38060", "SPT38232", "PE0531C", "PD0039C")
 
-## Plot BAF for different Fws samples using base
-#png('/g/data/pq84/malaria/Pk_Malaysian_Population_Genetics/outputs/05_Analyses/MAF-Fws_plots/Fws_99.png', width = 14, height = 6, units = "in", res = 300)
-#plot(isolate_baf, "SRR2222335", ylab = "NRAF")
-#dev.off()
-
-## Estimate MOI with binommix
-set.seed(2022)
-counts <- alleleCounts(isolates)
-m1 <- binommix(counts, sample.id = "ERR2214837", k = 2)
-summary(m1)
-param.estimates <- getTheta(m1)
-param.estimates
-
-## Plot MOI and export ######################
-
-## Estiamting MOI with Fws
-fws_all <- getFws(isolates) %>%
-  as.data.frame() %>%
-  rownames_to_column(var = "sample") %>%
-  rename("Proportion" = ".")
-
-## Plot MOI distribution and export ######################
-
-## output MOI data
-fws_all %>%  
-  write_tsv("moimix/fws_MOI.tsv")
-
-## output samples with HIGH MOI data
-fws_all %>%  
-  filter(Proportion < 0.85) %>% 
-  select(sample) %>%
-  write.table("moimix/fws_high_MOI.txt", col.names = F, row.names = F, quote = F)
-
-## plot MOI - col
-fws_plot <- fws_all %>%
-  arrange(desc(Proportion)) %>%
-  add_column(Sample = 1:nrow(.)) %>%
-  mutate(MOI = ifelse(Proportion >= 0.98, "No MOI",
-        ifelse(Proportion < 0.98 & Proportion > 0.85, "Low MOI", "High MOI"))) %>%
-  ggplot(aes(x = Sample, y = Proportion, colour = MOI)) +
-  geom_col() +
-  theme(axis.text.x = element_blank(), axis.ticks.x = element_blank())
-
-ggsave("moimix/fws_plot.png", width = 10, fws_plot)
-
-## plot MOI - hist
-fws_plot <- fws_all %>%
-  arrange(desc(Proportion)) %>%
-  add_column(Sample = 1:nrow(.)) %>%
-  ggplot(aes(x = Proportion)) +
-  geom_histogram() +
-  ylab("Frequency")
-
-ggsave("moimix/fws_hist_plot.png", fws_plot)
-
-# Boxplots by location
-fws_all <- fws_all %>%
-  mutate(Sample = str_remove(sample, "_DK.*")) %>%
-  select(-sample) %>%
-  left_join(
-    readxl::read_xlsx("/g/data/pq84/malaria/Parasite_and_human_genetic_risk_factors_for_Pk_malaria/data/metadata/PK_Sabah_Sample_naming_indexes.xlsx") %>% 
-      select(1) %>%
-      add_column(Location = "Sabah") %>%
-      rename(Sample = sampleid) %>%
-      add_column(Cluster = "Sabah") %>% 
-      rbind(
-        read_csv("/g/data/pq84/malaria/Pk_Malaysian_Population_Genetics/data/metadata/Pk_clusters_metadata.csv") %>%
-        select(1, 3, 5) %>% 
-        rename(Location = area) %>%
-        mutate(Cluster = str_remove(Group, "-Pk")) %>% 
-        select(-Group) 
-      ) %>%
-      rbind(
-        read_csv("/g/data/pq84/malaria/Pk_Malaysian_Population_Genetics/data/metadata/Pk_clusters_peninsular_metadata.csv") %>%
-        select(2, 8) %>%
-        rename(Sample = ENA_accession_no_ES) %>%
-        add_column(Cluster = "Peninsular") 
-      ) %>%
-    mutate(Location = str_replace(Location, " ", "_")) 
-    ) %>%
-    mutate(MOI = ifelse(Proportion >= 0.98, "No MOI", ifelse(Proportion < 0.98 & Proportion > 0.85, "Low MOI", "High MOI"))) %>%
-    na.omit() %>%
-    mutate(Cluster = ifelse(grepl("PK_SB_DNA_011", Sample) | # does the ID match any of these
-                                grepl("PK_SB_DNA_091", Sample) | 
-                                grepl("PK_SB_DNA_043", Sample) |
-                                grepl("PK_SB_DNA_016", Sample) |  
-                                grepl("PK_SB_DNA_092", Sample) | 
-                                grepl("PK_SB_DNA_030", Sample) | 
-                                grepl("PK_SB_DNA_093", Sample) | 
-                                grepl("PK_SB_DNA_042", Sample) | 
-                                grepl("PK_SB_DNA_063", Sample), "Mn", .$Cluster)) %>% # if not, just use values from Cluster
-    mutate(Cluster = ifelse(Cluster == "Sabah", "Mf", .$Cluster))
-
-# Summary 
-fws_all %>%
-  group_by(Cluster) %>%
-  summarise(Count = n(), Mean = mean(Proportion), Below_95 = sum(Proportion <= .95), Below_85 = sum(Proportion <= .85))
-
-
-
-# Boxplot and point-plot by location
-fws_plot <- fws_all %>%
-  ggplot(aes(y = Location, x = Proportion, by = Location)) +
-  geom_boxplot() +
-  geom_point(aes(colour = Location)) +
-  geom_line(aes(colour = Location)) +
-  scale_color_viridis_d() +
-  theme(legend.position = "none") +
-  xlab("Fws")
-
-ggsave("moimix/fws_lcoations_boxplot.png", width = 8, fws_plot)
-
-fws_plot <- fws_all %>%
-  ggplot(aes(y = Cluster, x = Proportion, by = Cluster)) +
-  geom_boxplot() +
-  geom_point(aes(colour = Cluster)) +
-  geom_line(aes(colour = Cluster)) +
-  scale_color_viridis_d() +
-  theme(legend.position = "none") +
-  xlab("Fws")
-
-ggsave("moimix/fws_cluster_boxplot.png", width = 6, height = 8, dpi = 600, fws_plot)
+for (i in sample_list){
+  baf_plot <- plot_baf(baf_df, paste0(i))
+  ggsave(paste0("/g/data/pq84/malaria/Pf_Malaysia/outputs/06_Analyses/fws_plots/",i,"_NRAF.png"), width = 14, dpi = 300, baf_plot)
+}
 ```
+
 
 ## Exclude samples with high MOI
 
-```{bash,eval=F}
-bcftools view PK_consensus_filtered_pass.vcf -s ^ERR2214850,ERR2214856,ERR3374041,ERR985386,ERR985395,ERR985396,ERR985397,ERR985405,ERR985410,ERR985417,PK_SB_DNA_006_DKDL210002135-1a_HWHGKDSXY_L4,PK_SB_DNA_032_DKDL210002161-1a_HWHGKDSXY_L4,PK_SB_DNA_039_DKDL210002168-1a_HWHGKDSXY_L4,PK_SB_DNA_048_DKDL210002177-1a_HWHGKDSXY_L4,PK_SB_DNA_051_DKDL210002180-1a_HWHGKDSXY_L4,PK_SB_DNA_055_DKDL210002184-1a_HWHGKDSXY_L4,PK_SB_DNA_083_DKDL210002212-1a_HWHGKDSXY_L4 \
-  > PK_consensus_no_MOI.vcf
+File(s):  
+/g/data/pq84/malaria/Pf_Malaysia/06_Analyses/Exclude_high_fws_samples.pbs
+
+Version(s):
+bcftools/1.12
+
+Submission: 
+Single PBS script.
+
+
+```{R,eval=F}
+#!/bin/bash
+#PBS -P pq84
+#PBS -q normalbw
+#PBS -N Exclude_high_fws
+#PBS -j oe
+#PBS -m ae
+#PBS -l walltime=48:00:00,mem=50GB,ncpus=10
+#PBS -l storage=gdata/pq84+scratch/pq84
+#PBS -M jacob.westaway@menzies.edu.au
+
+echo "---------------------------------------"
+echo "PBS: Job identifier is $PBS_JOBID"
+echo "PBS: Job name is $PBS_JOBNAME"
+
+echo "---------------------------------------"
+echo "Define paths and load modules"
+module load bcftools/1.12
+VCF="/g/data/pq84/malaria/Pf_Malaysia/data/malariaGEN/Pf7"
+cd /g/data/pq84/malaria/Pf_Malaysia/outputs/06_Analyses
+
+echo "---------------------------------------"
+echo "Exclude high fws samples"
+bcftools view $VCF/Pf3D7_subset.vcf.gz -s ^PD0464-C,PD0469-C,PD0484-C,PD0485-C,PD0489-C,PD0491-C,PD0492-C,PD0499-C,PD0517-C,PD0519-C,PD0536-C,PD0554-C,PD0566-C,PD0577-C,PD0577-Cx,PD0592-C,PD0667-C,PD0802-C,PD0821-C,PD1166-C,PD1180-C,PD1196-C,PD1580-C,PD1581-C,PD1583-C,PD1591-C,PD1592-C,PE0088-C,PE0102-C,PE0114-C,PE0117-C,PE0185-C,PE0206-C,PE0218-C,PE0219-C,PE0228-C,PE0229-C,PE0232-C,PE0234-C,PE0245-C,PE0256-C,PE0266-C,PE0269-C,PE0272-C,PE0279-C,PE0284-C,PE0291-C,PE0296-C,PE0302-C,PE0312-C,PE0338-C,PE0342-C,PE0343-C,PE0347-C,PE0354-C,PE0361-C,PE0372-C,PE0386-C,PE0391-C,PE0395-C,PE0399-C,PE0420-C,PE0421-C,PE0423-C,PE0432-C,PE0438-C,PE0441-C,PE0445-C,PE0448-C,PE0452-C,PE0453-C,PE0462-C,PE0466-C,PE0468-C,PE0469-C,PE0470-C,PE0473-C,PE0480-C,PE0482-C,PE0506-C,PE0512-C,PE0515-C,PE0519-C,PE0530-C,PE0532-C,PE0541-C,PE0558-C,PH0202-C,PH0429-C,PH0509-C,PH1709-C,PH1715-C,PH1722-C,PH1733-C,PH1734-C,PH1735-C,PH1738-C,PH1740-C,PH1744-C,PH1746-C,PH1753-C,PH1754-C,PH1758-C,PH1760-C,PH1771-C,PH1772-C,PJ0140-C,PJ0152-Cx,PJ0156-C,PJ0192-C,PJ0193-C,PJ0237-C,PJ0238-C,PJ0240-C,PJ0243-C,PJ0251-C,PN0008-C,PN0028-C,PN0029-C,PN0054-C,PN0075-C,PN0117-C,PN0118-C,PN0119-C,PN0131-C,PN0165-C,PR0004-CW,PR0009-CW,PR0010-C,PR0011-C,PR0014-CW,PR0015-C,PR0018-C,PR0033-C,PR0040-CW,PR0116-C,PR0119-C,PR0124-C,PR0127-C,PR0133-C,PR0134-C,PR0135-C,PR0137-C,PR0142-C,PR0143-C,PR0144-C,PR0146-C,PR0147-C,PR0150-C,PR0151-C,PR0162-C,PR0264-C,PR0266-C,PR0267-C,PR0269-C,PR0282-C,PR0285-C,PR0288-C,PR0290-C,PR0291-C,QG0183-C,QG0185-C,QG0189-C,QG0191-C,QG0192-C,QG0193-C,QG0197-C,QG0198-C,QG0203-C,QG0206-C,QG0212-C,QG0213-C,QG0214-C,QG0217-C,QG0221-C,QG0224-C,QG0226-C,QG0229-C,QG0230-C,QG0231-C,QG0235-C,QG0238-C,QG0240-C,QG0244-C,QG0248-C,QG0251-C,QG0253-C,QG0259-C,QG0266-C,QG0267-C,QG0279-C,QG0280-C,QG0284-C,QG0285-C,QG0288-C,QG0289-C,QG0293-C,QG0294-C,RCN03176,RCN03610,RCN06881,RCN06893,RCN06911,RCN07860,RCN07864,RCN07865,RCN07949,RCN07950,RCN07951,RCN07952,RCN07953,RCN07954,RCN07955,RCN07956,RCN07965,RCN07966,RCN07978,RCN07981,RCN07990,RCN08013,RCN08014,RCN08016,RCN08029,RCN08030,RCN08031,RCN08057,RCN08058,RCN08063,RCN08064,RCN08074,RCN08081,RCN08082,RCN08083,RCN08084,RCN08169,RCN08173,RCN08174,RCN08180,RCN08181,RCN08182,RCN08183,RCN08197,RCN08202,RCN08204,RCN08205,RCN08206,RCN08213,RCN08214,RCN08219,RCN08223,RCN08224,RCN08226,RCN08227,RCN08228,RCN08230,RCN08235,RCN08236,RCN08237,RCN08238,RCN08244,RCN08245,RCN08247,RCN08250,RCN08252,RCN08254,RCN08258,RCN08259,RCN08261,RCN08262,RCN08263,RCN08264,RCN08265,RCN08266,RCN08269,RCN08272,RCN08273,RCN08278,RCN08280,RCN08288,RCN08290,RCN08294,RCN08295,RCN08296,RCN08307,RCN08315,RCN08319,RCN08320,RCN08322,RCN08326,RCN08328,RCN08334,RCN08338,RCN08341,RCN08359,RCN08361,RCN08629,RCN08633,RCN08634,RCN08652,RCN08654,RCN08669,RCN08684,RCN08699,RCN08700,RCN08701,RCN08705,RCN08709,RCN08710,RCN08712,RCN08713,RCN08739,RCN08777,RCN08781,RCN08782,RCN09287,RCN09573,RCN09675,RCN09708,RCN09762,RCN09895,RCN09989,RCN10176,RCN10181,RCN10187,RCN10190,RCN10194,RCN10207,RCN10213,RCN10223,RCN11085,RCN11257,RCN11276,RCN11284,RCN11288,RCN11319,RCN11324,RCN12357,RCN12363,RCN12407,RCN12413,RCN12414,RCN12415,RCN12416,RCN12417,RCN12423,RCN12510,RCN12524,RCN12553,RCN12560,RCN12576,RCN12597,RCN12598,RCN12821,RCN12826,RCN12835,RCN12841,RCN12857,RCN12976,RCN12985,RCN12988,RCN12993,RCN13006,RCN13021,RCN13022,RCN13024,RCN13033,RCN13073,RCN13082,RCN13099,RCN13104,RCN13912,RCN13914,RCN13915,RCN13916,RCN13917,RCN13921,RCN13922,RCN13924,RCN13926,RCN13931,RCN13933,RCN13935,RCN13936,RCN13937,RCN13945,RCN13967,RCN13977,RCN13986,RCN13987,RCN13992,RCN13996,RCN14001,RCN14009,RCN14011,RCN14012,RCN14015,RCN14016,RCN14018,RCN14024,RCN14025,RCN14031,RCN14032,RCN14042,RCN14053,RCN14058,RCN14059,RCN14064,RCN14065,RCN14067,RCN14068,RCN14080,RCN14084,RCN14089,RCN14103,RCN14104,RCN14106,RCN14107,RCN14108,RCN14113,RCN14114,RCN14126,RCN14144,RCN14149,RCN14152,RCN14153,RCN14159,RCN14164,RCN14166,RCN14167,RCN15582,RCN15589,RCN15590,RCN15647,RCN15660,RCN15680,RCN15688,RCN15714,RCN15716,RCN15720,RCN15730,RCN15736,RCN15746,RCN15749,RCN15755,RCN15764,RCN15786,RCN15804,SPT00883,SPT24669,SPT34241,SPT34276,SPT34302,SPT34317 \
+  | bcftools view -f PASS - | bcftools view -v snps - | bcftools view -e "MAC<2" -o Pf3D7_subset_no_MOI.vcf.gz
+
+echo "---------------------------------------"
+echo "Finished"
 ```
 
 ## Normalise VCF & convert filtered vcf to bcf
 
+File(s):  
+/g/data/pq84/malaria/Pf_Malaysia/06_Analyses/vcf_to_bcf.pbs
+
+Version(s):
+bcftools/1.12
+
+Submission: 
+Single PBS script.
+
+Notes:
+ - Mask hypervariable regions with bcftools (already done in previous step)
  - Ensure that multi-allelic calls are split (1st part)
  - Left-align indels (2nd part)
  - Set the ID field to a unique value: CHROM:POS:REF:ALT (3rd part)
  
  --indiv-sort - specify how samples will be sorted - use to be consistent when adding metadata downstream 
 
-```{bash,eval=F}
-bcftools view PK_consensus_no_MOI.vcf| \
+```{R,eval=F}
+#!/bin/bash
+#PBS -P pq84
+#PBS -q normalbw
+#PBS -N vcf_to_bcf
+#PBS -j oe
+#PBS -m ae
+#PBS -l walltime=48:00:00,mem=16GB,ncpus=2
+#PBS -l storage=gdata/pq84+scratch/pq84
+#PBS -M jacob.westaway@menzies.edu.au
+
+echo "---------------------------------------"
+echo "PBS: Job identifier is $PBS_JOBID"
+echo "PBS: Job name is $PBS_JOBNAME"
+
+echo "---------------------------------------"
+echo "Define paths and load modules"
+module load bcftools/1.12
+FASTA="/g/data/pq84/malaria/Pf_Malaysia/data/ref_genomes/"
+cd /g/data/pq84/malaria/Pf_Malaysia/outputs/06_Analyses
+
+echo "---------------------------------------"
+echo "VCF to BCF"
+bcftools view mommix/Pf3D7_subset_no_MOI_2.vcf.gz | \
   sed 's/AD,Number=R/AD,Number=./' | \
   bcftools norm -m-any | \
-  bcftools norm --check-ref w -f $FASTA/strain_A1_H.1.Icor.fasta | \
+  bcftools norm --check-ref w -f $FASTA/PlasmoDB-59_Pfalciparum3D7_Genome.fasta | \
   bcftools annotate -Ob -x ID -I +'%CHROM:%POS:%REF:%ALT:%ID' \
-  > PK_consensus_filtered_pass.bcf
+  > Pf3D7_subset_no_MOI.bcf
+
+echo "---------------------------------------"
+echo "FINISHED"
 ```
 
 
@@ -506,21 +587,19 @@ The regions we masked are: https://plasmodb.org/plasmo/service/users/current/ste
 To find other hypervariable regions that may need to be masked, you can plot data from Pk.bim (created in step below) to acquire SNP frequencies/density in a sliding window approach.
 
 ```{bash,eval=F}
-bcftools view PK_consensus_filtered_pass.bcf | sed -n '/#CHROM/,$p' | head -n 1 | tr '\t' '\n' |  sed -n '/ERR2214837/,$p' | awk '{print $1 "\t" $1}' > sample_order.txt
+bcftools view Pf3D7_subset_no_MOI.bcf | sed -n '/#CHROM/,$p' | head -n 1 | tr '\t' '\n' |  sed -n '/PD0039-C/,$p' | awk '{print $1 "\t" $1}' > sample_order.txt
 
-plink --bcf PK_consensus_filtered_pass.bcf \
+plink --bcf Pf3D7_subset_no_MOI.bcf \
   --keep-allele-order \
   --vcf-idspace-to _ \
   --double-id \
   --allow-extra-chr 0 \
   --make-bed \
   --indiv-sort file sample_order.txt \
-  --exclude 'range' regions_to_mask.txt \
   --allow-no-sex \
-  --out Pk
+  --out Pf
 ```
 
-################## Optional 
 ### For SNP density across the genome
 
 ```{R,eval=f}
@@ -528,7 +607,7 @@ plink --bcf PK_consensus_filtered_pass.bcf \
 library(tidyverse)
 
 # Read in data
-snp_data <- read_table("Pk.bim", col_names = F) %>%
+snp_data <- read_table("Pf.bim", col_names = F) %>%
     select(X2) %>%
     separate(X2, into = c("Contig", "Pos", "Major", "Minor", "Nothing"), sep = ":") %>%
     mutate(Pos = as.numeric(Pos)) %>%
@@ -557,9 +636,7 @@ ggsave("SNP_density.png", dpi = 600, width = 14, snp_plot)
 *Had to write an R script to manually add metadata as PLINK was being painful*
 
 ```{bash,eval=F}
-sed 's/ /,/g' Pk.fam > Pk.csv
-Rscript /g/data/pq84/malaria/Pk_Malaysian_Population_Genetics/scripts/06_Analysis/pheno_to_plink_fam.R
-sed 's/,/ /g' Pk.csv > Pk.fam
+Rscript /g/data/pq84/malaria/Pf_Malaysia/scripts/06_Analyses/pheno_to_plink_fam.R
 ```
 
 ### pheno_to_plink_fam.R
@@ -570,51 +647,49 @@ library(tidyverse)
 library(janitor)
 library(data.table)
 
-# Meatdata
-Location_data <- readxl::read_xlsx("/g/data/pq84/malaria/Parasite_and_human_genetic_risk_factors_for_Pk_malaria/data/metadata/PK_Sabah_Sample_naming_indexes.xlsx") %>% 
-  select(1) %>%
-  add_column(Location = "Sabah") %>%
-  rename(Sample = sampleid) %>%
-  add_column(Cluster = "Sabah") %>% 
+# Metadata
+
+Pf7_meta <- read_tsv("/g/data/pq84/malaria/Pf_Malaysia/data/malariaGEN/Pf7/Pf7_analysis_metadata.tsv") %>% 
+  rename(Region = "Admin level 1") %>% 
+  select(1:4, Population, Year) %>% 
+  add_column(partner_sample_id = NA)
+
+anstey_meta <- read.table("/g/data/pq84/malaria/Pf_Malaysia/data/malariaGEN/Pf.7.1/Pf_71__1202-PF-MY-ANSTEY__sample_metadata.txt", sep ="\t") %>% 
+  row_to_names(1) %>% 
   rbind(
-    read_csv("/g/data/pq84/malaria/Pk_Malaysian_Population_Genetics/data/metadata/Pk_clusters_metadata.csv") %>%
-      select(1, 3, 5) %>% 
-      rename(Location = area) %>%
-      mutate(Cluster = str_remove(Group, "-Pk")) %>% 
-      select(-Group) 
-  ) %>%
-  rbind(
-    read_csv("/g/data/pq84/malaria/Pk_Malaysian_Population_Genetics/data/metadata/Pk_clusters_peninsular_metadata.csv") %>%
-      select(2, 8) %>%
-      rename(Sample = ENA_accession_no_ES) %>%
-      add_column(Cluster = "Peninsular") 
-  ) %>%
-  mutate(Location = str_replace(Location, " ", "_"))
+    read.table("/g/data/pq84/malaria/Pf_Malaysia/data/malariaGEN/Pf.7.2/Pf_72__1202-PF-MY-ANSTEY__sample_metadata.txt", sep ="\t") %>%
+      row_to_names(1) %>%
+      mutate(partner_sample_id = Sample_External_ID)
+  ) %>% 
+  select(1,2,4) %>% 
+  add_column(Country = "Malaysia") %>% 
+  add_column(Region = "Sabah") %>% 
+  add_column(Population = NA) %>% 
+  add_column(Year = "2018") %>%
+  rename(Sample = sample) %>% 
+  rename(Study = study) 
 
+combined_meta <- Pf7_meta %>%
+  rbind(anstey_meta) 
 
-Plink_fam <- read_csv("Pk.csv", col_names=FALSE) %>%
-  select(-ncol(.)) %>%
-  mutate(Sample = str_remove(X2, "_DKD.*")) %>% 
-  left_join(Location_data) %>% 
-  select(-Sample) 
+Plink_fam <- read.table("Pf.fam", sep =" ") %>% 
+  rename(Sample = V1) %>% 
+  left_join(combined_meta) 
 
-write_csv(Plink_fam, "Pk.csv", col_names = FALSE)
-```
-
-## Remove duplicates
-
-```{bash,eval=F}
-cut -f 2 Pk.bim | sort | uniq -d > Pk.dups
-```
+write.table(Plink_fam, "Pf.fam", quote = FALSE, sep = " ", col.names = FALSE, row.names = FALSE)
+Plink_fam %>% 
+  select(-c(2:6)) %>% 
+  write_csv(Plink_fam, "Pf.csv")
+  ```
 
 ## Calculate minor allele frequency, genotypic missingness
 
 ```{eval=F}
-plink --bfile Pk \
+plink --bfile Pf \
   --freq \
   --missing \
   --allow-no-sex \
-  --out Pk
+  --out Pf
 ```
 
  - N_MISS =Number of missing SNPs
@@ -624,8 +699,8 @@ plink --bfile Pk \
 ## Plot distribution of MAF and genotypic missingness
 
 ```{bash,eval=F}
-Rscript /g/data/pq84/malaria/Parasite_and_human_genetic_risk_factors_for_Pk_malaria/Exploratory_analyses/PLINK/maf_dist.R
-Rscript /g/data/pq84/malaria/Parasite_and_human_genetic_risk_factors_for_Pk_malaria/Exploratory_analyses/PLINK/miss_dist.R
+Rscript /g/data/pq84/malaria/Pf_Malaysia/scripts/06_Analyses/maf_dist.R
+Rscript /g/data/pq84/malaria/Pf_Malaysia/scripts/06_Analyses/miss_dist.R
 ```
 
 ### maf_dist.R
@@ -635,24 +710,20 @@ Rscript /g/data/pq84/malaria/Parasite_and_human_genetic_risk_factors_for_Pk_mala
 library(tidyverse)
 
 # Read in data
-pk_maf <- read_table("Pk.frq", col_names=T) %>%
+pf_maf <- read_table("Pf.frq", col_names=T) %>%
     mutate(CHR = str_remove(SNP, ":.*"))
 
 # Density of MAF by SNP
 pk_maf_density <- pk_maf  %>%
     ggplot(aes(x = MAF)) +
-    geom_density(alpha=.3) +
-    geom_vline(xintercept = 0.05, colour = "#1F968BFF") 
+    geom_density(alpha=.3) 
 
-ggsave("Pk_maf_density.png", dpi = 600, pk_maf_density)
+ggsave("filtering/Pf_maf_density.png", dpi = 600, pk_maf_density)
 
 # Plot MAF by chr
-pk_maf_chr <- pk_maf %>% 
-    mutate(SNP = str_remove(SNP, ":.*"),
-        SNP = str_remove(SNP, "ordered_"),
-        SNP = str_remove(SNP, "new_"),
-        SNP = str_remove(SNP, "_v2"),
-        SNP = str_remove(SNP, "A1.*")) %>%
+pf_maf_chr <- pf_maf %>% 
+    mutate(SNP = str_remove(SNP, "Pf3D7_"),
+        SNP = str_remove(SNP,"_v3.*")) %>% 
     group_by(SNP) %>%
     summarise(MAF = mean(MAF)) %>%
     ggplot(aes(x = SNP, y = MAF)) +
@@ -660,12 +731,13 @@ pk_maf_chr <- pk_maf %>%
     theme(axis.text.x = element_text(angle = 45), legend.position = "none") +
     scale_fill_viridis_d() 
 
-ggsave("Pk_maf_plot_chr.png", dpi = 600, pk_maf_chr)
+ggsave("filtering/Pf_maf_plot_chr.png", dpi = 600, pf_maf_chr)
 
 # Summary stats
 
-pk_maf %>% 
-    mutate(SNP = str_remove(SNP, ":.*")) %>%
+pf_maf %>% 
+    mutate(SNP = str_remove(SNP, "Pf3D7_"),
+        SNP = str_remove(SNP,"_v3.*")) %>% 
     group_by(SNP) %>%
     summarise(MAF_mean = mean(MAF),
             MAF_SD = sd(MAF),
@@ -677,7 +749,7 @@ rbind(
                 MAF_SE = (sd(MAF))/sqrt(n())) %>%
         add_column(SNP = "Total")
     ) %>%
-    write_csv(col_names = T, "pk_maf_summary.csv")
+    write_csv(col_names = T, "filtering/pf_maf_summary.csv")
 ```
 
 ### miss_dist.R
@@ -689,24 +761,33 @@ library(data.table)
 
 # Sample-based missing data
 ## Read in data
-sample_mis <- read_table("Pk.imiss", col_names=T) 
+sample_mis <- read_table("Pf.imiss", col_names=T) 
 
 # Density of miss by sample
 sample_miss_density <- sample_mis %>% 
     rename(Sample = IID,
         Geno_Miss = F_MISS) %>%
-    mutate(Sample = str_remove(Sample, "DKD.*"),
-            Sample = str_remove(Sample, "PK_SB_DNA_")) %>%
     select(2:ncol(.)) %>%
     ggplot(aes(x = Geno_Miss)) +
     geom_density(alpha=.3) +
     geom_vline(xintercept = 0.25, colour = "#1F968BFF") 
 
-ggsave("sample_miss_density_plot.png", width = 12, dpi = 600, sample_miss_density)
+ggsave("filtering/sample_miss_density_plot.png", width = 12, dpi = 600, sample_miss_density)
+
+# Malaysia mean missingness
+sample_mis %>%
+    left_join(
+        read_csv("Pf.csv") %>% 
+            rename(FID = Sample)
+    ) %>%
+    filter(Country == 'Malaysia') %>%
+    summarise(mean = mean(F_MISS), sd = sd(F_MISS), min = min(F_MISS), max = max(F_MISS)) %>% 
+    write_csv("filtering/malaysia_missingness.csv")
+
 
 # Variant-based missing data
 ## Read in data
-var_miss <- read_table("Pk.lmiss", col_names=T) %>%
+var_miss <- read_table("Pf.lmiss", col_names=T) %>%
     mutate(CHR = str_remove(SNP, ":.*")) %>%
     rename(Geno_Miss = F_MISS,
             Chr = CHR)
@@ -715,9 +796,11 @@ var_miss <- read_table("Pk.lmiss", col_names=T) %>%
 var_miss_density <- var_miss %>% 
     ggplot(aes(x = Geno_Miss)) +
     geom_density(alpha=.3) +
-    geom_vline(xintercept = 0.25, colour = "#1F968BFF") 
+    geom_vline(xintercept = 0.25, colour = "#1F968BFF") +
+    geom_vline(xintercept = 0.1, colour = "#1F968BFF") 
 
-ggsave("variant_miss_density_plot.png", width = 12, dpi = 600, var_miss_density)
+ggsave("filtering/variant_miss_density_plot.png", width = 12, dpi = 600, var_miss_density)
+
 
 # Summary stats
 
@@ -726,20 +809,20 @@ miss_summary <- var_miss %>%
                 Miss_SD = sd(Geno_Miss),
                 Miss_SE = (sd(Geno_Miss))/sqrt(n()))
 
-write_csv(miss_summary, "pk_miss_summary.csv")
+write_csv(miss_summary, "filtering/pf_miss_summary.csv")
 ```
 
-## Apply filters based on MAF, genotypic missingess and Fsw
+## Apply filters for genotypic missingess
 
  - first recode creates the intial .map and .ped files
  - recode generates new .ped and .map files
  - --make-bed generates .bed, .bim and .fam files
  - -mind filters per sample (missingness)
- - -geno filters per variant (missingness
+ - -geno filters per variant (missingness)
 
 **FILTERED:**
- - exclude variants with > 25% missing alleles
- - exclude variants with minor allele frequencies > 5%
+ - exclude variants with > 10% missing alleles
+ - exclude variants with minor allele frequencies < 5%
  - exclude samples with > 25% missing alleles
 
 Values selected based on the distrbutions plotted previously.
@@ -747,32 +830,30 @@ Values selected based on the distrbutions plotted previously.
 MAF (=Minor Allele Frequency) = P(geno=1, Aa)x0.5 + P(geno=2, aa)
 
 ```{bash,eval=F}
-plink --bfile Pk --recode --out Pk
-plink --file Pk --maf 0.05 --geno 0.25 --mind 0.25 --make-bed --out cleaned
+plink --bfile Pf --recode --out Pf
+plink --file Pf --geno 0.1 --mind 0.5 --make-bed --out cleaned
 ```
 
+200431 variants and 3575 people pass filters and QC.
+92 samples & 114144 variants removed. 
 
 #########################################################################################################
 
 
 
-# How do the Sabah samples fit into the previously defined clusters?
+# How do the Malaysian samples fit into the previously defined clusters?
 
 ## Use PLINK to create PCA and MDS data, and a distance matrix (identity-by-state)
 
 The different functions:
     --cluster is MDS
     --distance is identity by state
-    --genome is identity by decent
-        unbounded - "The underlying P(IBD=0/1/2) estimator sometimes yields numbers outside the range [0,1]; by default, these are clipped. The 'unbounded' modifier turns off this clipping."
-        nudge - "Then, if PI_HAT2 < P(IBD=2), 'nudge' adjusts the final estimates to P(IBD=0) := (1-p2), P(IBD=1) := 2p(1-p), and P(IBD=2) := p2, where p is the current PI_HAT."
 
 ```{bash,eval=F}
-plink --bfile cleaned --cluster --mds-plot 10 --out Pk
-plink --bfile cleaned --pca --out Pk
-plink --bfile cleaned --distance square --out Pk
-plink --bfile cleaned --genome gz unbounded nudge --out Pk
-Rscript /g/data/pq84/malaria/Pk_Malaysian_Population_Genetics/scripts/06_Analysis/ordination_plots.R
+plink --bfile cleaned --cluster --mds-plot 10 --out Pf
+plink --bfile cleaned --pca --out Pf
+plink --bfile cleaned --distance square --out Pf
+Rscript /g/data/pq84/malaria/Pf_Malaysia/scripts/06_Analyses/ordination_plots.R
 ```
 
 ### ordination_plots.R

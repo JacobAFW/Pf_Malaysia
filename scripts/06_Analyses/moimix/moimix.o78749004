@@ -1,0 +1,240 @@
+---------------------------------------
+PBS: Job identifier is 78749004.gadi-pbs
+PBS: Job name is moimix
+---------------------------------------
+Define paths and load modules
+Loading bcftools/1.12
+  Loading requirement: intel-mkl/2020.3.304 python3/3.9.2
+---------------------------------------
+Update VCF
+---------------------------------------
+Create GDS file
+-- Attaching packages --------------------------------------- tidyverse 1.3.1 --
+v ggplot2 3.3.6     v purrr   0.3.4
+v tibble  3.1.7     v dplyr   1.0.9
+v tidyr   1.2.0     v stringr 1.4.0
+v readr   2.1.2     v forcats 0.5.1
+-- Conflicts ------------------------------------------ tidyverse_conflicts() --
+x dplyr::filter() masks stats::filter()
+x dplyr::lag()    masks stats::lag()
+Loading required package: gdsfmt
+
+Attaching package: 'SeqArray'
+
+The following object is masked from 'package:stringr':
+
+    fixed
+
+Loading required package: flexmix
+Loading required package: lattice
+Thu Apr  6 16:31:20 2023
+Variant Call Format (VCF) Import:
+    file(s):
+        Pf3D7_moimix_subset.vcf.gz (218.2M)
+    file format: VCFv4.2
+    genome reference: file:///home/ubuntu/data/resources/Pfalciparum.genome.fasta
+    the number of sets of chromosomes (ploidy): 2
+    the number of samples: 3,667
+    genotype storage: bit2
+    compression method: LZ4_RA
+    # of samples: 3667
+Output:
+    moimix/Pf3D7_moimix_subset.gds
+Parsing 'Pf3D7_moimix_subset.vcf.gz':
++ genotype/data   { Bit2 2x3667x10275 LZ4_ra(33.7%), 6.1M }
+Digests:
+    sample.id  [md5: 95474b11d23bb233b33f669ddb61f33d]
+    variant.id  [md5: d62695ab075d2d90e98012b46fba2837]
+    position  [md5: d947c5fc2755d62b3ce9ab006d9eaab7]
+    chromosome  [md5: 54ea9177555dbe090753ddd5392f0c5d]
+    allele  [md5: f68c83b5df785e060467c14b87378d2c]
+    genotype  [md5: 0944aa638dd699a373e6d24352d28e1e]
+    phase  [md5: 306b94111142023f5d6df3c454a857bc]
+    annotation/id  [md5: 4b3b8dc4d41853b9ad777bc97227a209]
+    annotation/qual  [md5: b7b506c84b419a469f0a512fb478a912]
+    annotation/filter  [md5: edbe379bd6772cd4d4cf9b922d1c794a]
+    annotation/info/AC  [md5: 29e3c1d061ca6df86693e443013033fb]
+    annotation/info/AF  [md5: 516c4f6d20048144559736580aa2102f]
+    annotation/info/AN  [md5: 6e83aff2f9a541aa449eb7237080c1ec]
+    annotation/info/ANN  [md5: 48c11a59dc45b6707847107e0aec5a8e]
+    annotation/info/AS_BaseQRankSum  [md5: e83190b4774a1d56704d139682b71753]
+    annotation/info/AS_FS  [md5: e83190b4774a1d56704d139682b71753]
+    annotation/info/AS_InbreedingCoeff  [md5: 0fbd9e478dcee43ca285120b262bd271]
+    annotation/info/AS_MQ  [md5: e83190b4774a1d56704d139682b71753]
+    annotation/info/AS_MQRankSum  [md5: e83190b4774a1d56704d139682b71753]
+    annotation/info/AS_QD  [md5: 1c074a0532dd3f6326caa1922dbeeba5]
+    annotation/info/AS_ReadPosRankSum  [md5: e83190b4774a1d56704d139682b71753]
+    annotation/info/AS_SOR  [md5: e83190b4774a1d56704d139682b71753]
+    annotation/info/BaseQRankSum  [md5: 5928e8d147d0c9d17fe6ad5090e09b9c]
+    annotation/info/CDS  [md5: 953f0f36b722a8886c56c5dd4ff6ff0a]
+    annotation/info/DP  [md5: 2e158c07a178eb45fcace056fa61838a]
+    annotation/info/DS  [md5: 4acae5dd0bfaec91bf3fe17719df3380]
+    annotation/info/END  [md5: fd7a7e9acbb9abfd009608cde2bd9fcc]
+    annotation/info/ExcessHet  [md5: ed66177e4a6d5ac5ff0d8b9b63a12c81]
+    annotation/info/FS  [md5: 00fd4caa88f486ee8ca03ff903f97cfa]
+    annotation/info/InbreedingCoeff  [md5: ba9d8a29b0ab923af664ece8491d798a]
+    annotation/info/LOF  [md5: e025543f757de383b7b555f52f204d72]
+    annotation/info/MLEAC  [md5: ee091de765638ac564abc3c75cdb8cd8]
+    annotation/info/MLEAF  [md5: 1d0601e5a7987a35a4bf256ff29cbfcb]
+    annotation/info/MQ  [md5: 15fba6ad248f7d470cdc7c50ef84805d]
+    annotation/info/MQRankSum  [md5: d4b48139a03b7488bd061ac3b804c704]
+    annotation/info/NEGATIVE_TRAIN_SITE  [md5: 103decf3b4a10c920da4cf6b122eb0e1]
+    annotation/info/NMD  [md5: 8e4cc76aac4d9058076f6db3e5f7a8bb]
+    annotation/info/POSITIVE_TRAIN_SITE  [md5: 439d6592e796626aeb72da13522ef8c3]
+    annotation/info/QD  [md5: f1d3198b60e078a293f109f90d0c2db9]
+    annotation/info/RAW_MQandDP  [md5: e07654db6a76d26d99f500053f0f7910]
+    annotation/info/ReadPosRankSum  [md5: 255fdddaa2fce5b7265f47832cf08ea8]
+    annotation/info/RegionType  [md5: 13bb7789d8b6390c133a63edcc81eac6]
+    annotation/info/SOR  [md5: b5dc80ef6436b3288b9540f85d69908c]
+    annotation/info/VQSLOD  [md5: 07314504ed2c5303642882d1226d8eee]
+    annotation/info/culprit  [md5: 7e0c1cbabe339a46b049d3c76f6ab3b5]
+    annotation/info/set  [md5: feba50e470435dac52eaf50128dcbb19]
+    annotation/format/AD  [md5: cc867f05390a71cc10543c78c7f5222a]
+    annotation/format/DP  [md5: 96d814a102e9092200a6819fac92b25d]
+    annotation/format/GQ  [md5: 0a98f20b4c71b0b66d793cf1d9cab1ac]
+    annotation/format/MIN_DP  [md5: e83190b4774a1d56704d139682b71753]
+    annotation/format/PGT  [md5: 98f4185b1c3fd626a8fa22054ba3529d]
+    annotation/format/PID  [md5: e182449327e2e52a57ccd38d14ad016f]
+    annotation/format/PL  [md5: e6e9a1f72b63c4434cb6660d5e40e04f]
+    annotation/format/PS  [md5: 0244ec87e6ba11498c7d7d098cca2bbd]
+    annotation/format/RGQ  [md5: 09914b67a865ea20091fa6ee9936f669]
+    annotation/format/SB  [md5: e83190b4774a1d56704d139682b71753]
+Done.
+Thu Apr  6 16:32:51 2023
+Optimize the access efficiency ...
+Clean up the fragments of GDS file:
+    open the file 'moimix/Pf3D7_moimix_subset.gds' (223.7M)
+    # of fragments: 11641
+    save to 'moimix/Pf3D7_moimix_subset.gds.tmp'
+    rename 'moimix/Pf3D7_moimix_subset.gds.tmp' (223.6M, reduced: 133.9K)
+    # of fragments: 217
+Thu Apr  6 16:32:58 2023
+File: /g/data/pq84/malaria/Pf_Malaysia/outputs/06_Analyses/moimix/Pf3D7_moimix_subset.gds
+Format Version: v1.0
+Reference: file:///home/ubuntu/data/resources/Pfalciparum.genome.fasta
+Ploidy: 2
+Number of samples: 3,667
+Number of variants: 10,275
+Chromosomes:
+    chrPf3D7_01_v3: 436 , chrPf3D7_02_v3: 442 , chrPf3D7_03_v3: 475 , chrPf3D7_04_v3: 1044, chrPf3D7_05_v3: 606 , chrPf3D7_06_v3: 498 
+    chrPf3D7_07_v3: 933 , chrPf3D7_08_v3: 726 , chrPf3D7_09_v3: 608 , chrPf3D7_10_v3: 824 , chrPf3D7_11_v3: 745 , chrPf3D7_12_v3: 740 
+    chrPf3D7_13_v3: 1005, chrPf3D7_14_v3: 1193
+Contigs:
+    Pf3D7_01_v3, 640851
+    Pf3D7_02_v3, 947102
+    Pf3D7_03_v3, 1067971
+    Pf3D7_04_v3, 1200490
+    Pf3D7_05_v3, 1343557
+    Pf3D7_06_v3, 1418242
+    Pf3D7_07_v3, 1445207
+    Pf3D7_08_v3, 1472805
+    Pf3D7_09_v3, 1541735
+    Pf3D7_10_v3, 1687656
+    Pf3D7_11_v3, 2038340
+    Pf3D7_12_v3, 2271494
+    Pf3D7_13_v3, 2925236
+    Pf3D7_14_v3, 3291936
+    Pf3D7_API_v3, 34250
+    Pf_M76611, 5967
+Alleles:
+    NON_REF, Represents any possible alternative allele at this location
+    tabulation: 2, 10275(100.0%)
+Annotation, Quality:
+    Min: 869.179992675781, 1st Qu: 3028950, Median: 7984420, Mean: 14602817.584861, 3rd Qu: 19775500, Max: 262828000
+Annotation, FILTER:
+    PASS, All filters passed, 10275(100.0%)
+    Apicoplast, RegionType == 'Apicoplast', 0(0.0%)
+    Centromere, RegionType == 'Centromere', 0(0.0%)
+    InternalHypervariable, RegionType == 'InternalHypervariable', 0(0.0%)
+    LowQual, Low quality, 0(0.0%)
+    Low_VQSLOD, VQSLOD <= 2.0, 0(0.0%)
+    MissingVQSLOD, !vc.hasAttribute('VQSLOD'), 0(0.0%)
+    Mitochondrion, RegionType == 'Mitochondrion', 0(0.0%)
+    SubtelomericHypervariable, RegionType == 'SubtelomericHypervariable', 0(0.0%)
+    SubtelomericRepeat, RegionType == 'SubtelomericRepeat', 0(0.0%)
+    VQSRTrancheINDEL99.50to99.60, Truth sensitivity tranche level for INDEL model at VQS Lod: -0.9004 <= x < -0.6202, 0(0.0%)
+    VQSRTrancheINDEL99.60to99.80, Truth sensitivity tranche level for INDEL model at VQS Lod: -3.2045 <= x < -0.9004, 0(0.0%)
+    VQSRTrancheINDEL99.80to99.90, Truth sensitivity tranche level for INDEL model at VQS Lod: -6.0618 <= x < -3.2045, 0(0.0%)
+    VQSRTrancheINDEL99.90to99.95, Truth sensitivity tranche level for INDEL model at VQS Lod: -10.4109 <= x < -6.0618, 0(0.0%)
+    VQSRTrancheINDEL99.95to100.00+, Truth sensitivity tranche level for INDEL model at VQS Lod < -28434.5912, 0(0.0%)
+    VQSRTrancheINDEL99.95to100.00, Truth sensitivity tranche level for INDEL model at VQS Lod: -28434.5912 <= x < -10.4109, 0(0.0%)
+    VQSRTrancheSNP99.50to99.60, Truth sensitivity tranche level for SNP model at VQS Lod: -1.3454 <= x < -1.0956, 0(0.0%)
+    VQSRTrancheSNP99.60to99.80, Truth sensitivity tranche level for SNP model at VQS Lod: -5.2178 <= x < -1.3454, 0(0.0%)
+    VQSRTrancheSNP99.80to99.90, Truth sensitivity tranche level for SNP model at VQS Lod: -11.8748 <= x < -5.2178, 0(0.0%)
+    VQSRTrancheSNP99.90to99.95, Truth sensitivity tranche level for SNP model at VQS Lod: -15.8556 <= x < -11.8748, 0(0.0%)
+    VQSRTrancheSNP99.95to100.00+, Truth sensitivity tranche level for SNP model at VQS Lod < -39174.9626, 0(0.0%)
+    VQSRTrancheSNP99.95to100.00, Truth sensitivity tranche level for SNP model at VQS Lod: -39174.9626 <= x < -15.8556, 0(0.0%)
+Annotation, INFO variable(s):
+    AC, A, Integer, Allele count in genotypes, for each ALT allele, in the same order as listed
+    AF, A, Float, Allele Frequency, for each ALT allele, in the same order as listed
+    AN, 1, Integer, Total number of alleles in called genotypes
+    ANN, ., String, Functional annotations: 'Allele | Annotation | Annotation_Impact | Gene_Name | Gene_ID | Feature_Type | Feature_ID | Transcript_BioType | Rank | HGVS.c | HGVS.p | cDNA.pos / cDNA.length | CDS.pos / CDS.length | AA.pos / AA.length | Distance | ERRORS / WARNINGS / INFO'
+    AS_BaseQRankSum, A, Float, allele specific Z-score from Wilcoxon rank sum test of each Alt Vs. Ref base qualities
+    AS_FS, A, Float, allele specific phred-scaled p-value using Fisher's exact test to detect strand bias of each alt allele
+    AS_InbreedingCoeff, A, Float, allele specific heterozygosity as estimated from the genotype likelihoods per-sample when compared against the Hardy-Weinberg expectation; relate to inbreeding coefficient
+    AS_MQ, A, Float, Allele-specific RMS Mapping Quality
+    AS_MQRankSum, A, Float, Allele-specific Mapping Quality Rank Sum
+    AS_QD, A, Float, Allele-specific Variant Confidence/Quality by Depth
+    AS_ReadPosRankSum, A, Float, allele specific Z-score from Wilcoxon rank sum test of each Alt vs. Ref read position bias
+    AS_SOR, A, Float, Allele specific strand Odds Ratio of 2x|Alts| contingency table to detect allele specific strand bias
+    BaseQRankSum, 1, Float, Z-score from Wilcoxon rank sum test of Alt Vs. Ref base qualities
+    CDS, 0, Flag, Is position coding
+    DP, 1, Integer, Approximate read depth; some reads may have been filtered
+    DS, 0, Flag, Were any of the samples downsampled?
+    END, 1, Integer, Stop position of the interval
+    ExcessHet, 1, Float, Phred-scaled p-value for exact test of excess heterozygosity
+    FS, 1, Float, Phred-scaled p-value using Fisher's exact test to detect strand bias
+    InbreedingCoeff, 1, Float, Inbreeding coefficient as estimated from the genotype likelihoods per-sample when compared against the Hardy-Weinberg expectation
+    LOF, ., String, Predicted loss of function effects for this variant. Format: 'Gene_Name | Gene_ID | Number_of_transcripts_in_gene | Percent_of_transcripts_affected'
+    MLEAC, A, Integer, Maximum likelihood expectation (MLE) for the allele counts (not necessarily the same as the AC), for each ALT allele, in the same order as listed
+    MLEAF, A, Float, Maximum likelihood expectation (MLE) for the allele frequency (not necessarily the same as the AF), for each ALT allele, in the same order as listed
+    MQ, 1, Float, RMS Mapping Quality
+    MQRankSum, 1, Float, Z-score From Wilcoxon rank sum test of Alt vs. Ref read mapping qualities
+    NEGATIVE_TRAIN_SITE, 0, Flag, This variant was used to build the negative training set of bad variants
+    NMD, ., String, Predicted nonsense mediated decay effects for this variant. Format: 'Gene_Name | Gene_ID | Number_of_transcripts_in_gene | Percent_of_transcripts_affected'
+    POSITIVE_TRAIN_SITE, 0, Flag, This variant was used to build the positive training set of good variants
+    QD, 1, Float, Variant Confidence/Quality by Depth
+    RAW_MQandDP, 2, Integer, Raw data (sum of squared MQ and total depth) for improved RMS Mapping Quality calculation. Incompatible with deprecated RAW_MQ formulation.
+    ReadPosRankSum, 1, Float, Z-score from Wilcoxon rank sum test of Alt vs. Ref read position bias
+    RegionType, 1, String, The type of genome region within which the variant is found. SubtelomericRepeat: repetitive regions at the ends of the chromosomes. SubtelomericHypervariable: subtelomeric region of poor conservation between the 3D7 reference genome and other samples. InternalHypervariable: chromosome-internal region of poor conservation between the 3D7 reference genome and other samples. Centromere: start and end coordinates of the centromere genome annotation. Apicoplast: apicoplast. Mitochondrion: mitochondrion. Core: everything else.
+    SOR, 1, Float, Symmetric Odds Ratio of 2x2 contingency table to detect strand bias
+    VQSLOD, 1, Float, Log odds of being a true variant versus being false under the trained gaussian mixture model
+    culprit, 1, String, The annotation which was the worst performing in the Gaussian mixture model, likely the reason why the variant was filtered out
+    set, 1, String, Source VCF for the merged record in CombineVariants
+Annotation, FORMAT variable(s):
+    GT, 1, String, Genotype
+    AD, R, Integer, Allelic depths for the ref and alt alleles in the order listed
+    DP, 1, Integer, Approximate read depth (reads with MQ=255 or with bad mates are filtered)
+    GQ, 1, Integer, Genotype Quality
+    MIN_DP, 1, Integer, Minimum DP observed within the GVCF block
+    PGT, 1, String, Physical phasing haplotype information, describing how the alternate alleles are phased in relation to one another
+    PID, 1, String, Physical phasing ID information, where each unique ID within a given sample (but not across samples) connects records within a phasing group
+    PL, G, Integer, Normalized, Phred-scaled likelihoods for genotypes as defined in the VCF specification
+    PS, 1, Integer, Phasing set (typically the position of the first variant in the set)
+    RGQ, 1, Integer, Unconditional reference genotype confidence, encoded as a phred quality -10*log10 p(genotype call is wrong)
+    SB, 4, Integer, Per-sample component statistics which comprise the Fisher's Exact Test to detect strand bias.
+Annotation, sample variable(s):
+    <None>
+# of selected variants: 10,275
+# of selected samples: 3,667
+# of selected variants: 10,275
+Joining, by = "variant.id"
+Error in write_delim(x, file, delim = "\t", na = na, append = append,  : 
+  is.data.frame(x) is not TRUE
+Calls: write_tsv -> write_delim -> stopifnot
+Execution halted
+---------------------------------------
+Finished
+
+======================================================================================
+                  Resource Usage on 2023-04-06 16:34:05:
+   Job Id:             78749004.gadi-pbs
+   Project:            pq84
+   Exit Status:        0
+   Service Units:      141.12
+   NCPUs Requested:    28                     NCPUs Used: 28              
+                                           CPU Time Used: 07:07:34        
+   Memory Requested:   128.0GB               Memory Used: 65.08GB         
+   Walltime requested: 48:00:00            Walltime Used: 04:01:55        
+   JobFS requested:    100.0MB                JobFS used: 0B              
+======================================================================================
